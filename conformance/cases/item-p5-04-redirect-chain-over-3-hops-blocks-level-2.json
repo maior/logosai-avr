@@ -1,0 +1,179 @@
+{
+  "id": "item-p5-04-redirect-chain-over-3-hops-blocks-level-2",
+  "title": "broken 비율이 3% 미만이어도 3홉 초과 리다이렉트가 있으면 level 2 를 막는다",
+  "level": 2,
+  "operation": "item_p5_04",
+  "rationale": "50개 외부 링크가 전부 200 이라 broken 비율은 0% 로 level 2 수치 조건은 만족하지만, 그중 1개가 3홉을 초과하는 리다이렉트 체인을 갖고 있다. spec §7.2 는 이 경우 level 2 를 '만족하지 못한 조건' 으로 규정하고 level 1 로 처리하도록 명시한다(§7.2 갱신 조항). 이 케이스가 없으면 리다이렉트 체인을 아예 확인하지 않는 구현도 통과한다.",
+  "spec_refs": [
+    "plane-b-readiness.md §7.2",
+    "pillars.yaml P5-04 levels"
+  ],
+  "input": {
+    "links": [
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      }
+    ],
+    "redirect_chain_over_3_hops_count": 1
+  },
+  "expected": {
+    "score": 1,
+    "checked_count": 50,
+    "broken_count": 0,
+    "unchecked_count": 0
+  },
+  "tolerance": {
+    "absolute": 0
+  },
+  "reference_implementation": {
+    "status": "conformant",
+    "note": "2026-09-05 구현 완료. app/audit/collectors/linkcheck.py 의 classify_link + finding_from_summary 가 3분류(ok/broken/unchecked)와 unchecked 50% 포기 규칙을 구현하고, 러너에 item_p5_04 / item_p5_07 오퍼레이터를 등록했다."
+  }
+}

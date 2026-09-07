@@ -1,0 +1,35 @@
+{
+  "id": "rubric-every-item-has-a-remediation-tier",
+  "title": "정본 rubric 의 모든 항목이 조치 분류를 갖는다",
+  "level": 1,
+  "operation": "rubric_remediation",
+  "rationale": "조치 분류(remediation)는 채점에 관여하지 않는 정보 필드지만, 배정이 빠진 항목은 리포트에서 조용히 \"할 일 없음\"으로 보인다 -- 못 고칠 문제를 안 보이게 만드는 것이라 침묵하는 실패다. spec plane-b-readiness.md §9 는 모든 항목이 정확히 하나의 티어를 갖도록 요구한다. 기대값은 §9 의 배정표에서 직접 센 것이며 참조 구현을 돌려 얻지 않았다: config 3 · dev 17 · content 17 · operations 4 · earned 4 = 45. 항목이 늘어날 때 배정을 빠뜨리면 total 이 항목 수와 어긋나 이 케이스가 즉시 실패한다.",
+  "spec_refs": [
+    "plane-b-readiness.md#9"
+  ],
+  "input": {
+    "vocabulary": [
+      "config",
+      "dev",
+      "content",
+      "operations",
+      "earned"
+    ]
+  },
+  "expected": {
+    "counts": {
+      "config": 3,
+      "dev": 17,
+      "content": 17,
+      "operations": 4,
+      "earned": 4
+    },
+    "total": 45,
+    "missing_item_ids": [],
+    "unknown_tier_item_ids": []
+  },
+  "tolerance": {
+    "absolute": 0
+  },
+  "notes": "정수 비교이므로 허용오차는 0 이다. 어휘 밖 값이 있으면 unknown_tier_item_ids 에 잡힌다 -- 오타 하나가 새 티어로 조용히 통과하는 것을 막는 대조 장치다."
+}

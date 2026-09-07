@@ -1,0 +1,48 @@
+{
+  "id": "ars-pillar-coverage-below-50-is-excluded-and-renormalized",
+  "title": "Pillar 커버리지 50% 미만 → 해당 weight 제외 후 나머지를 100 으로 재정규화",
+  "level": 1,
+  "operation": "compute_ars",
+  "rationale": "P4 9항목 중 4개만 채점(44.4%) 하면 P4 를 보고하지 않고 weight 20 을 빼고 남은 80 을 100 으로 재정규화한다. 재정규화를 빼먹으면 '덜 잰 것' 이 '점수가 낮은 것' 으로 둔갑해 무료 티어(P4 미채점) 가 구조적으로 낮은 점수를 받는다. P1·P2·P5 만점, P3 전 항목 1점 → (25+25+10+10)=70, ×100/80 = 87.5.",
+  "spec_refs": [
+    "plane-b-readiness.md §3.1",
+    "plane-b-readiness.md §5.2"
+  ],
+  "input": {
+    "item_scores_default": 2,
+    "item_scores": {
+      "P3-01": 1,
+      "P3-02": 1,
+      "P3-03": 1,
+      "P3-04": 1,
+      "P3-05": 1,
+      "P3-06": 1,
+      "P3-07": 1,
+      "P3-08": 1,
+      "P3-09": 1
+    },
+    "unscored_item_ids": [
+      "P4-05",
+      "P4-06",
+      "P4-07",
+      "P4-08",
+      "P4-09"
+    ],
+    "unavailable": {}
+  },
+  "expected": {
+    "ars": 87.5,
+    "raw_ars": 87.5,
+    "gated": false,
+    "weight_renormalized": true,
+    "excluded_pillars": [
+      "P4"
+    ]
+  },
+  "tolerance": {
+    "absolute": 1e-09
+  },
+  "reference_implementation": {
+    "status": "implemented"
+  }
+}

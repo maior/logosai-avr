@@ -1,0 +1,91 @@
+# AVR 모델 — 채점 임계값·계수 정본
+# Single Source of Truth. 백엔드 도메인 계층은 이 파일만 파싱한다.
+#
+# 왜 이 파일이 생겼는가
+#   ARCHITECTURE.md §6.2 가 기록한 위반: AVI 25 · ARS 60 · 커버리지 0.5/0.7 · α/β/γ · z 는
+#   ① SPEC(산문 명세)에는 있으나 ② RUBRIC(기계가 읽는 정본)에는 없었다. 그래서 참조 구현이
+#   숫자를 코드 상수로 복제할 수밖에 없었고, 이는 CLAUDE.md 의 "정본 숫자를 코드에 복제하지
+#   마라" 와 ①→④ 의존 방향 규칙을 동시에 어기는 상태였다.
+#
+#   이제 근거는 spec 문서가 서술하고 값은 이 YAML 이 갖는다. pillars.yaml · channels.yaml 과
+#   같은 구조다. 임계값을 바꾸려면 이 파일과 spec 문서를 함께 고친다 (scoring.md §6 절차).
+#
+# 주의: 임계값 변경은 과거 리포트의 사분면 판정을 바꾼다. 기본은 소급하지 않음이며
+#       (scoring.md §6-3) 리포트에는 이 파일의 version 을 scoring_version 으로 남긴다.
+version: "1.1.0"
+
+changelog:
+  - version: "1.1.0"
+    date: "2026-09-05"
+    breaking: false
+    summary: "커버리지 분모를 total_items 에서 judgeable_count 로 재정의 (framework/spec/plane-b-readiness.md §8). unavailable_kind 5분류(not_applicable/design_limit/inconclusive/no_collector/input_missing) 중 not_applicable·design_limit 만 분모에서 제외한다. min_pillar_coverage·min_item_coverage 의 값(0.5 / 0.7) 자체는 바꾸지 않았다 — 이번 변경은 분모 정의 수정이지 난이도 조정이 아니다."
+    comparability: "커버리지 분모가 바뀌므로 pillar 제외 여부가 달라질 수 있고, 2026-09-05 회차 1·2 는 재측정해야 비교 가능하다. not_applicable·design_limit 이 전혀 관측되지 않은 진단(대부분의 과거 리포트 — 이 kind 자체가 v1.1.0 이전에는 존재하지 않았다)은 judgeable_count == total_items 이므로 점수와 pillar 포함/제외 판정이 완전히 동일하다. 즉 과거 리포트 자체가 소급 재판정되는 것은 아니며, v1.1.0 이후 새로 판정되는 not_applicable/design_limit 항목이 있는 리포트만 v1.0.0 과 분모가 달라 비교 불가다."
+  - version: "1.0.0"
+    date: "2026-09-05"
+    breaking: false
+    summary: "최초 정의 — spec 문서에만 있던 임계값·계수를 기계가 읽는 정본으로 승격 (ARCHITECTURE.md §6.2 권고)"
+    comparability: "값 자체는 하나도 바뀌지 않았다. scoring.md §1 의 AVI 25 / ARS 60, plane-b-readiness.md §3.1 의 50%, scoring.md §4.1 의 0.7, plane-a-visibility.md §2 의 α/β/γ, §3.2 의 z 를 그대로 옮겼을 뿐이다. 따라서 이 파일 도입 전후의 모든 점수는 동일하며 과거 리포트와 완전히 비교 가능하다."
+
+# --- Gap Matrix 임계값 (spec scoring.md §1) ----------------------------------
+# 두 값 모두 경계 포함(≥)이 high 다.
+#
+#   ARS 60 — 구조에서 유도된다. 전 항목이 1점이면 정확히 50 이므로(Pillar 정규화라 항목 수와
+#              무관하다) 임계값은 50 을
+#            넘어야 하고(§2-1), 게이팅 상한 40 과 20점 마진이 필요하며(§2-3),
+#            P1+P2 만점(50)만으로는 넘을 수 없어야 한다(§2-4).
+#   AVI 25 — 구조 유도가 불가능한 **시장 관측 기반 추정치**다(§3). 산업별 코호트가
+#            30 브랜드 이상 확보되면 고정값을 폐기하고 코호트 중앙값으로 전환한다.
+#            그때까지 리포트에 "절대 기준이 아닌 잠정 컷오프"임을 표기한다.
+gap_matrix:
+  avi_threshold: 25.0
+  ars_threshold: 60.0
+
+# --- 커버리지 하한 -----------------------------------------------------------
+# 두 값의 분모는 "전체 항목 수"가 아니라 "judgeable 항목 수" 다 (v1.1.0~,
+# plane-b-readiness.md §8.4). judgeable = 전체 항목 수 - (unavailable_kind 가
+# not_applicable 인 항목 수 + design_limit 인 항목 수). inconclusive·no_collector·
+# input_missing·awaiting_manual 은 분모에서 빼지 않는다 — "판정 대상이 사이트에
+# 성립하지 않으면 뺀다. 우리가 모르면 남긴다"(§8.3)가 유일한 기준이다. not_applicable
+# /design_limit 이 전혀 없는 진단은 judgeable == 전체 항목 수이므로 이 재정의 전후로
+# 결과가 동일하다.
+#
+# min_pillar_coverage (plane-b-readiness.md §3.1, §8.4)
+#   한 Pillar 의 채점 항목이 그 Pillar 의 judgeable 항목의 50% 미만이면 그 Pillar 를
+#   보고하지 않고, weight 를 제외한 뒤 나머지를 100 으로 재정규화한다. 재정규화가
+#   없으면 "덜 잰 것"이 "점수가 낮은 것"으로 둔갑한다. judgeable == 0 인 Pillar 는
+#   같은 절차를 적용하되 사유를 "커버리지 부족"이 아니라 "이 사이트에 적용되지
+#   않음"으로 구분해 표기한다(§8.4). awaiting_manual(check:manual 항목의 사람 판정
+#   대기, pillars.yaml 1.5.0 / report.schema.json 1.2.0~)도 분모에 남는 나머지
+#   넷(inconclusive·no_collector·input_missing·awaiting_manual)에 포함된다 -- 이
+#   값 하나를 새로 추가한 것으로 이 두 계수(0.5/0.7)의 값 자체는 바뀌지 않는다.
+#
+# min_item_coverage (scoring.md §4.1, plane-b-readiness.md §8.4)
+#   전체 45항목 중 judgeable 항목 대비 채점 비율이 이 값 미만이면 ARS 가
+#   결정론적이어도 불확실하므로 사분면을 borderline 으로 표시한다. 무료 티어
+#   (32/45 = 71.1%, `plane-b-readiness.md` §5.2)가 이 선을 아슬아슬하게 넘기 때문에
+#   무료 리포트는 별도로 항상 borderline 이다.
+coverage:
+  min_pillar_coverage: 0.5
+  min_item_coverage: 0.7
+
+# --- AVI 결합 계수 (spec plane-a-visibility.md §2·§2.1) ----------------------
+#   AVI = 100 × Σ_c w'_c · (α·MR_c + β·PosScore_c + γ·CitShare_c),  α+β+γ = 1
+#   α 가 최대인 이유: MR 은 셋 중 유일하게 전 채널 동일 정의로 관측되는 이항 사건이고
+#   노출의 필요조건이다. 언급이 없으면 순서도 인용도 성립하지 않는다.
+#   CitShare 가 null 인 채널은 그 채널에서만 α' = α/(α+β), β' = β/(α+β) 로 재정규화한다.
+avi_coefficients:
+  alpha: 0.5
+  beta: 0.3
+  gamma: 0.2
+
+# --- 항목 채점 등급 (spec plane-b-readiness.md §2) ---------------------------
+# 각 항목은 0 / 1 / 2 중 하나로만 판정한다. max_level 은 pillars.yaml 의 levels 키
+# 최대값과 반드시 일치해야 하며, Pillar 정규화의 분모(max_raw = max_level × 채점 항목 수)다.
+item_levels:
+  max_level: 2
+
+# --- 통계 (spec plane-a-visibility.md §3.2) ----------------------------------
+# 95% 신뢰수준의 z. 1.96 은 반올림값이라 제3자 구현과 6.4e-6 어긋난다.
+# 적합성의 정의는 "같은 입력에 같은 출력"이므로 명세 값을 그대로 쓴다.
+statistics:
+  default_z: 1.959964

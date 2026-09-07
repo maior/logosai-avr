@@ -1,0 +1,1079 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aeo.local/framework/schema/report.schema.json",
+  "title": "AVR Diagnostic Report",
+  "description": "AVR(AI Visibility & Readiness) 진단 리포트 산출물 스키마. Plane A(visibility) + Plane B(readiness) + gap_quadrant. pillar/item/channel id는 framework/rubric/pillars.yaml, framework/rubric/channels.yaml 과 반드시 일치한다.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "report_id",
+    "generated_at",
+    "rubric_version",
+    "channels_version",
+    "subject",
+    "plane_a",
+    "plane_b",
+    "gap_quadrant"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "1.3.0"
+    },
+    "report_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "generated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "rubric_version": {
+      "type": "string",
+      "description": "채점에 사용한 pillars.yaml 의 version",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$"
+    },
+    "channels_version": {
+      "type": "string",
+      "description": "집계에 사용한 channels.yaml 의 version",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$"
+    },
+    "scoring_version": {
+      "type": "string",
+      "description": "판정에 사용한 scoring.yaml(임계값·계수) 의 version. scoring.md §3.2 는 rubric_version 과 별도로 scoring 규칙 버전을 리포트에 남길 것을 요구한다 — 임계값이 바뀌면 같은 점수가 다른 사분면으로 판정되기 때문이다.",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$"
+    },
+    "subject": {
+      "$ref": "#/$defs/subject"
+    },
+    "probe_config": {
+      "$ref": "#/$defs/probe_config"
+    },
+    "plane_a": {
+      "$ref": "#/$defs/plane_a"
+    },
+    "plane_b": {
+      "$ref": "#/$defs/plane_b"
+    },
+    "gap_quadrant": {
+      "$ref": "#/$defs/gap_quadrant"
+    },
+    "comparison": {
+      "$ref": "#/$defs/comparison",
+      "description": "직전 측정 대비 변화와 유의성 검정. 최초 진단에서는 생략한다."
+    },
+    "limitations": {
+      "type": "array",
+      "description": "공시 의무 항목. 프록시 격차, API 미보유 채널의 수집 방식, 미측정 채널 등을 반드시 기재한다.",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "$defs": {
+    "channel_id": {
+      "type": "string",
+      "enum": [
+        "chatgpt",
+        "gemini",
+        "naver_ai_briefing",
+        "claude",
+        "perplexity",
+        "google_ai_overviews"
+      ]
+    },
+    "pillar_id": {
+      "type": "string",
+      "enum": [
+        "P1",
+        "P2",
+        "P3",
+        "P4",
+        "P5"
+      ]
+    },
+    "item_id": {
+      "type": "string",
+      "enum": [
+        "P1-01",
+        "P1-02",
+        "P1-03",
+        "P1-04",
+        "P1-05",
+        "P1-06",
+        "P1-07",
+        "P1-08",
+        "P1-09",
+        "P1-10",
+        "P2-01",
+        "P2-02",
+        "P2-03",
+        "P2-04",
+        "P2-05",
+        "P2-06",
+        "P2-07",
+        "P2-08",
+        "P2-09",
+        "P2-10",
+        "P3-01",
+        "P3-02",
+        "P3-03",
+        "P3-04",
+        "P3-05",
+        "P3-06",
+        "P3-07",
+        "P3-08",
+        "P3-09",
+        "P4-01",
+        "P4-02",
+        "P4-03",
+        "P4-04",
+        "P4-05",
+        "P4-06",
+        "P4-07",
+        "P4-08",
+        "P4-09",
+        "P5-01",
+        "P5-02",
+        "P5-03",
+        "P5-04",
+        "P5-05",
+        "P5-06",
+        "P5-07"
+      ]
+    },
+    "unit_interval": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "unavailable_kind": {
+      "type": "string",
+      "enum": [
+        "not_applicable",
+        "design_limit",
+        "inconclusive",
+        "no_collector",
+        "input_missing",
+        "awaiting_manual"
+      ],
+      "description": "score 가 null 인 이유의 6분류 (spec plane-b-readiness.md §8.2, schema_version 1.2.0 이후). 분모(judgeable)에서 빼는 기준은 하나뿐이다 — '판정 대상이 사이트에 성립하지 않으면 뺀다. 우리가 모르면 남긴다.' not_applicable·design_limit 은 이 기준에 따라 커버리지 분모에서 제외되고, inconclusive·no_collector·input_missing·awaiting_manual 은 분모에 남는다(측정 실패를 좋은 점수로 둔갑시키지 않기 위함). 값이 비어 있으면 inconclusive 와 동일하게 분모에 포함해 처리한다 — 애매하면 남기는 쪽이 기본값이다.",
+      "$comment": "not_applicable=판정 대상이 사이트에 존재하지 않음(예: 외부 링크 0건). design_limit=단일 관측으로는 원리상 판정 불가(예: 시계열 필요). inconclusive=대상은 있으나 확인 실패(예: unchecked 과반). no_collector=수집기 미구현(로드맵). input_missing=필요한 정식 입력이 없음(예: extra_urls, 질문 세트). awaiting_manual=check:manual 항목의 사람 판정이 아직 없음(예: P4-02 브랜드 인지도 서베이 미실시) — manual 은 설계상 영구히 사람 티어이므로 no_collector(로드맵 결손)와 섞으면 안 되고, 고객이 대체 입력할 수 없으므로 input_missing 과도 다르다."
+    },
+    "remediation_tier": {
+      "type": "string",
+      "enum": [
+        "config",
+        "dev",
+        "content",
+        "operations",
+        "earned"
+      ],
+      "description": "이 항목이 미달일 때 누가 고쳐야 하는가의 5분류 (spec plane-b-readiness.md §9, rubric v1.6.0 이후). 채점(score)에는 관여하지 않는 순수 정보 필드다 — 같은 item_id 는 rubric 버전이 같은 한 항상 같은 remediation 을 갖는다. 자동화 가능 여부가 아니라 '어떤 종류의 일인가'로 나눈다.",
+      "$comment": "config=사이트 설정·파일 하나로 오늘 끝난다(사이트 관리자). dev=템플릿·코드·인프라 수정(개발자). content=글·자료 작성(콘텐츠 담당). operations=사이트 밖 등록·프로세스·담당자 지정(운영·마케팅). earned=남이 해줘야 한다, 살 수 없고 벌어야 한다(백링크·언론·제3자 언급) — 오늘 실행할 수 없는 일이라는 것 자체가 이 값의 정보다."
+    },
+    "score_0_100": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100
+    },
+    "wilson_ci": {
+      "type": "object",
+      "description": "이항비율의 Wilson score interval. plane-a-visibility.md §3 참조.",
+      "additionalProperties": false,
+      "required": [
+        "point",
+        "lower",
+        "upper",
+        "n",
+        "confidence",
+        "method"
+      ],
+      "properties": {
+        "point": {
+          "$ref": "#/$defs/unit_interval"
+        },
+        "lower": {
+          "$ref": "#/$defs/unit_interval"
+        },
+        "upper": {
+          "$ref": "#/$defs/unit_interval"
+        },
+        "n": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "successes": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "confidence": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "exclusiveMaximum": 1,
+          "default": 0.95
+        },
+        "method": {
+          "type": "string",
+          "enum": [
+            "wilson"
+          ]
+        }
+      }
+    },
+    "subject": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "brand",
+        "domain"
+      ],
+      "properties": {
+        "brand": {
+          "type": "string",
+          "minLength": 1
+        },
+        "domain": {
+          "type": "string",
+          "minLength": 1
+        },
+        "category": {
+          "type": "string",
+          "description": "자사가 주장하는 카테고리 정의문의 핵심 명사구"
+        },
+        "locale": {
+          "type": "string",
+          "default": "ko-KR"
+        },
+        "competitors": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "brand"
+            ],
+            "properties": {
+              "brand": {
+                "type": "string"
+              },
+              "domain": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "probe_config": {
+      "type": "object",
+      "description": "Plane A 프로빙 설계. n = questions x repetitions x search_modes 이며 채널별로 달라질 수 있다.",
+      "additionalProperties": false,
+      "required": [
+        "questions",
+        "repetitions",
+        "search_modes"
+      ],
+      "properties": {
+        "questions": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "repetitions": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "search_modes": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "enum": [
+              "on",
+              "off"
+            ]
+          }
+        },
+        "question_set_id": {
+          "type": "string"
+        },
+        "window_start": {
+          "type": "string",
+          "format": "date"
+        },
+        "window_end": {
+          "type": "string",
+          "format": "date"
+        },
+        "entity_baseline_correction": {
+          "type": "object",
+          "description": "대조 프롬프트로 추정한 false-positive rate. 보정 전/후 MR을 모두 남긴다.",
+          "additionalProperties": false,
+          "required": [
+            "applied"
+          ],
+          "properties": {
+            "applied": {
+              "type": "boolean"
+            },
+            "false_positive_rate": {
+              "$ref": "#/$defs/unit_interval"
+            },
+            "control_prompt_n": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        }
+      }
+    },
+    "plane_a": {
+      "type": "object",
+      "description": "Plane A — Visibility. 실제 LLM 응답 프로빙 결과.",
+      "additionalProperties": false,
+      "required": [
+        "avi",
+        "coefficients",
+        "channels"
+      ],
+      "properties": {
+        "avi": {
+          "$ref": "#/$defs/score_0_100",
+          "description": "AVI = 100 x Sum_c w_c x (alpha*MR_c + beta*PosScore_c + gamma*CitShare_c). 미측정 채널 제외 후 가중치 재정규화."
+        },
+        "avi_ci": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "lower",
+            "upper",
+            "confidence",
+            "method"
+          ],
+          "properties": {
+            "lower": {
+              "$ref": "#/$defs/score_0_100"
+            },
+            "upper": {
+              "$ref": "#/$defs/score_0_100"
+            },
+            "confidence": {
+              "type": "number",
+              "exclusiveMinimum": 0,
+              "exclusiveMaximum": 1
+            },
+            "method": {
+              "type": "string",
+              "enum": [
+                "bootstrap",
+                "delta_method"
+              ]
+            }
+          }
+        },
+        "coefficients": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "alpha",
+            "beta",
+            "gamma"
+          ],
+          "properties": {
+            "alpha": {
+              "$ref": "#/$defs/unit_interval",
+              "default": 0.5
+            },
+            "beta": {
+              "$ref": "#/$defs/unit_interval",
+              "default": 0.3
+            },
+            "gamma": {
+              "$ref": "#/$defs/unit_interval",
+              "default": 0.2
+            }
+          }
+        },
+        "weight_renormalized": {
+          "type": "boolean",
+          "description": "미측정 채널을 제외하고 w_c를 재정규화했는지 여부"
+        },
+        "channels": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/channel_result"
+          }
+        },
+        "proxy_gap": {
+          "type": "array",
+          "description": "프록시 격차 delta. 저가 트래킹 모델과 플래그십 캘리브레이션 모델의 MR 차이. 리포트 공시 의무.",
+          "items": {
+            "$ref": "#/$defs/proxy_gap_entry"
+          }
+        }
+      }
+    },
+    "channel_result": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "channel_id",
+        "measured"
+      ],
+      "properties": {
+        "channel_id": {
+          "$ref": "#/$defs/channel_id"
+        },
+        "measured": {
+          "type": "boolean",
+          "description": "false면 metrics를 생략하고 분모에서 제외한다. AI Overviews 미노출(not_shown)이 대표 사례."
+        },
+        "not_measured_reason": {
+          "type": "string",
+          "enum": [
+            "not_shown",
+            "api_unavailable",
+            "rate_limited",
+            "tos_blocked",
+            "scrape_failed",
+            "out_of_scope"
+          ]
+        },
+        "weight": {
+          "$ref": "#/$defs/unit_interval"
+        },
+        "effective_weight": {
+          "$ref": "#/$defs/unit_interval",
+          "description": "미측정 채널 제외 후 재정규화된 가중치"
+        },
+        "collection_method": {
+          "type": "string",
+          "enum": [
+            "official_api",
+            "serp_scrape",
+            "manual_capture"
+          ]
+        },
+        "model_id": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "실제 호출한 모델 식별자. 채널이 버전 핀을 지원하지 않으면 null."
+        },
+        "model_role": {
+          "type": "string",
+          "enum": [
+            "tracking",
+            "calibration",
+            "none"
+          ]
+        },
+        "search_mode": {
+          "type": "string",
+          "enum": [
+            "on",
+            "off",
+            "always_on",
+            "mixed"
+          ]
+        },
+        "n": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "metrics": {
+          "$ref": "#/$defs/visibility_metrics"
+        }
+      }
+    },
+    "visibility_metrics": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "mr": {
+          "$ref": "#/$defs/unit_interval",
+          "description": "Mention Rate = 언급 응답 수 / 총 응답 수"
+        },
+        "mr_ci": {
+          "$ref": "#/$defs/wilson_ci"
+        },
+        "mr_raw": {
+          "$ref": "#/$defs/unit_interval",
+          "description": "엔티티 baseline 보정 전 MR. 보정을 적용했다면 mr과 함께 반드시 병기."
+        },
+        "sov": {
+          "$ref": "#/$defs/unit_interval",
+          "description": "Share of Voice = 자사 언급 / 전체 브랜드 언급"
+        },
+        "pos_score": {
+          "$ref": "#/$defs/unit_interval",
+          "description": "언급 순서 가중 평균. 응답별 1/log2(1+rank), 미언급 응답은 0."
+        },
+        "cit_share": {
+          "$ref": "#/$defs/unit_interval",
+          "description": "자사 도메인 인용 / 전체 인용 도메인"
+        },
+        "sentiment_sov": {
+          "$ref": "#/$defs/unit_interval",
+          "description": "자사 긍정 언급 / 전체 긍정 언급"
+        },
+        "fai": {
+          "$ref": "#/$defs/unit_interval",
+          "description": "Fact Accuracy Index = 1 - (오류 진술 수 / 총 진술 수)"
+        },
+        "fai_sample_size": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "proxy_gap_entry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "channel_id",
+        "tracking_mr",
+        "calibration_mr",
+        "delta"
+      ],
+      "properties": {
+        "channel_id": {
+          "$ref": "#/$defs/channel_id"
+        },
+        "tracking_model": {
+          "type": "string"
+        },
+        "calibration_model": {
+          "type": "string"
+        },
+        "tracking_mr": {
+          "$ref": "#/$defs/unit_interval"
+        },
+        "calibration_mr": {
+          "$ref": "#/$defs/unit_interval"
+        },
+        "delta": {
+          "type": "number",
+          "minimum": -1,
+          "maximum": 1,
+          "description": "delta = tracking_mr - calibration_mr. 부호 포함."
+        },
+        "calibration_n": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "measured_at": {
+          "type": "string",
+          "format": "date"
+        },
+        "significant": {
+          "type": "boolean",
+          "description": "two-proportion z-test 결과 유의(alpha=0.05)하면 true. true면 트래킹 수치를 보정 없이 보고해서는 안 된다."
+        }
+      }
+    },
+    "plane_b": {
+      "type": "object",
+      "description": "Plane B — Readiness. 5 Pillar rubric 채점 결과.",
+      "additionalProperties": false,
+      "required": [
+        "ars",
+        "raw_ars",
+        "gating",
+        "pillars"
+      ],
+      "properties": {
+        "ars": {
+          "$ref": "#/$defs/score_0_100",
+          "description": "게이팅 적용 후 최종 점수. AEO Readiness Score."
+        },
+        "raw_ars": {
+          "$ref": "#/$defs/score_0_100",
+          "description": "게이팅 적용 전 가중합"
+        },
+        "gating": {
+          "$ref": "#/$defs/gating_result",
+          "properties": {
+            "undetermined": {
+              "type": "boolean",
+              "description": "blocking 항목을 판정하지 못했다. true 이면 총점을 신뢰할 수 없다 (spec plane-b §4.5)."
+            },
+            "unscored_blocking_item_ids": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "판정하지 못한 blocking 항목 id"
+            }
+          },
+          "required": [
+            "undetermined"
+          ]
+        },
+        "pillars": {
+          "type": "array",
+          "minItems": 5,
+          "maxItems": 5,
+          "items": {
+            "$ref": "#/$defs/pillar_result"
+          }
+        },
+        "coverage": {
+          "type": "object",
+          "description": "판정된 항목 수. manual 항목이 미판정이면 해당 항목을 분모에서 제외하고 그 사실을 공시한다. judgeable_count 도입(spec plane-b-readiness.md §2.2) 이후 min_pillar_coverage·min_item_coverage 의 분모는 total_items 가 아니라 judgeable_count 다.",
+          "additionalProperties": false,
+          "properties": {
+            "scored_items": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "total_items": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "unscored_item_ids": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/item_id"
+              }
+            },
+            "judgeable_count": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "total_items - not_applicable_count - design_limit_count. Pillar 제외 판정(min_pillar_coverage)과 커버리지 하한(min_item_coverage) 판정의 분모다 (spec plane-b-readiness.md §2.2, scoring.md §4.1)."
+            },
+            "not_applicable_count": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "unavailable_kind = not_applicable 인 항목 수 — 판정 대상이 이 사이트에 존재하지 않아 커버리지 분모에서 제외된 항목."
+            },
+            "design_limit_count": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "unavailable_kind = design_limit 인 항목 수 — 단일 관측으로는 원리상 판정 불가능해 커버리지 분모에서 제외된 항목."
+            },
+            "applicability": {
+              "$ref": "#/$defs/unit_interval",
+              "description": "judgeable_count / total_items. 이 rubric 이 이 사이트에 얼마나 적용 가능한지의 별도 공시 지표다. 낮다고 감점이 아니라 맥락이다 — 측정 성공률을 뜻하는 coverage(scored_items/judgeable_count)와는 다른 숫자이므로 반드시 둘 다 공시한다(spec plane-b-readiness.md §2.2)."
+            }
+          }
+        },
+        "unavailable_items": {
+          "type": "object",
+          "description": "못 잰 항목 id -> 사유. 사유 없는 누락은 허용되지 않는다 (spec plane-b §4.5).",
+          "additionalProperties": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "remediation_counts": {
+          "type": "object",
+          "description": "조치 분류(config|dev|content|operations|earned) 별 **채점된** 항목 수 (rubric v1.6.0 이후, spec plane-b-readiness.md §9). 미판정 항목은 세지 않는다 -- 세면 '안 잰 것'이 '할 일'로 둔갑한다.",
+          "additionalProperties": {
+            "type": "integer",
+            "minimum": 0
+          }
+        }
+      }
+    },
+    "gating_result": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "triggered"
+      ],
+      "properties": {
+        "triggered": {
+          "type": "boolean"
+        },
+        "cap": {
+          "$ref": "#/$defs/score_0_100",
+          "description": "pillars.yaml gating.max_score_when_blocked 값 (기본 40)"
+        },
+        "blocked_item_ids": {
+          "type": "array",
+          "description": "blocking:true 이면서 0점을 받은 항목",
+          "items": {
+            "$ref": "#/$defs/item_id"
+          }
+        },
+        "undetermined": {
+          "type": "boolean",
+          "description": "blocking 항목을 판정하지 못했다. true 이면 총점을 신뢰할 수 없다 (spec plane-b §4.5). plane_b.gating 이 required 로 강제한다."
+        },
+        "unscored_blocking_item_ids": {
+          "type": "array",
+          "description": "판정하지 못한 blocking 항목 id",
+          "items": {
+            "$ref": "#/$defs/item_id"
+          }
+        }
+      }
+    },
+    "pillar_result": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "weight",
+        "raw",
+        "max_raw",
+        "normalized",
+        "weighted",
+        "items"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/pillar_id"
+        },
+        "name": {
+          "type": "string"
+        },
+        "name_en": {
+          "type": "string"
+        },
+        "weight": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "raw": {
+          "type": "number",
+          "minimum": 0,
+          "description": "채점된 항목 점수 합 (항목당 0~2)"
+        },
+        "max_raw": {
+          "type": "number",
+          "minimum": 0,
+          "description": "채점된 항목 수 x 2"
+        },
+        "normalized": {
+          "$ref": "#/$defs/unit_interval",
+          "description": "raw / max_raw"
+        },
+        "weighted": {
+          "type": "number",
+          "minimum": 0,
+          "description": "normalized x weight"
+        },
+        "items": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/item_result"
+          }
+        }
+      }
+    },
+    "item_result": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "check",
+        "blocking",
+        "score"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/item_id"
+        },
+        "title": {
+          "type": "string"
+        },
+        "check": {
+          "type": "string",
+          "enum": [
+            "auto",
+            "manual"
+          ]
+        },
+        "blocking": {
+          "type": "boolean"
+        },
+        "remediation": {
+          "$ref": "#/$defs/remediation_tier",
+          "description": "이 항목 id 의 고정 조치 분류 (rubric v1.6.0 이후 도입, 선택 필드). score 값과 무관하게 항상 채워지는 것을 목표로 하나, schema_version const 를 이 커밋에서 올리지 않으므로(test_awaiting_manual.py 의 고정 단언과 충돌 -- backend/app/reporting/serializer.py 가 이 필드를 아직 채우지 않는다) required 로 강제하지 않는다. 다음 스키마 메이저/마이너 정리에서 serializer 갱신과 함께 required 로 승격할 것."
+        },
+        "score": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "enum": [
+            0,
+            1,
+            2,
+            null
+          ],
+          "description": "null은 미판정. 미판정 항목은 pillar 분모에서 제외한다."
+        },
+        "evidence": {
+          "type": "array",
+          "description": "판정 근거. 자동 항목은 관측값, 수동 항목은 확인한 URL·화면.",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "kind",
+              "value"
+            ],
+            "properties": {
+              "kind": {
+                "type": "string",
+                "enum": [
+                  "url",
+                  "snippet",
+                  "metric",
+                  "screenshot",
+                  "note"
+                ]
+              },
+              "value": {
+                "type": "string"
+              },
+              "observed_at": {
+                "type": "string",
+                "format": "date-time"
+              }
+            }
+          }
+        },
+        "recommendation": {
+          "type": "string"
+        },
+        "effort": {
+          "type": "string",
+          "enum": [
+            "low",
+            "medium",
+            "high"
+          ]
+        },
+        "impact": {
+          "type": "string",
+          "enum": [
+            "low",
+            "medium",
+            "high"
+          ]
+        },
+        "link_check": {
+          "$ref": "#/$defs/link_check",
+          "description": "P5-04·P5-07 등 링크 건전성 항목에서만 사용. 그 외 항목은 생략한다."
+        },
+        "unavailable_kind": {
+          "$ref": "#/$defs/unavailable_kind",
+          "description": "score 가 null 일 때만 의미가 있다. score 가 0/1/2 인 항목에는 붙이지 않는다. blocking:true 인 항목에는 not_applicable·design_limit 을 쓸 수 없다 — 도달·렌더링 게이팅 항목은 모든 사이트에 성립하므로 '해당 없음'이 존재하지 않는다(spec plane-b-readiness.md §4.5, pillars.yaml gating.blocking_forbidden_unavailable_kinds). awaiting_manual 은 check:manual 항목에만 쓴다 — blocking(P1-01·P1-03)은 둘 다 check:auto 이므로 이 값이 나올 수 없다(spec plane-b-readiness.md §8.7)."
+        }
+      }
+    },
+    "gap_quadrant": {
+      "type": "object",
+      "description": "Plane A x Plane B 교차 판정. 임계값 규칙은 framework/spec/scoring.md 참조.",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "label",
+        "avi_band",
+        "ars_band"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "enum": [
+            "Q1",
+            "Q2",
+            "Q3",
+            "Q4"
+          ]
+        },
+        "label": {
+          "type": "string",
+          "enum": [
+            "리더",
+            "준비만 된 상태",
+            "브랜드 관성형",
+            "미개척"
+          ]
+        },
+        "avi_band": {
+          "type": "string",
+          "enum": [
+            "low",
+            "high"
+          ]
+        },
+        "ars_band": {
+          "type": "string",
+          "enum": [
+            "low",
+            "high"
+          ]
+        },
+        "avi_threshold": {
+          "$ref": "#/$defs/score_0_100"
+        },
+        "ars_threshold": {
+          "$ref": "#/$defs/score_0_100"
+        },
+        "borderline": {
+          "type": "boolean",
+          "description": "AVI 신뢰구간이 임계선을 걸치면 true. true면 사분면 단정 대신 두 처방을 병기한다."
+        },
+        "prescription": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "headline"
+          ],
+          "properties": {
+            "headline": {
+              "type": "string"
+            },
+            "priority_pillars": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/pillar_id"
+              }
+            },
+            "priority_item_ids": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/item_id"
+              }
+            },
+            "actions": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "comparison": {
+      "type": "object",
+      "description": "직전 측정 대비 변화. Matched Cohort(동일 질문 x 동일 채널 x 동일 검색모드) 기준으로만 비교한다.",
+      "additionalProperties": false,
+      "required": [
+        "baseline_report_id"
+      ],
+      "properties": {
+        "baseline_report_id": {
+          "type": "string"
+        },
+        "matched_cohort": {
+          "type": "boolean"
+        },
+        "delta_avi": {
+          "type": "number",
+          "minimum": -100,
+          "maximum": 100
+        },
+        "delta_ars": {
+          "type": "number",
+          "minimum": -100,
+          "maximum": 100
+        },
+        "mr_significance": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "channel_id",
+              "p_value",
+              "significant"
+            ],
+            "properties": {
+              "channel_id": {
+                "$ref": "#/$defs/channel_id"
+              },
+              "baseline_mr": {
+                "$ref": "#/$defs/unit_interval"
+              },
+              "current_mr": {
+                "$ref": "#/$defs/unit_interval"
+              },
+              "baseline_n": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "current_n": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "z": {
+                "type": "number"
+              },
+              "p_value": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1
+              },
+              "significant": {
+                "type": "boolean"
+              },
+              "test": {
+                "type": "string",
+                "enum": [
+                  "two_proportion_z"
+                ]
+              },
+              "alpha": {
+                "type": "number",
+                "exclusiveMinimum": 0,
+                "exclusiveMaximum": 1,
+                "default": 0.05
+              }
+            }
+          }
+        },
+        "series_break": {
+          "type": "boolean",
+          "description": "모델 버전이 조용히 바뀌어 시계열이 단절되었으면 true. true면 개선 주장 금지."
+        },
+        "series_break_note": {
+          "type": "string"
+        }
+      }
+    },
+    "link_check": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "링크 건전성 항목(P5-04·P5-07)의 판정 근거 집계. '확인 불가(unchecked)'와 '깨짐(broken)'을 구분해 공시한다 (spec plane-b-readiness.md §7). robots 차단·401·403·429·타임아웃·DNS/연결 실패는 unchecked 이며 분모·분자 어디에도 들어가지 않는다. broken 은 404·410·5xx 로 확인된 링크만 포함한다.",
+      "required": [
+        "checked_count",
+        "broken_count",
+        "unchecked_count"
+      ],
+      "properties": {
+        "checked_count": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "확인에 성공한 링크 수 (판정 분모)"
+        },
+        "broken_count": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "checked_count 중 404·410·5xx 로 확인된 링크 수 (판정 분자)"
+        },
+        "unchecked_count": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "robots 차단·401·403·429·타임아웃·DNS 실패·연결 실패로 확인하지 못한 링크 수. checked_count 에 포함하지 않는다."
+        },
+        "redirect_chain_over_3_hops_count": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "리다이렉트 체인이 3홉을 초과하는 링크 수. 1건 이상이면 level 2 를 막는다."
+        }
+      }
+    }
+  }
+}

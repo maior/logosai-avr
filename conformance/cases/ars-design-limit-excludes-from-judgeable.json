@@ -1,0 +1,56 @@
+{
+  "id": "ars-design-limit-excludes-from-judgeable",
+  "title": "unavailable_kind=design_limit 항목도 not_applicable 과 동일하게 judgeable 분모에서 빠진다",
+  "level": 1,
+  "operation": "compute_ars",
+  "rationale": "파일럿 2회차(2026-09-05) 실측 — 사이트 C은 단일 크롤로 '빌드마다 자동 갱신' 여부(P5-02)를 원리적으로 판정할 수 없었다. 이것은 대상이 없는 것(not_applicable)도, 확인에 실패한 것(inconclusive)도 아니라 관측 설계 자체의 한계다. §8.2 는 이 kind 도 커버리지 분모에서 제외하도록 정의한다 — '판정 대상이 사이트에 성립하지 않으면 뺀다'는 not_applicable 전용 문구가 아니라 두 kind 모두에 적용되는 기준이기 때문이다. 입력은 ars-not-applicable-excludes-from-judgeable-crosses-threshold 케이스와 대상 항목만 P5-02 로 바꾸고 kind 를 design_limit 으로 지정했다. 결과 수치는 동일하다: judgeable=6, 3/6=50%→포함, raw_ars=55.0.",
+  "spec_refs": [
+    "plane-b-readiness.md §8.2",
+    "plane-b-readiness.md §8.4"
+  ],
+  "notes": "compute_ars 입력 표기법 확장: 'unavailable_kind' 필드. P5-02 를 대상 항목으로 선택한 이유는 실제 파일럿 사례(사이트 C)의 원인 항목과 일치시키기 위함이다.",
+  "input": {
+    "item_scores_default": 1,
+    "item_scores": {
+      "P5-01": 2,
+      "P5-03": 2,
+      "P5-04": 2
+    },
+    "unscored_item_ids": [
+      "P5-02",
+      "P5-05",
+      "P5-06",
+      "P5-07"
+    ],
+    "unavailable": {
+      "P5-02": "단일 크롤로는 '빌드마다 자동 갱신' 여부를 판정할 수 없음"
+    },
+    "unavailable_kind": {
+      "P5-02": "design_limit"
+    }
+  },
+  "expected": {
+    "ars": 55.0,
+    "raw_ars": 55.0,
+    "gated": false,
+    "weight_renormalized": false,
+    "excluded_pillars": [],
+    "unscored_item_ids": [
+      "P5-02",
+      "P5-05",
+      "P5-06",
+      "P5-07"
+    ],
+    "judgeable_count": 44,
+    "not_applicable_count": 0,
+    "design_limit_count": 1,
+    "applicability": 0.9777777777777777
+  },
+  "tolerance": {
+    "absolute": 1e-09
+  },
+  "reference_implementation": {
+    "status": "conformant",
+    "note": "2026-09-05 구현 완료. app/domain/scoring.py 의 compute_ars 가 unavailable_kinds 를 받아 judgeable = 전체 - (not_applicable + design_limit) 로 커버리지 분모를 계산하고, blocking 항목에 not_applicable/design_limit 을 쓰면 거부한다. 러너 어댑터 _run_compute_ars 가 kind 를 전달하고 신규 4필드를 반환한다."
+  }
+}

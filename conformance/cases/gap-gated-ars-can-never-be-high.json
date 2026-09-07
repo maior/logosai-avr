@@ -1,0 +1,27 @@
+{
+  "id": "gap-gated-ars-can-never-be-high",
+  "title": "게이팅 발동 브랜드(ARS 상한 40)는 어떤 경우에도 ARS-high 가 아니다",
+  "level": 1,
+  "operation": "gap_quadrant",
+  "rationale": "게이팅 상한 40 과 ARS 컷오프 60 사이의 20점 마진은 우연이 아니라 설계다 (scoring.md §2-(3)). 게이팅 상태에서 'ARS 높음' 사분면으로 분류되는 일이 생기면 '크롤러가 못 들어오는데 준비는 됐다' 는 리포트가 나간다. 판정에는 raw_ars 가 아니라 게이팅 적용 후 ars 를 쓴다.",
+  "spec_refs": [
+    "scoring.md §2-(3)",
+    "scoring.md §5 주의"
+  ],
+  "input": {
+    "avi": 30.0,
+    "ars": 40.0
+  },
+  "expected": {
+    "quadrant_id": "Q3",
+    "label": "브랜드 관성형",
+    "avi_band": "high",
+    "ars_band": "low"
+  },
+  "tolerance": {
+    "absolute": 1e-09
+  },
+  "reference_implementation": {
+    "status": "implemented"
+  }
+}

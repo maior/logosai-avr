@@ -1,0 +1,49 @@
+{
+  "id": "ars-blocking-awaiting-manual-control-group",
+  "title": "대조군 -- blocking 항목의 unavailable_kind=awaiting_manual 은 거부되지 않는다(구조적으로는 가능하나 실제 rubric에서는 나타나지 않는다)",
+  "level": 1,
+  "operation": "compute_ars",
+  "rationale": "pillars.yaml의 gating.blocking_forbidden_unavailable_kinds = [not_applicable, design_limit] 에는 awaiting_manual 이 없다(rubric v1.5.0, spec §8.7 마지막 문단) -- 이 값은 judgeable 분모에서 빠지지 않으므로(§8.2) '분모에서 빼는 kind만 금지한다'는 그 목록의 목적 밖이고, inconclusive/no_collector/input_missing 과 마찬가지로 blocking 항목에도 구조적으로 허용되어야 한다(대조군 ars-blocking-unavailable-with-reason-passes 와 같은 부류). 이 케이스가 '거부됨'으로 바뀌면 그것은 §4.5가 이미 허용한 상태(사유를 명시한 미측정)를 blocking_forbidden_unavailable_kinds 확장으로 몰래 없앤 것이므로 퇴행이다. 다만 실제 rubric에서 blocking 항목(P1-01, P1-03)은 둘 다 check: auto 이므로(spec §5) 정직한 수집기가 이 kind를 실제로 내는 일은 없다 -- 그 사실은 이 conformance 케이스가 아니라 rubric 데이터 자체를 읽는 별도 검증의 몫이다 -- 각 구현은 pillars.yaml 에서 blocking 항목의 check 값을 직접 확인하면 된다.",
+  "spec_refs": [
+    "plane-b-readiness.md §8.5",
+    "plane-b-readiness.md §8.7",
+    "plane-b-readiness.md §4.5"
+  ],
+  "notes": "짝 케이스: ars-blocking-not-applicable-unavailable-kind-is-rejected(거부됨) 와 ars-blocking-unavailable-with-reason-passes(kind 미지정, 통과) 양쪽과 대조하라. 이 케이스는 그 중간 지점을 채운다 -- 'kind가 있지만 분모를 빼지 않는 kind' 는 통과해야 한다는 것.",
+  "input": {
+    "item_scores_default": 2,
+    "item_scores": {},
+    "unscored_item_ids": [
+      "P1-01"
+    ],
+    "unavailable": {
+      "P1-01": "robots.txt 상 크롤러 정책이 사람 검토 대기 중(예시 -- 실제로는 P1-01이 check: auto 라 나타나지 않는 조합이다)"
+    },
+    "unavailable_kind": {
+      "P1-01": "awaiting_manual"
+    }
+  },
+  "expected": {
+    "ars": 100.0,
+    "raw_ars": 100.0,
+    "gated": false,
+    "gating_undetermined": true,
+    "unscored_item_ids": [
+      "P1-01"
+    ],
+    "judgeable_count": 45,
+    "not_applicable_count": 0,
+    "design_limit_count": 0,
+    "applicability": 1.0,
+    "pillar_coverage": {
+      "P1": 0.9
+    }
+  },
+  "tolerance": {
+    "absolute": 1e-09
+  },
+  "reference_implementation": {
+    "status": "conformant",
+    "note": "2026-09-05 구현 완료. compute_ars 의 blocking 거부 검사는 rubric.blocking_forbidden_unavailable_kinds(pillars.yaml 정본, = {not_applicable, design_limit})에 속하는 kind만 막는다. awaiting_manual 은 이 목록에 없으므로 통과하고 gating_undetermined=True 로 판정불능을 드러낸다."
+  }
+}

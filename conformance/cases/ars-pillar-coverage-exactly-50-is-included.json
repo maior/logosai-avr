@@ -1,0 +1,41 @@
+{
+  "id": "ars-pillar-coverage-exactly-50-is-included",
+  "title": "커버리지가 정확히 50% 면 제외하지 않는다 (경계 포함)",
+  "level": 1,
+  "operation": "compute_ars",
+  "rationale": "규칙 문구는 '50% 미만이면 제외' 다. 정확히 50% 를 제외하는 구현과 포함하는 구현은 P2(10항목 중 5개 채점) 같은 흔한 입력에서 다른 총점을 낸다. 경계를 케이스로 고정한다. P2 채점 5개가 (2,2,1,1,0)=6/10 → 0.6×25 = 15, 나머지 Pillar 만점 75 → 90.0.",
+  "spec_refs": [
+    "plane-b-readiness.md §3.1"
+  ],
+  "input": {
+    "item_scores_default": 2,
+    "item_scores": {
+      "P2-01": 2,
+      "P2-02": 2,
+      "P2-03": 1,
+      "P2-04": 1,
+      "P2-05": 0
+    },
+    "unscored_item_ids": [
+      "P2-06",
+      "P2-07",
+      "P2-08",
+      "P2-09",
+      "P2-10"
+    ],
+    "unavailable": {}
+  },
+  "expected": {
+    "ars": 90.0,
+    "raw_ars": 90.0,
+    "gated": false,
+    "weight_renormalized": false,
+    "excluded_pillars": []
+  },
+  "tolerance": {
+    "absolute": 1e-09
+  },
+  "reference_implementation": {
+    "status": "implemented"
+  }
+}

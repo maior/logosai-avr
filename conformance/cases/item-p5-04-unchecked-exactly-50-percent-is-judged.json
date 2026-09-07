@@ -1,0 +1,59 @@
+{
+  "id": "item-p5-04-unchecked-exactly-50-percent-is-judged",
+  "title": "대조군 — unchecked 비율이 정확히 50% 면 판정을 계속한다 (경계 미초과)",
+  "level": 2,
+  "operation": "item_p5_04",
+  "rationale": "규칙 문구는 'unchecked 비율이 50% 초과' 일 때만 unavailable 이다. 정확히 50% 를 제외하는 구현과 포함하는 구현은 이 입력에서 다른 결과를 낸다. 10개 중 5개가 200, 5개가 403 이면 unchecked 비율은 정확히 50% (초과가 아님) 이므로 판정을 계속한다. checked=5, broken=0 → 0% → level 2. 이 케이스는 ars-pillar-coverage-exactly-50-is-included 와 같은 경계 원칙(50% 는 포함)을 링크 건전성 항목에도 동일하게 적용한다.",
+  "spec_refs": [
+    "plane-b-readiness.md §7.3",
+    "plane-b-readiness.md §3.1"
+  ],
+  "input": {
+    "links": [
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 403
+      },
+      {
+        "status": 403
+      },
+      {
+        "status": 403
+      },
+      {
+        "status": 403
+      },
+      {
+        "status": 403
+      }
+    ],
+    "redirect_chain_over_3_hops_count": 0
+  },
+  "expected": {
+    "score": 2,
+    "checked_count": 5,
+    "broken_count": 0,
+    "unchecked_count": 5
+  },
+  "tolerance": {
+    "absolute": 0
+  },
+  "reference_implementation": {
+    "status": "conformant",
+    "note": "2026-09-05 구현 완료. app/audit/collectors/linkcheck.py 의 classify_link + finding_from_summary 가 3분류(ok/broken/unchecked)와 unchecked 50% 포기 규칙을 구현하고, 러너에 item_p5_04 / item_p5_07 오퍼레이터를 등록했다."
+  }
+}

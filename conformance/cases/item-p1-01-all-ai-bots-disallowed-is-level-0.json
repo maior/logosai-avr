@@ -1,0 +1,25 @@
+{
+  "id": "item-p1-01-all-ai-bots-disallowed-is-level-0",
+  "title": "AI 봇 6종 전부 Disallow → P1-01 = 0 (게이팅 발동)",
+  "level": 2,
+  "operation": "item_p1_01",
+  "rationale": "게이팅의 원래 대상이다. 완벽한 스키마도 완벽한 문서 구조도 크롤러가 페이지를 받아가지 못하면 정확히 0 의 가치를 갖는다. 6종 봇 이름은 pillars.yaml P1-01 levels 문구가 직접 열거하는 유일한 운영 정의다.",
+  "spec_refs": [
+    "plane-b-readiness.md §4.1",
+    "pillars.yaml P1-01 levels"
+  ],
+  "input": {
+    "status": 200,
+    "body": "User-agent: GPTBot\nDisallow: /\n\nUser-agent: OAI-SearchBot\nDisallow: /\n\nUser-agent: ClaudeBot\nDisallow: /\n\nUser-agent: Claude-SearchBot\nDisallow: /\n\nUser-agent: PerplexityBot\nDisallow: /\n\nUser-agent: Google-Extended\nDisallow: /\n",
+    "retried": false
+  },
+  "expected": {
+    "score": 0
+  },
+  "tolerance": {
+    "absolute": 0
+  },
+  "reference_implementation": {
+    "status": "implemented"
+  }
+}

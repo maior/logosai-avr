@@ -1,0 +1,34 @@
+{
+  "id": "gap-borderline-when-avi-ci-straddles-threshold",
+  "title": "AVI 신뢰구간이 임계선을 걸치면 borderline = true",
+  "level": 1,
+  "operation": "gap_quadrant",
+  "rationale": "AVI 점추정 26, CI [21, 31], ARS 72 — 점추정으로는 Q1 이지만 표본을 다시 뽑으면 Q2 가 될 수 있다. 단일 점추정으로 사분면을 확정해 처방을 파는 것이 이 시장의 기본 오류다(avr-model.md §4.2). borderline 이면 인접 두 사분면의 처방을 병기하고 재측정을 1순위로 권고해야 한다.",
+  "spec_refs": [
+    "scoring.md §4.1",
+    "avr-model.md §4.2",
+    "report.schema.json gap_quadrant.borderline"
+  ],
+  "input": {
+    "avi": 26.0,
+    "ars": 72.0,
+    "avi_ci": {
+      "lower": 21.0,
+      "upper": 31.0
+    }
+  },
+  "expected": {
+    "quadrant_id": "Q1",
+    "label": "리더",
+    "avi_band": "high",
+    "ars_band": "high",
+    "borderline": true
+  },
+  "tolerance": {
+    "absolute": 1e-09
+  },
+  "reference_implementation": {
+    "status": "conformant",
+    "note": "2026-09-04 수정. gap_quadrant 가 QuadrantResult 를 반환하며 avi_ci 를 받아 borderline 과 인접 사분면을 산출한다."
+  }
+}

@@ -1,0 +1,329 @@
+{
+  "id": "item-p5-07-internal-broken-ratio-over-5-percent-is-level-0",
+  "title": "내부 broken 비율 10% → P5-07 = 0",
+  "level": 2,
+  "operation": "item_p5_07",
+  "rationale": "신설 항목 P5-07 의 level 0/1/2 대표 입력 3건 중 level 0 케이스다. 100개 내부 링크 중 10개가 404 면 broken 비율 10% 로 내부 임계(5% 초과)를 넘는다. 내부 404 는 자사 콘텐츠 관리 실패이므로 외부(P5-04, 임계 10%)보다 낮은 5% 에서 이미 level 0 에 해당한다.",
+  "spec_refs": [
+    "plane-b-readiness.md §7.4",
+    "pillars.yaml P5-07 levels"
+  ],
+  "input": {
+    "links": [
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 404
+      },
+      {
+        "status": 404
+      },
+      {
+        "status": 404
+      },
+      {
+        "status": 404
+      },
+      {
+        "status": 404
+      },
+      {
+        "status": 404
+      },
+      {
+        "status": 404
+      },
+      {
+        "status": 404
+      },
+      {
+        "status": 404
+      },
+      {
+        "status": 404
+      }
+    ],
+    "redirect_chain_over_3_hops_count": 0
+  },
+  "expected": {
+    "score": 0,
+    "checked_count": 100,
+    "broken_count": 10,
+    "unchecked_count": 0
+  },
+  "tolerance": {
+    "absolute": 0
+  },
+  "reference_implementation": {
+    "status": "conformant",
+    "note": "2026-09-05 구현 완료. app/audit/collectors/linkcheck.py 의 classify_link + finding_from_summary 가 3분류(ok/broken/unchecked)와 unchecked 50% 포기 규칙을 구현하고, 러너에 item_p5_04 / item_p5_07 오퍼레이터를 등록했다."
+  }
+}

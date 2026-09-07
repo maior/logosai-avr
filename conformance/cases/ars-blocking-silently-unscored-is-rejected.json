@@ -1,0 +1,28 @@
+{
+  "id": "ars-blocking-silently-unscored-is-rejected",
+  "title": "blocking 항목을 사유 없이 누락하면 거부한다",
+  "level": 1,
+  "operation": "compute_ars",
+  "rationale": "게이팅은 0점에서만 발동하므로, 항목을 아예 재지 않으면 게이팅을 피할 수 있다. plane-b §4.5 실측 — 같은 사이트가 P1-01 을 채점하면 40, 누락하면 100. 감사를 안 하기로 선택하는 것만으로 60점이 생긴다. 그래서 규칙으로 막는다.",
+  "spec_refs": [
+    "plane-b-readiness.md §4.5"
+  ],
+  "input": {
+    "item_scores_default": 2,
+    "item_scores": {},
+    "unscored_item_ids": [
+      "P1-01"
+    ],
+    "unavailable": {}
+  },
+  "expected": {
+    "rejected": true,
+    "reason_contains": "P1-01"
+  },
+  "tolerance": {
+    "absolute": 1e-09
+  },
+  "reference_implementation": {
+    "status": "implemented"
+  }
+}

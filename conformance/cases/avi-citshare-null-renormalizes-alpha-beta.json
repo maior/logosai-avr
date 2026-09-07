@@ -1,0 +1,45 @@
+{
+  "id": "avi-citshare-null-renormalizes-alpha-beta",
+  "title": "CitShare = null 인 채널만 α'=0.625 · β'=0.375 로 재정규화한다",
+  "level": 1,
+  "operation": "compute_avi",
+  "rationale": "null 은 0 이 아니다. 인용을 제시하지 않는 채널의 CitShare 를 0 으로 두면 그 채널이 구조적으로 불리해져 채널 간 비교가 왜곡된다. 같은 입력에서 null 을 0 으로 처리하면 32.086957 이 나오고, 규칙대로면 34.630435 다. 이 2.54 점 차이가 규칙의 존재 이유다.",
+  "spec_refs": [
+    "plane-a-visibility.md §1.4",
+    "plane-a-visibility.md §2.2"
+  ],
+  "input": {
+    "alpha": 0.5,
+    "beta": 0.3,
+    "gamma": 0.2,
+    "channels": [
+      {
+        "channel_id": "chatgpt",
+        "mr": 0.5,
+        "pos_score": 0.3,
+        "cit_share": 0.1
+      },
+      {
+        "channel_id": "naver_ai_briefing",
+        "mr": 0.4,
+        "pos_score": 0.2,
+        "cit_share": null
+      }
+    ]
+  },
+  "expected": {
+    "avi": 34.630434782608695,
+    "coverage": 0.46,
+    "weight_renormalized": true,
+    "citation_unavailable_channels": [
+      "naver_ai_briefing"
+    ]
+  },
+  "tolerance": {
+    "absolute": 1e-09
+  },
+  "reference_implementation": {
+    "status": "implemented"
+  },
+  "notes": "대조값: cit_share 를 0.0 으로 두면 AVI = 32.086956522."
+}

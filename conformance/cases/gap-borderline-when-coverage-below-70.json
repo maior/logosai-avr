@@ -1,0 +1,30 @@
+{
+  "id": "gap-borderline-when-coverage-below-70",
+  "title": "Plane B 커버리지 70% 미만이면 borderline = true",
+  "level": 1,
+  "operation": "gap_quadrant",
+  "rationale": "무료 티어는 P4 를 통째로 못 본다(31/44 = 70.5%). P4 없이는 Q2 와 Q4 를 구분할 수 없고, 그 구분이 처방을 완전히 갈라놓는다. 커버리지 0.65 는 명백히 경계 아래다. ARS 는 결정론적 점수라 신뢰구간이 없지만, 커버리지가 낮으면 불확실하다는 사실은 같다.",
+  "spec_refs": [
+    "scoring.md §4.1",
+    "plane-b-readiness.md §5.2"
+  ],
+  "input": {
+    "avi": 20.0,
+    "ars": 70.0,
+    "coverage_ratio": 0.65
+  },
+  "expected": {
+    "quadrant_id": "Q2",
+    "label": "준비만 된 상태",
+    "avi_band": "low",
+    "ars_band": "high",
+    "borderline": true
+  },
+  "tolerance": {
+    "absolute": 1e-09
+  },
+  "reference_implementation": {
+    "status": "conformant",
+    "note": "2026-09-04 수정. coverage_ratio < 0.7 및 free_tier=True 에서 borderline 을 세운다."
+  }
+}

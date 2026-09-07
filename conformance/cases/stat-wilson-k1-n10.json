@@ -1,0 +1,25 @@
+{
+  "id": "stat-wilson-k1-n10",
+  "title": "Wilson score interval — k=1, n=10 (소표본 참조값)",
+  "level": 3,
+  "operation": "wilson_interval",
+  "rationale": "MR 이 0 에 가깝고 n 이 작은 영역은 Wald 구간이 무너지는 구간이자 신규 브랜드에서 가장 흔한 구간이다. z=1.959964 를 명시적으로 넘겨 구현의 z 기본값과 무관하게 산식 자체를 검증한다.",
+  "spec_refs": [
+    "plane-a-visibility.md §3.2"
+  ],
+  "input": {
+    "k": 1,
+    "n": 10,
+    "z": 1.959964
+  },
+  "expected": {
+    "lower": 0.017876213,
+    "upper": 0.40415003
+  },
+  "tolerance": {
+    "absolute": 1e-09
+  },
+  "reference_implementation": {
+    "status": "implemented"
+  }
+}

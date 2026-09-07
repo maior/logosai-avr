@@ -1,0 +1,59 @@
+{
+  "id": "item-p5-04-external-403-is-unchecked-not-broken",
+  "title": "외부 링크 403 → unchecked 로 제외되며 broken 으로 세지 않는다 (P5-04 = 2)",
+  "level": 2,
+  "operation": "item_p5_04",
+  "rationale": "2026-09-05 파일럿 1회차 실행 로그에서 twitter·facebook·instagram·linkedin·kakao·네이버쇼핑라이브가 진단용 User-Agent 를 robots.txt/직접 응답으로 403 차단했다. v1.2.0 의 'non-200 비율' 판정은 이 403 을 그대로 깨진 링크로 셌다. 봇 차단은 '링크가 죽었다' 가 아니라 '확인하지 못했다' 이므로 분모·분자 모두에서 제외해야 한다. 10개 링크 중 9개가 200, 1개가 403 이면 checked=9, broken=0 → 0% → level 2. 403 을 broken 으로 잘못 세면 broken=1/10=10% 로 level 1 로 떨어지므로, 이 케이스는 그 오탐을 직접 반증한다.",
+  "spec_refs": [
+    "plane-b-readiness.md §7.2",
+    "pillars.yaml P5-04 levels"
+  ],
+  "input": {
+    "links": [
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 403
+      }
+    ],
+    "redirect_chain_over_3_hops_count": 0
+  },
+  "expected": {
+    "score": 2,
+    "checked_count": 9,
+    "broken_count": 0,
+    "unchecked_count": 1
+  },
+  "tolerance": {
+    "absolute": 0
+  },
+  "reference_implementation": {
+    "status": "conformant",
+    "note": "2026-09-05 구현 완료. app/audit/collectors/linkcheck.py 의 classify_link + finding_from_summary 가 3분류(ok/broken/unchecked)와 unchecked 50% 포기 규칙을 구현하고, 러너에 item_p5_04 / item_p5_07 오퍼레이터를 등록했다."
+  }
+}

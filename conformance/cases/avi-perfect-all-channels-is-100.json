@@ -1,0 +1,64 @@
+{
+  "id": "avi-perfect-all-channels-is-100",
+  "title": "6채널 전부 MR=PosScore=CitShare=1 이면 AVI 100",
+  "level": 1,
+  "operation": "compute_avi",
+  "rationale": "AVI 의 상한을 고정한다. α+β+γ=1 이고 Σw_c=1 이므로 결과는 정확히 100 이어야 한다. 100 이 안 나오면 계수 합 또는 채널 가중치 합이 깨진 것이다.",
+  "spec_refs": [
+    "plane-a-visibility.md §2"
+  ],
+  "input": {
+    "alpha": 0.5,
+    "beta": 0.3,
+    "gamma": 0.2,
+    "channels": [
+      {
+        "channel_id": "chatgpt",
+        "mr": 1.0,
+        "pos_score": 1.0,
+        "cit_share": 1.0
+      },
+      {
+        "channel_id": "gemini",
+        "mr": 1.0,
+        "pos_score": 1.0,
+        "cit_share": 1.0
+      },
+      {
+        "channel_id": "naver_ai_briefing",
+        "mr": 1.0,
+        "pos_score": 1.0,
+        "cit_share": 1.0
+      },
+      {
+        "channel_id": "claude",
+        "mr": 1.0,
+        "pos_score": 1.0,
+        "cit_share": 1.0
+      },
+      {
+        "channel_id": "perplexity",
+        "mr": 1.0,
+        "pos_score": 1.0,
+        "cit_share": 1.0
+      },
+      {
+        "channel_id": "google_ai_overviews",
+        "mr": 1.0,
+        "pos_score": 1.0,
+        "cit_share": 1.0
+      }
+    ]
+  },
+  "expected": {
+    "avi": 100.0,
+    "coverage": 1.0,
+    "weight_renormalized": false
+  },
+  "tolerance": {
+    "absolute": 1e-09
+  },
+  "reference_implementation": {
+    "status": "implemented"
+  }
+}

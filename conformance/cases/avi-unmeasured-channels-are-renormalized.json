@@ -1,0 +1,47 @@
+{
+  "id": "avi-unmeasured-channels-are-renormalized",
+  "title": "미측정 채널은 제외하고 가중치를 재정규화한다 (0점 처리 금지)",
+  "level": 1,
+  "operation": "compute_avi",
+  "rationale": "chatgpt(0.28) 와 claude(0.14) 만 측정하면 w' = 0.666667 / 0.333333 이다. 미측정을 0 으로 채우면 네이버 AI 브리핑(0.18) 을 못 재는 것만으로 모든 브랜드의 AVI 가 18% 조용히 깎인다 — 브랜드 실력이 아니라 측정 커버리지 때문에. 대신 coverage(원본 가중치 합 0.42) 를 함께 보고해 무엇을 못 쟀는지 드러낸다.",
+  "spec_refs": [
+    "plane-a-visibility.md §2.2",
+    "channels.yaml"
+  ],
+  "input": {
+    "alpha": 0.5,
+    "beta": 0.3,
+    "gamma": 0.2,
+    "channels": [
+      {
+        "channel_id": "chatgpt",
+        "mr": 0.5,
+        "pos_score": 0.3,
+        "cit_share": 0.1
+      },
+      {
+        "channel_id": "claude",
+        "mr": 0.2,
+        "pos_score": 0.1,
+        "cit_share": 0.0
+      }
+    ]
+  },
+  "expected": {
+    "avi": 28.333333333333336,
+    "coverage": 0.42,
+    "weight_renormalized": true,
+    "unmeasured_channels": [
+      "gemini",
+      "google_ai_overviews",
+      "naver_ai_briefing",
+      "perplexity"
+    ]
+  },
+  "tolerance": {
+    "absolute": 1e-09
+  },
+  "reference_implementation": {
+    "status": "implemented"
+  }
+}

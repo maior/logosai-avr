@@ -1,0 +1,30 @@
+{
+  "id": "ars-perfect-all-level-2",
+  "title": "전 항목 2점이면 ARS 100 (항목 수와 무관 — Pillar 정규화)",
+  "level": 1,
+  "operation": "compute_ars",
+  "rationale": "ARS 의 상한을 고정한다. Pillar weight 합이 100 이고 정규화가 raw/max_raw 이므로, 전 항목 만점의 가중합은 정확히 100 이어야 한다. 이 값이 100 이 아니면 배점 합 또는 정규화 분모가 깨진 것이다.",
+  "spec_refs": [
+    "plane-b-readiness.md §3.1",
+    "plane-b-readiness.md §3.2"
+  ],
+  "input": {
+    "item_scores_default": 2,
+    "item_scores": {},
+    "unscored_item_ids": [],
+    "unavailable": {}
+  },
+  "expected": {
+    "ars": 100.0,
+    "raw_ars": 100.0,
+    "gated": false,
+    "weight_renormalized": false,
+    "gating_undetermined": false
+  },
+  "tolerance": {
+    "absolute": 1e-09
+  },
+  "reference_implementation": {
+    "status": "implemented"
+  }
+}

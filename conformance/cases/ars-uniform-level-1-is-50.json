@@ -1,0 +1,28 @@
+{
+  "id": "ars-uniform-level-1-is-50",
+  "title": "전 항목 1점이면 정확히 50 — ARS 컷오프 60 근거의 기준선 (항목 수와 무관)",
+  "level": 1,
+  "operation": "compute_ars",
+  "rationale": "scoring.md §2-(1) 은 '균일 부분충족선 = 50' 이라는 사실 위에서 ARS 컷오프 60 을 유도한다. 이 50 이 흔들리면 컷오프의 근거가 통째로 무너지므로 케이스로 못박는다.",
+  "spec_refs": [
+    "scoring.md §2-(1)",
+    "plane-b-readiness.md §3.1"
+  ],
+  "input": {
+    "item_scores_default": 1,
+    "item_scores": {},
+    "unscored_item_ids": [],
+    "unavailable": {}
+  },
+  "expected": {
+    "ars": 50.0,
+    "raw_ars": 50.0,
+    "gated": false
+  },
+  "tolerance": {
+    "absolute": 1e-09
+  },
+  "reference_implementation": {
+    "status": "implemented"
+  }
+}

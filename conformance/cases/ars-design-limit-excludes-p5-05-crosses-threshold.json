@@ -1,0 +1,61 @@
+{
+  "id": "ars-design-limit-excludes-p5-05-crosses-threshold",
+  "title": "대조군 -- 같은 입력에 unavailable_kind=design_limit 만 다르면 judgeable 이 줄어 Pillar 가 커버리지 임계를 넘어 보고된다",
+  "level": 1,
+  "operation": "compute_ars",
+  "rationale": "짝 케이스(ars-awaiting-manual-control-does-not-cross-threshold)와 입력이 완전히 동일하고 P5-05의 kind만 design_limit으로 바뀐다. design_limit은 '단일 관측으로는 원리상 판정 불가'라는 뜻이므로 judgeable에서 뺀다(spec §8.2, §8.4) -- judgeable=6, 3/6=50%는 경계 포함(>=)이므로 P5가 보고된다. P1~P4는 전 항목 1점(0.5 정규화)으로 고정하고 P5만 조작해 대조군과 비교 가능하게 했다. P5 raw=2+2+2=6, max=6 -> normalized=1.0 -> weighted=10.0. raw_ars = 12.5+12.5+10+10+10=55.0. 이 숫자는 기존 골든 케이스 ars-not-applicable-excludes-from-judgeable-crosses-threshold(P5-04, not_applicable)와 정확히 동일하다 -- design_limit이 not_applicable과 산식상 완전히 같은 취급(분모 제외)을 받는다는 것을 증명한다. '분모에서 빼는 kind'와 '분모에 남기는 kind'를 가르는 것은 종류의 이름이 아니라 그 kind가 NOT_JUDGEABLE_KINDS에 속하는지 여부뿐이라는 것이 이 세 케이스(짝 + 이 케이스)의 핵심 증거다.",
+  "spec_refs": [
+    "plane-b-readiness.md §8.2",
+    "plane-b-readiness.md §8.3",
+    "plane-b-readiness.md §8.4",
+    "plane-b-readiness.md §3.1"
+  ],
+  "notes": "compute_ars 입력 표기법: 'unavailable_kind' 필드(item_id -> 6분류 중 하나). 짝 케이스(awaiting_manual)와 대조하라 -- ars 값이 55.0(design_limit) vs 50.0(awaiting_manual)로 갈리는 것이 두 kind가 분모 취급에서 다르다는 핵심 증거다. P5-05는 실제 rubric에서 check: manual 항목이지만, design_limit은 kind의 '뜻'(단일 관측 불가)으로 정해지는 것이지 항목의 check 값으로 정해지는 것이 아니므로 이 조합 자체는 유효한 입력이다(실무에서 흔히 나오는 조합은 아니라는 점은 별도이며, compute_ars 는 이를 구조적으로 막지 않는다).",
+  "input": {
+    "item_scores_default": 1,
+    "item_scores": {
+      "P5-01": 2,
+      "P5-02": 2,
+      "P5-03": 2
+    },
+    "unscored_item_ids": [
+      "P5-04",
+      "P5-05",
+      "P5-06",
+      "P5-07"
+    ],
+    "unavailable": {
+      "P5-05": "콘텐츠 리뷰 운영 체계 -- 단일 크롤로는 '지속적 운영 여부'를 원리상 판정할 수 없음"
+    },
+    "unavailable_kind": {
+      "P5-05": "design_limit"
+    }
+  },
+  "expected": {
+    "ars": 55.0,
+    "raw_ars": 55.0,
+    "gated": false,
+    "weight_renormalized": false,
+    "excluded_pillars": [],
+    "unscored_item_ids": [
+      "P5-04",
+      "P5-05",
+      "P5-06",
+      "P5-07"
+    ],
+    "judgeable_count": 44,
+    "not_applicable_count": 0,
+    "design_limit_count": 1,
+    "applicability": 0.9777777777777777,
+    "pillar_coverage": {
+      "P5": 0.5
+    }
+  },
+  "tolerance": {
+    "absolute": 1e-09
+  },
+  "reference_implementation": {
+    "status": "conformant",
+    "note": "2026-09-05 구현 완료. app/domain/scoring.py 의 compute_ars 는 unavailable_kinds 값이 NOT_JUDGEABLE_KINDS(= {not_applicable, design_limit})에 속하는지만으로 judgeable 포함 여부를 정하므로 design_limit 은 기존 not_applicable 케이스와 동일한 경로를 탄다."
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "id": "stat-two-proportion-not-significant",
+  "title": "35.5% → 40.5% (n=400) 는 유의하지 않다 — p = 0.145",
+  "level": 3,
+  "operation": "two_proportion_z",
+  "rationale": "경쟁사가 공개한 '35.4% → 40.6% 개선' 주장을 같은 표본 크기로 재현하면 p=0.145 다. 검정 없이 '개선' 이라고 쓰면 잡음을 성과로 파는 것이다. 이 케이스가 통과하지 않는 구현은 개선 주장을 검증할 수 없다.",
+  "spec_refs": [
+    "plane-a-visibility.md §4.1",
+    "plane-a-visibility.md §4.2"
+  ],
+  "input": {
+    "k1": 142,
+    "n1": 400,
+    "k2": 162,
+    "n2": 400,
+    "alpha": 0.05
+  },
+  "expected": {
+    "abs_z": 1.456791,
+    "p_value": 0.145174,
+    "significant": false
+  },
+  "tolerance": {
+    "absolute": 1e-06
+  },
+  "reference_implementation": {
+    "status": "implemented"
+  },
+  "notes": "부호 규약은 별도 케이스(stat-two-proportion-sign-convention)에서 검증한다."
+}

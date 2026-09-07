@@ -1,0 +1,30 @@
+{
+  "id": "stat-wilson-clustered-widens-interval",
+  "title": "클러스터 보정 Wilson — 점추정은 그대로, 폭만 넓어진다",
+  "level": 3,
+  "operation": "wilson_interval_clustered",
+  "rationale": "보정은 폭만 건드려야 한다. 중심이 움직이면 그건 보정이 아니라 값의 왜곡이다. k=142, n=400 에서 raw 구간은 (0.309689, 0.403070), 보정 후는 (0.285050, 0.431749) 로 폭이 약 1.57배가 된다. 보정을 빠뜨린 구현은 없는 정밀도를 보고하게 된다.",
+  "spec_refs": [
+    "CLAUDE.md §2 (클러스터 보정)",
+    "plane-a-visibility.md §3.2"
+  ],
+  "input": {
+    "k": 142,
+    "n": 400,
+    "cluster_size": 4,
+    "rho": 0.5,
+    "z": 1.959964
+  },
+  "expected": {
+    "lower": 0.285050189,
+    "upper": 0.431749208,
+    "uncorrected_lower": 0.309689026,
+    "uncorrected_upper": 0.403069539
+  },
+  "tolerance": {
+    "absolute": 1e-09
+  },
+  "reference_implementation": {
+    "status": "implemented"
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "id": "ars-blocking-unavailable-blank-reason-is-rejected",
+  "title": "unavailable 의 사유가 공백이면 거부한다",
+  "level": 1,
+  "operation": "compute_ars",
+  "rationale": "사유 칸을 공백으로 채우는 것은 '안 쟀다' 를 '못 쟀다' 로 위장하는 통로다. 사유 필드를 두면서 내용을 검증하지 않으면 규칙이 형식만 남는다.",
+  "spec_refs": [
+    "plane-b-readiness.md §4.5"
+  ],
+  "input": {
+    "item_scores_default": 2,
+    "item_scores": {},
+    "unscored_item_ids": [
+      "P1-01"
+    ],
+    "unavailable": {
+      "P1-01": "   "
+    }
+  },
+  "expected": {
+    "rejected": true,
+    "reason_contains": "P1-01"
+  },
+  "tolerance": {
+    "absolute": 1e-09
+  },
+  "reference_implementation": {
+    "status": "implemented"
+  }
+}

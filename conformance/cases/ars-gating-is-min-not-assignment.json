@@ -1,0 +1,31 @@
+{
+  "id": "ars-gating-is-min-not-assignment",
+  "title": "게이팅 상한은 min 이지 대입이 아니다 — 전 항목 전부 0점이면 40 이 아니라 0",
+  "level": 1,
+  "operation": "compute_ars",
+  "rationale": "상한을 대입으로 구현하면 '가장 나쁜 사이트' 가 게이팅 덕분에 40점으로 올라간다. 게이팅은 점수를 깎는 장치이지 바닥을 깔아주는 장치가 아니다. 이 케이스는 min() 과 대입을 구분하는 유일한 입력이다.",
+  "spec_refs": [
+    "plane-b-readiness.md §3.2"
+  ],
+  "input": {
+    "item_scores_default": 0,
+    "item_scores": {},
+    "unscored_item_ids": [],
+    "unavailable": {}
+  },
+  "expected": {
+    "ars": 0.0,
+    "raw_ars": 0.0,
+    "gated": true,
+    "blocking_failures": [
+      "P1-01",
+      "P1-03"
+    ]
+  },
+  "tolerance": {
+    "absolute": 1e-09
+  },
+  "reference_implementation": {
+    "status": "implemented"
+  }
+}

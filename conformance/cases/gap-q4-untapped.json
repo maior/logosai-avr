@@ -1,0 +1,28 @@
+{
+  "id": "gap-q4-untapped",
+  "title": "Q4 미개척 — AVI 20.0 / ARS 50.0",
+  "level": 1,
+  "operation": "gap_quadrant",
+  "rationale": "기초가 없다. 순차 처방 외에 지름길이 없다. 사분면 판정이 처방을 완전히 갈라놓으므로 4사분면을 모두 고정한다.",
+  "spec_refs": [
+    "scoring.md §1",
+    "scoring.md §5",
+    "avr-model.md §4.1"
+  ],
+  "input": {
+    "avi": 20.0,
+    "ars": 50.0
+  },
+  "expected": {
+    "quadrant_id": "Q4",
+    "label": "미개척",
+    "avi_band": "low",
+    "ars_band": "low"
+  },
+  "tolerance": {
+    "absolute": 1e-09
+  },
+  "reference_implementation": {
+    "status": "implemented"
+  }
+}

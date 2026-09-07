@@ -1,0 +1,36 @@
+{
+  "id": "ars-remediation-field-does-not-affect-score",
+  "title": "항목마다 조치 분류(remediation)가 추가되어도 동일 채점표의 ARS 는 완전히 동일하다",
+  "level": 1,
+  "operation": "compute_ars",
+  "rationale": "rubric v1.6.0 은 45항목 전부에 remediation(config|dev|content|operations|earned) 필드를 추가했다(spec plane-b-readiness.md §9). 이 필드는 채점에 관여하지 않는 순수 정보 필드이므로 compute_ars 의 산식(§3.1) 어디에도 입력으로 들어가지 않는다. 이 케이스는 45항목 전부를 균일하게 1점(부분 충족)으로 채점해 spec §4.3 이 명시한 '전 항목이 1점이면 raw_ARS 는 정확히 50'이라는 구조적 사실을 재확인한다 -- remediation 필드가 이 값에 조금이라도 영향을 준다면 이 케이스가 먼저 깨진다. 짝을 이루는 대조군은 기존 골든 케이스들(예: item_scores_default 를 2 로 바꾸면 raw_ARS=100 이 되는 다른 케이스들)이다 -- 다른 채점 입력은 다른 ARS 를 내야 하고, 이 스위트의 나머지 케이스가 그것을 이미 검증한다.",
+  "spec_refs": [
+    "plane-b-readiness.md §9",
+    "plane-b-readiness.md §4.3",
+    "plane-b-readiness.md §3.1"
+  ],
+  "notes": "item_scores_default=1 로 45항목 전부를 부분 충족(1점)으로 채점한다. Pillar 정규화는 raw/(2*count) 이므로 항목 수·pillar weight 와 무관하게 균일 1점은 항상 각 pillar에서 0.5 -> weight 전체 합 100 의 절반인 50.0 이 된다(spec plane-b-readiness.md §4.3). rubric 에 remediation 필드가 추가되기 전(v1.5.0)에도 동일한 입력은 동일한 50.0 을 냈다 -- 이 케이스는 그 사실이 v1.6.0 에서도 유지됨을 고정한다.",
+  "input": {
+    "item_scores_default": 1
+  },
+  "expected": {
+    "ars": 50.0,
+    "raw_ars": 50.0,
+    "gated": false,
+    "weight_renormalized": false,
+    "excluded_pillars": [],
+    "inapplicable_pillars": [],
+    "unscored_item_ids": [],
+    "judgeable_count": 45,
+    "not_applicable_count": 0,
+    "design_limit_count": 0,
+    "applicability": 1.0
+  },
+  "tolerance": {
+    "absolute": 1e-09
+  },
+  "reference_implementation": {
+    "status": "conformant",
+    "note": "app/domain/scoring.py 의 compute_ars 는 RubricItem.remediation 필드를 참조하지 않는다 -- app/domain/rubric.py 의 RubricItem 데이터클래스에 remediation 이 추가되었을 뿐 채점 경로(scored dict 구성, pillar 정규화, 게이팅)의 어느 단계도 이 필드를 읽지 않는다."
+  }
+}

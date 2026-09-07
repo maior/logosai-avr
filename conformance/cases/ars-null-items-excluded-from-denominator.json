@@ -1,0 +1,42 @@
+{
+  "id": "ars-null-items-excluded-from-denominator",
+  "title": "미판정 항목은 0점이 아니라 분모에서 빠진다",
+  "level": 1,
+  "operation": "compute_ars",
+  "rationale": "P5 7항목(rubric v1.3.0) 중 4개(P5-01, P5-02, P5-03, P5-07)만 채점하면 정규화는 4/7 이 아니라 (2+1+0+2)/(2×4)=5/8=0.625 다. 미판정 3개(P5-04, P5-05, P5-06)를 0점으로 처리하면 5/14=0.357 이 되어 총점이 크게 내려간다. 정답은 P1~P4 만점(90) + P5 6.25 = 96.25 다. 이 차이가 '확인 못 했다' 와 '없다' 를 가르는 값이다.",
+  "spec_refs": [
+    "plane-b-readiness.md §3.1",
+    "plane-b-readiness.md §2.1-(4)"
+  ],
+  "input": {
+    "item_scores_default": 2,
+    "item_scores": {
+      "P5-01": 2,
+      "P5-02": 1,
+      "P5-03": 0,
+      "P5-07": 2
+    },
+    "unscored_item_ids": [
+      "P5-04",
+      "P5-05",
+      "P5-06"
+    ],
+    "unavailable": {}
+  },
+  "expected": {
+    "ars": 96.25,
+    "raw_ars": 96.25,
+    "gated": false,
+    "unscored_item_ids": [
+      "P5-04",
+      "P5-05",
+      "P5-06"
+    ]
+  },
+  "tolerance": {
+    "absolute": 1e-09
+  },
+  "reference_implementation": {
+    "status": "implemented"
+  }
+}

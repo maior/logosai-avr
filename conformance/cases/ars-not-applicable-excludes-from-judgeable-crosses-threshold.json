@@ -1,0 +1,58 @@
+{
+  "id": "ars-not-applicable-excludes-from-judgeable-crosses-threshold",
+  "title": "unavailable_kind=not_applicable 항목은 judgeable 분모에서 빠져 Pillar 가 커버리지 임계를 넘어 보고된다",
+  "level": 1,
+  "operation": "compute_ars",
+  "rationale": "파일럿 2회차(2026-09-05) 실측 — 사이트 A는 본문에 외부 링크가 없어 P5-04 를 판정할 대상 자체가 없었다. 이 경우를 '확인 못 함'과 같은 무게로 분모에 넣으면(구 규칙: 전체 항목 수 7이 분모) P5(7항목 중 3개만 채점, 3/7=42.9%)가 50% 미만이라는 이유로 통째로 제외된다. 그러나 P5-04 는 '이 사이트에 성립하지 않는' 항목이므로 judgeable 에서 빼야 한다(spec plane-b-readiness.md §8.3~§8.4) — judgeable=6, 3/6=50%는 경계 포함(≥)이므로 Pillar 가 보고된다. P1~P4 는 전 항목 1점(0.5 정규화)으로 고정하고 P5 만 조작해 대조군(inconclusive, 이 목록의 짝 케이스)과 비교 가능하게 했다. P5 raw=2+2+2=6, max=6 → normalized=1.0 → weighted=10.0. raw_ars = 12.5+12.5+10+10+10=55.0.",
+  "spec_refs": [
+    "plane-b-readiness.md §8.2",
+    "plane-b-readiness.md §8.3",
+    "plane-b-readiness.md §8.4",
+    "plane-b-readiness.md §3.1"
+  ],
+  "notes": "compute_ars 입력 표기법 확장: 'unavailable_kind' 필드(item_id -> 5분류 중 하나)를 추가한다. CONFORMANCE.md §3.5 는 이 확장 전에 작성되었으므로 별도 갱신이 필요하다(이 케이스를 설계한 aeo-rubric-designer 는 framework/CONFORMANCE.md 편집 권한이 없어 갱신하지 못했다).",
+  "input": {
+    "item_scores_default": 1,
+    "item_scores": {
+      "P5-01": 2,
+      "P5-02": 2,
+      "P5-03": 2
+    },
+    "unscored_item_ids": [
+      "P5-04",
+      "P5-05",
+      "P5-06",
+      "P5-07"
+    ],
+    "unavailable": {
+      "P5-04": "본문에 외부 링크가 없어 broken 비율의 분모를 만들 수 없음"
+    },
+    "unavailable_kind": {
+      "P5-04": "not_applicable"
+    }
+  },
+  "expected": {
+    "ars": 55.0,
+    "raw_ars": 55.0,
+    "gated": false,
+    "weight_renormalized": false,
+    "excluded_pillars": [],
+    "unscored_item_ids": [
+      "P5-04",
+      "P5-05",
+      "P5-06",
+      "P5-07"
+    ],
+    "judgeable_count": 44,
+    "not_applicable_count": 1,
+    "design_limit_count": 0,
+    "applicability": 0.9777777777777777
+  },
+  "tolerance": {
+    "absolute": 1e-09
+  },
+  "reference_implementation": {
+    "status": "conformant",
+    "note": "2026-09-05 구현 완료. app/domain/scoring.py 의 compute_ars 가 unavailable_kinds 를 받아 judgeable = 전체 - (not_applicable + design_limit) 로 커버리지 분모를 계산하고, blocking 항목에 not_applicable/design_limit 을 쓰면 거부한다. 러너 어댑터 _run_compute_ars 가 kind 를 전달하고 신규 4필드를 반환한다."
+  }
+}

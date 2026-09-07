@@ -1,0 +1,58 @@
+{
+  "id": "item-p5-04-unchecked-over-50-percent-is-unavailable",
+  "title": "unchecked 비율 50% 초과 → 판정하지 않는다 (score=null, unavailable)",
+  "level": 2,
+  "operation": "item_p5_04",
+  "rationale": "10개 대상 링크 중 6개가 403(unchecked)이고 4개만 확인(checked)되면 unchecked 비율은 60% 로 절반을 넘는다. 확인된 4개가 전부 200 이라 broken 비율은 0% 이지만, 이를 그대로 level 2(만점)로 주면 '거의 아무것도 확인하지 못했다'가 '링크가 건전하다'로 둔갑한다. spec §7.3 은 이 경우 0/1/2 로 판정하지 않고 unavailable 로 처리하도록 강제한다.",
+  "spec_refs": [
+    "plane-b-readiness.md §7.3"
+  ],
+  "input": {
+    "links": [
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 403
+      },
+      {
+        "status": 403
+      },
+      {
+        "status": 403
+      },
+      {
+        "status": 403
+      },
+      {
+        "status": 403
+      },
+      {
+        "status": 403
+      }
+    ],
+    "redirect_chain_over_3_hops_count": 0
+  },
+  "expected": {
+    "score": null,
+    "checked_count": 4,
+    "broken_count": 0,
+    "unchecked_count": 6
+  },
+  "tolerance": {
+    "absolute": 0
+  },
+  "reference_implementation": {
+    "status": "conformant",
+    "note": "2026-09-05 구현 완료. app/audit/collectors/linkcheck.py 의 classify_link + finding_from_summary 가 3분류(ok/broken/unchecked)와 unchecked 50% 포기 규칙을 구현하고, 러너에 item_p5_04 / item_p5_07 오퍼레이터를 등록했다."
+  }
+}

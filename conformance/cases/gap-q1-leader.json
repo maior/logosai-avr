@@ -1,0 +1,28 @@
+{
+  "id": "gap-q1-leader",
+  "title": "Q1 리더 — AVI 30.0 / ARS 70.0",
+  "level": 1,
+  "operation": "gap_quadrant",
+  "rationale": "둘 다 임계값 위. 처방은 방어와 FAI 관리로 바뀐다. 사분면 판정이 처방을 완전히 갈라놓으므로 4사분면을 모두 고정한다.",
+  "spec_refs": [
+    "scoring.md §1",
+    "scoring.md §5",
+    "avr-model.md §4.1"
+  ],
+  "input": {
+    "avi": 30.0,
+    "ars": 70.0
+  },
+  "expected": {
+    "quadrant_id": "Q1",
+    "label": "리더",
+    "avi_band": "high",
+    "ars_band": "high"
+  },
+  "tolerance": {
+    "absolute": 1e-09
+  },
+  "reference_implementation": {
+    "status": "implemented"
+  }
+}

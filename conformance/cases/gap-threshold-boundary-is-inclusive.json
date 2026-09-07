@@ -1,0 +1,27 @@
+{
+  "id": "gap-threshold-boundary-is-inclusive",
+  "title": "AVI 정확히 25, ARS 정확히 60 은 둘 다 high (경계 포함)",
+  "level": 1,
+  "operation": "gap_quadrant",
+  "rationale": "scoring.md §1 은 '두 값 모두 경계 포함(≥)이 high' 라고 규정한다. 경계를 배타로 구현하면 AVI 25.0 / ARS 60.0 브랜드가 Q1 이 아니라 Q4 로 떨어지고, 처방이 정반대가 된다. 부동소수 비교가 아니라 규칙의 문제다.",
+  "spec_refs": [
+    "scoring.md §1",
+    "scoring.md §5"
+  ],
+  "input": {
+    "avi": 25.0,
+    "ars": 60.0
+  },
+  "expected": {
+    "quadrant_id": "Q1",
+    "label": "리더",
+    "avi_band": "high",
+    "ars_band": "high"
+  },
+  "tolerance": {
+    "absolute": 1e-09
+  },
+  "reference_implementation": {
+    "status": "implemented"
+  }
+}

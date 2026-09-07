@@ -1,0 +1,25 @@
+{
+  "id": "stat-wilson-default-z-must-be-1.959964",
+  "title": "z 를 생략했을 때의 기본값이 명세의 1.959964 인가",
+  "level": 3,
+  "operation": "wilson_interval",
+  "rationale": "plane-a-visibility.md §3.2 는 95% 신뢰수준의 z 를 1.959964 로 못박는다. 구현이 1.96 을 기본값으로 쓰면 두 적합 구현이 같은 입력에 6번째 소수 자리에서 다른 구간을 낸다. 실무 영향은 무시할 만하지만, '같은 입력에 같은 출력' 이 적합성의 정의이므로 케이스로 남긴다.",
+  "spec_refs": [
+    "plane-a-visibility.md §3.2"
+  ],
+  "input": {
+    "k": 1,
+    "n": 10
+  },
+  "expected": {
+    "lower": 0.017876213,
+    "upper": 0.40415003
+  },
+  "tolerance": {
+    "absolute": 1e-09
+  },
+  "reference_implementation": {
+    "status": "conformant",
+    "note": "2026-09-04 수정. statistics.py 에 DEFAULT_Z = 1.959964 상수를 도입하고 wilson_interval / required_sample_size / wilson_interval_clustered 의 기본값을 명세값으로 맞췄다."
+  }
+}

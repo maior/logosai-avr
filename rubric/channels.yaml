@@ -1,0 +1,81 @@
+# AVR 모델 — Plane A (Visibility) 채널 가중치 정본
+# Single Source of Truth. 프로빙 스케줄러와 AVI 집계기가 이 파일만 파싱한다.
+#
+# 가중치 설계 원칙
+#   w_c = (국내 채널 이용률) x (해당 채널에서 AI 답변이 노출될 확률)
+#   GPTO 공개 12채널 가중치(ChatGPT 25 / Gemini 20 / Google AI Overviews 17 /
+#   네이버 AI 브리핑 14 / Claude 9.5 / Perplexity 4.5 / Grok 4 / 중국 LLM 5종)를
+#   출발점으로, 6채널로 축약하고 국내 실정에 맞게 재배분했다.
+#   중국 LLM 5종·Grok(합계 약 8%)은 국내 B2B/B2C 진단 수요가 확인되지 않아 v1에서 제외하고,
+#   그 몫을 ChatGPT·Claude에 재배분했다. 재배분 근거는 추정이며 파일럿 이후 재검토 대상.
+#
+# 주의: weight 합은 반드시 1.0 이어야 한다. 채널 추가/삭제 시 전 채널 재정규화 필요.
+version: "1.0.0"
+
+channels:
+  - id: chatgpt
+    name: ChatGPT
+    provider: openai
+    weight: 0.28
+    weight_rationale: "국내 생성형 AI 앱 이용자 규모 1위이며 검색 대체 사용 빈도가 가장 높다. GPTO 기준 25%에서 제외 채널(Grok·중국 LLM) 몫 일부를 흡수해 상향(추정)."
+    supports_search_toggle: true
+    api_available: true
+    tracking_model: gpt-5-mini
+    calibration_model: gpt-5
+
+  - id: gemini
+    name: Gemini
+    provider: google
+    weight: 0.22
+    weight_rationale: "안드로이드 기본 탑재와 구글 계정 연동으로 국내 도달률이 넓다. GPTO 20%에 소폭 가산(추정). Google AI Overviews와는 별도 표면이므로 이중 계상 아님."
+    supports_search_toggle: true
+    api_available: true
+    tracking_model: gemini-3.1-flash-lite
+    calibration_model: gemini-3.1-pro
+
+  # ⚠️ 공식 API 없음 — SERP 스크래핑 또는 수동 캡처에 의존한다.
+  #    리스크: 네이버 이용약관상 자동 수집 제한, 마크업 변경 시 파서 파손,
+  #            IP 차단으로 인한 시계열 단절. 계약서에 수집 방식과 중단 가능성을 명시할 것.
+  #    tracking_model / calibration_model 은 null 이며 프록시 격차(δ) 산출 대상에서 제외한다.
+  - id: naver_ai_briefing
+    name: 네이버 AI 브리핑
+    provider: naver
+    weight: 0.18
+    weight_rationale: "한국어 사용자가 가장 먼저 만나는 AI 답변 표면이고 C-rank 계열 출처 신뢰 신호가 별도로 작동한다. GPTO 14%에서 국내 전용 진단 제품 특성상 상향."
+    supports_search_toggle: false
+    api_available: false
+    tracking_model: null
+    calibration_model: null
+
+  - id: claude
+    name: Claude
+    provider: anthropic
+    weight: 0.14
+    weight_rationale: "일반 소비자 도달은 낮으나 개발자·전문직·B2B 의사결정자 비중이 높아, B2B 진단 수요에서 언급 가치가 이용률 대비 크다. GPTO 9.5%에서 상향(추정)."
+    supports_search_toggle: true
+    api_available: true
+    tracking_model: claude-haiku-4-5
+    calibration_model: claude-opus-5
+
+  - id: perplexity
+    name: Perplexity
+    provider: perplexity
+    weight: 0.10
+    weight_rationale: "이용자 수는 작지만 응답이 항상 출처 인용을 동반해 CitShare 신호가 가장 선명하다. 인용 지표 관측 가치를 반영해 GPTO 4.5%에서 상향."
+    supports_search_toggle: false     # 검색이 상시 활성 — OFF 조건 질의 불가
+    api_available: true
+    tracking_model: sonar
+    calibration_model: sonar-pro
+
+  # ⚠️ 공식 API 없음 — SERP 스크래핑 의존. naver_ai_briefing 과 동일한 리스크가 적용된다.
+  #    AI Overviews 는 질의·지역·계정에 따라 노출 자체가 불안정하므로,
+  #    미노출 시 '미측정(not_shown)' 으로 기록하고 분모에서 제외한다. 0점 처리 금지.
+  - id: google_ai_overviews
+    name: Google AI Overviews
+    provider: google
+    weight: 0.08
+    weight_rationale: "국내 구글 검색 점유가 네이버 대비 낮고 한국어 질의에서 AI Overviews 노출률 자체가 불안정하다. GPTO 17%에서 대폭 하향(추정)."
+    supports_search_toggle: false
+    api_available: false
+    tracking_model: null
+    calibration_model: null

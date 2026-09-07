@@ -1,0 +1,35 @@
+{
+  "id": "ars-blocking-unavailable-with-reason-passes",
+  "title": "blocking 항목을 사유와 함께 unavailable 로 두면 통과하되 판정불능을 표기한다",
+  "level": 1,
+  "operation": "compute_ars",
+  "rationale": "'안 쟀다' 와 '못 쟀다' 는 다르다. 사이트 다운·타임아웃처럼 진짜로 못 재는 경우가 있으므로 사유를 명시한 통로를 남긴다. 다만 그 리포트의 총점은 신뢰할 수 없으므로 gating_undetermined 로 반드시 드러나야 한다 — 조용히 100점이 나가면 규칙이 우회된 것과 같다.",
+  "spec_refs": [
+    "plane-b-readiness.md §4.5"
+  ],
+  "input": {
+    "item_scores_default": 2,
+    "item_scores": {},
+    "unscored_item_ids": [
+      "P1-01"
+    ],
+    "unavailable": {
+      "P1-01": "robots.txt 요청 타임아웃 (3회 재시도 실패)"
+    }
+  },
+  "expected": {
+    "ars": 100.0,
+    "raw_ars": 100.0,
+    "gated": false,
+    "gating_undetermined": true,
+    "unscored_item_ids": [
+      "P1-01"
+    ]
+  },
+  "tolerance": {
+    "absolute": 1e-09
+  },
+  "reference_implementation": {
+    "status": "implemented"
+  }
+}

@@ -1,0 +1,60 @@
+{
+  "id": "ars-no-collector-and-input-missing-remain-in-judgeable",
+  "title": "unavailable_kind=no_collector·input_missing 은 not_applicable/design_limit 과 달리 judgeable 분모에 남는다",
+  "level": 1,
+  "operation": "compute_ars",
+  "rationale": "no_collector(수집기 미구현 — 우리 로드맵 결손)와 input_missing(필요한 정식 입력 없음)은 '이 사이트에 성립하지 않는다'가 아니라 '우리가 아직 재지 못한다'는 뜻이다(spec §8.2, §8.6). 이 둘을 judgeable 에서 빼면 우리 쪽 결손을 사이트의 특성으로 둔갑시키는 것과 같다. P5-04 를 no_collector, P5-05 를 input_missing 으로 지정해도 judgeable(P5)=7 그대로이고, 3/7=42.9%<50% 이므로 P5 는 ars-inconclusive-control-does-not-cross-threshold 케이스와 동일하게 제외된다 — 두 신규 kind 가 inconclusive 와 같은 취급을 받는다는 것을 보여준다.",
+  "spec_refs": [
+    "plane-b-readiness.md §8.2",
+    "plane-b-readiness.md §8.6"
+  ],
+  "notes": "compute_ars 입력 표기법 확장: 'unavailable_kind' 필드. 한 항목에 하나의 kind 만 부여할 수 있으므로 두 kind 를 검증하기 위해 서로 다른 두 항목(P5-04, P5-05)에 나눠 부여했다.",
+  "input": {
+    "item_scores_default": 1,
+    "item_scores": {
+      "P5-01": 2,
+      "P5-02": 2,
+      "P5-03": 2
+    },
+    "unscored_item_ids": [
+      "P5-04",
+      "P5-05",
+      "P5-06",
+      "P5-07"
+    ],
+    "unavailable": {
+      "P5-04": "P5-04 자동 판정 수집기가 아직 구현되지 않음",
+      "P5-05": "dateModified 갱신 로직을 판정할 목표 질문 세트 입력이 제공되지 않음"
+    },
+    "unavailable_kind": {
+      "P5-04": "no_collector",
+      "P5-05": "input_missing"
+    }
+  },
+  "expected": {
+    "ars": 50.0,
+    "raw_ars": 50.0,
+    "gated": false,
+    "weight_renormalized": true,
+    "excluded_pillars": [
+      "P5"
+    ],
+    "unscored_item_ids": [
+      "P5-04",
+      "P5-05",
+      "P5-06",
+      "P5-07"
+    ],
+    "judgeable_count": 45,
+    "not_applicable_count": 0,
+    "design_limit_count": 0,
+    "applicability": 1.0
+  },
+  "tolerance": {
+    "absolute": 1e-09
+  },
+  "reference_implementation": {
+    "status": "conformant",
+    "note": "2026-09-05 구현 완료. app/domain/scoring.py 의 compute_ars 가 unavailable_kinds 를 받아 judgeable = 전체 - (not_applicable + design_limit) 로 커버리지 분모를 계산하고, blocking 항목에 not_applicable/design_limit 을 쓰면 거부한다. 러너 어댑터 _run_compute_ars 가 kind 를 전달하고 신규 4필드를 반환한다."
+  }
+}

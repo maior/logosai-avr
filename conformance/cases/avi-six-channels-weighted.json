@@ -1,0 +1,69 @@
+{
+  "id": "avi-six-channels-weighted",
+  "title": "6채널 전부 측정된 표준 가중합",
+  "level": 1,
+  "operation": "compute_avi",
+  "rationale": "channels.yaml 의 가중치(0.28/0.22/0.18/0.14/0.10/0.08) 가 실제로 적용되는지 검증한다. 가중치를 균등하게 쓰는 구현은 이 케이스에서 22.535 가 아닌 값을 낸다. naver 채널의 cit_share=null 처리(α'=0.625·β'=0.375) 도 같은 입력에 포함되어 있다. 결과 22.535 는 AVI 컷오프 25 미만이라 Gap Matrix 케이스의 입력으로도 쓴다.",
+  "spec_refs": [
+    "plane-a-visibility.md §2",
+    "plane-a-visibility.md §2.2",
+    "channels.yaml"
+  ],
+  "input": {
+    "alpha": 0.5,
+    "beta": 0.3,
+    "gamma": 0.2,
+    "channels": [
+      {
+        "channel_id": "chatgpt",
+        "mr": 0.4,
+        "pos_score": 0.25,
+        "cit_share": 0.1
+      },
+      {
+        "channel_id": "gemini",
+        "mr": 0.3,
+        "pos_score": 0.18,
+        "cit_share": 0.08
+      },
+      {
+        "channel_id": "naver_ai_briefing",
+        "mr": 0.2,
+        "pos_score": 0.1,
+        "cit_share": null
+      },
+      {
+        "channel_id": "claude",
+        "mr": 0.35,
+        "pos_score": 0.2,
+        "cit_share": 0.12
+      },
+      {
+        "channel_id": "perplexity",
+        "mr": 0.25,
+        "pos_score": 0.15,
+        "cit_share": 0.3
+      },
+      {
+        "channel_id": "google_ai_overviews",
+        "mr": 0.1,
+        "pos_score": 0.05,
+        "cit_share": 0.04
+      }
+    ]
+  },
+  "expected": {
+    "avi": 22.535,
+    "coverage": 1.0,
+    "weight_renormalized": false,
+    "citation_unavailable_channels": [
+      "naver_ai_briefing"
+    ]
+  },
+  "tolerance": {
+    "absolute": 1e-09
+  },
+  "reference_implementation": {
+    "status": "implemented"
+  }
+}

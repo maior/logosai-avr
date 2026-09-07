@@ -1,0 +1,27 @@
+{
+  "id": "item-p1-01-robots-5xx-after-retry-is-level-0",
+  "title": "재시도 후에도 5xx → P1-01 = 0 (게이팅 발동)",
+  "level": 2,
+  "operation": "item_p1_01",
+  "rationale": "RFC 9309 §2.3.1.4 는 5xx 를 'Unreachable' 로 규정하고 크롤러가 complete disallow 를 가정해야 한다고 명시한다. 404 와 정반대다. 이 둘을 한 묶음으로 처리한 것이 rubric v1.1.0 의 실제 오진이었고 v1.2.0 에서 분리했다. 일시 장애와 구분하기 위해 재시도 후에도 5xx 일 때만 0 이다.",
+  "spec_refs": [
+    "plane-b-readiness.md §4.6",
+    "pillars.yaml P1-01 levels",
+    "RFC 9309 §2.3.1.4"
+  ],
+  "input": {
+    "status": 503,
+    "body": "",
+    "retried": true
+  },
+  "expected": {
+    "score": 0
+  },
+  "tolerance": {
+    "absolute": 0
+  },
+  "reference_implementation": {
+    "status": "implemented"
+  },
+  "notes": "입력의 retried=true 는 '재시도 후에도 5xx' 라는 명세 조건을 뜻한다. 참조 구현은 재시도 없이 1회 요청으로 판정하므로 이 케이스는 통과하지만, 일시 장애를 영구 차단으로 오판할 여지가 남는다(ARCHITECTURE.md §6 참조)."
+}

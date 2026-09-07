@@ -1,0 +1,28 @@
+{
+  "id": "stat-two-proportion-sign-convention",
+  "title": "z 의 부호는 (2군 − 1군) 이다 — 개선이면 양수",
+  "level": 3,
+  "operation": "two_proportion_z",
+  "rationale": "plane-a-visibility.md §4.1 은 z = (p̂₂ − p̂₁)/se 로 정의한다. 기준 시점이 1군, 비교 시점이 2군이므로 개선이면 z 는 양수여야 한다. 부호가 반대인 구현은 report.schema.json 의 comparison.mr_significance[].z 에 개선을 음수로 기록하게 되고, 리포트를 읽는 사람이 방향을 거꾸로 읽는다. p-value 는 양측이라 부호와 무관하므로 이 케이스가 아니면 잡히지 않는다.",
+  "spec_refs": [
+    "plane-a-visibility.md §4.1",
+    "report.schema.json comparison.mr_significance"
+  ],
+  "input": {
+    "k1": 142,
+    "n1": 400,
+    "k2": 162,
+    "n2": 400,
+    "alpha": 0.05
+  },
+  "expected": {
+    "z": 1.456791
+  },
+  "tolerance": {
+    "absolute": 1e-06
+  },
+  "reference_implementation": {
+    "status": "conformant",
+    "note": "2026-09-04 수정. two_proportion_z 를 spec §4.1 의 (p̂₂ − p̂₁) 로 바로잡았다. 개선이 양수로 기록된다."
+  }
+}

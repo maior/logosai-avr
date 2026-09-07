@@ -1,0 +1,28 @@
+{
+  "id": "stat-two-proportion-significant",
+  "title": "35.5% → 50.0% (n=400) 는 유의하다 — p ≈ 3.4e-5",
+  "level": 3,
+  "operation": "two_proportion_z",
+  "rationale": "유의하지 않은 케이스만 두면 '항상 유의하지 않다' 고 답하는 구현도 통과한다. 검정이 실제로 작동하는지 확인하려면 반대 방향의 입력이 반드시 필요하다.",
+  "spec_refs": [
+    "plane-a-visibility.md §4.1"
+  ],
+  "input": {
+    "k1": 142,
+    "n1": 400,
+    "k2": 200,
+    "n2": 400,
+    "alpha": 0.05
+  },
+  "expected": {
+    "abs_z": 4.145025,
+    "p_value": 3.39757e-05,
+    "significant": true
+  },
+  "tolerance": {
+    "absolute": 1e-06
+  },
+  "reference_implementation": {
+    "status": "implemented"
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "id": "stat-required-sample-size-385",
+  "title": "±5%p 정밀도에 필요한 표본 수는 385",
+  "level": 3,
+  "operation": "required_sample_size",
+  "rationale": "plane-a-visibility.md §3.3 의 표(97 / 196 / 385 / 1068 / 2401) 를 재현한다. 이 숫자가 프로빙 설계(질문 수 × 반복 × 검색모드) 와 원가 전체를 결정하므로, 올림 방향이 틀리면 예산 계획이 통째로 어긋난다.",
+  "spec_refs": [
+    "plane-a-visibility.md §3.3"
+  ],
+  "input": {
+    "margin": 0.05,
+    "p": 0.5,
+    "z": 1.959964
+  },
+  "expected": {
+    "n": 385
+  },
+  "tolerance": {
+    "absolute": 0
+  },
+  "reference_implementation": {
+    "status": "implemented"
+  }
+}

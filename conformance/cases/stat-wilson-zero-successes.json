@@ -1,0 +1,26 @@
+{
+  "id": "stat-wilson-zero-successes",
+  "title": "Wilson — k=0 일 때 구간이 붕괴하지 않는다",
+  "level": 3,
+  "operation": "wilson_interval",
+  "rationale": "Wald 구간은 k=0 에서 폭이 0 이 되어 (0, 0) 을 낸다. '언급률 0%, 오차 없음' 은 거짓이다. Wilson 을 정본으로 채택한 직접적 이유가 이 입력이고, 신규 브랜드 베이스라인에서 실제로 발생한다.",
+  "spec_refs": [
+    "plane-a-visibility.md §3.1",
+    "plane-a-visibility.md §3.2"
+  ],
+  "input": {
+    "k": 0,
+    "n": 100,
+    "z": 1.959964
+  },
+  "expected": {
+    "lower": 0.0,
+    "upper": 0.036993499
+  },
+  "tolerance": {
+    "absolute": 1e-09
+  },
+  "reference_implementation": {
+    "status": "implemented"
+  }
+}

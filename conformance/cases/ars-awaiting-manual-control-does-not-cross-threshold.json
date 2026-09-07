@@ -1,0 +1,63 @@
+{
+  "id": "ars-awaiting-manual-control-does-not-cross-threshold",
+  "title": "unavailable_kind=awaiting_manual 은 inconclusive 와 동일하게 judgeable 분모에 남아 Pillar 가 제외된 채로 남는다",
+  "level": 1,
+  "operation": "compute_ars",
+  "rationale": "파일럿 3회차(2026-09-05) dry-run 실측 -- 미판정 291건 중 kind 없는 것 220건(75.6%). `check: manual` 항목(예: P5-05 콘텐츠 리뷰 운영 체계, spec plane-b-readiness.md §5.1)이 아직 사람 판정을 받지 못했을 때 붙일 kind 가 rubric v1.4.0까지는 5종 어디에도 없었다. `awaiting_manual`(rubric v1.5.0, report.schema.json 1.2.0)은 '판정 대상이 없다'가 아니라 '사람이 아직 안 봤다'이므로 judgeable에서 빼지 않는다(spec §8.2, §8.3의 '우리가 모르면 남긴다', §8.7). 짝 케이스(ars-design-limit-excludes-p5-05-crosses-threshold)와 입력이 완전히 동일하고 P5-05의 kind만 design_limit으로 바뀐다. judgeable=7(그대로), scored=3, 3/7=42.9%<50%이므로 P5는 여전히 제외되고 weight 10을 뺀 나머지 90을 100으로 재정규화한다: raw_ars(P1~P4)=45.0 -> x100/90=50.0. 이 숫자는 기존 골든 케이스 ars-inconclusive-control-does-not-cross-threshold(P5-04, inconclusive)와 정확히 동일하다 -- awaiting_manual이 inconclusive와 산식상 완전히 같은 취급(분모 포함)을 받는다는 것을 증명한다.",
+  "spec_refs": [
+    "plane-b-readiness.md §8.2",
+    "plane-b-readiness.md §8.3",
+    "plane-b-readiness.md §8.7",
+    "plane-b-readiness.md §3.1"
+  ],
+  "notes": "compute_ars 입력 표기법: 'unavailable_kind' 필드(item_id -> 6분류 중 하나, rubric v1.5.0부터 awaiting_manual 포함). P5-05는 실제 rubric에서 check: manual 항목이므로(spec §5.1) 이 kind를 쓰는 실제 시나리오와 정확히 일치한다. 짝 케이스(design_limit)와 대조하라 -- ars 값이 50.0(awaiting_manual, 분모 포함) vs 55.0(design_limit, 분모 제외)로 갈리는 것이 이 kind가 실제로 분모에 영향을 주는지의 핵심 증거다.",
+  "input": {
+    "item_scores_default": 1,
+    "item_scores": {
+      "P5-01": 2,
+      "P5-02": 2,
+      "P5-03": 2
+    },
+    "unscored_item_ids": [
+      "P5-04",
+      "P5-05",
+      "P5-06",
+      "P5-07"
+    ],
+    "unavailable": {
+      "P5-05": "콘텐츠 리뷰 운영 체계 -- 고객 인터뷰 또는 내부 문서 제출 대기 중, 아직 사람 판정 없음"
+    },
+    "unavailable_kind": {
+      "P5-05": "awaiting_manual"
+    }
+  },
+  "expected": {
+    "ars": 50.0,
+    "raw_ars": 50.0,
+    "gated": false,
+    "weight_renormalized": true,
+    "excluded_pillars": [
+      "P5"
+    ],
+    "unscored_item_ids": [
+      "P5-04",
+      "P5-05",
+      "P5-06",
+      "P5-07"
+    ],
+    "judgeable_count": 45,
+    "not_applicable_count": 0,
+    "design_limit_count": 0,
+    "applicability": 1.0,
+    "pillar_coverage": {
+      "P5": 0.42857142857142855
+    }
+  },
+  "tolerance": {
+    "absolute": 1e-09
+  },
+  "reference_implementation": {
+    "status": "conformant",
+    "note": "2026-09-05 구현 완료. app/domain/scoring.py 에 AWAITING_MANUAL = \"awaiting_manual\" 상수와 UNAVAILABLE_KIND_MEANING 항목을 추가했다. NOT_JUDGEABLE_KINDS(분모 제외 목록)에는 넣지 않았으므로 is_judgeable_kind(\"awaiting_manual\") 는 True 이고, judgeable 계산에서 inconclusive/no_collector/input_missing 과 동일하게 취급된다 -- 별도 분기가 필요 없다."
+  }
+}

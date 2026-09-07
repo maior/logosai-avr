@@ -1,0 +1,28 @@
+{
+  "id": "gap-q3-coasting",
+  "title": "Q3 브랜드 관성형 — AVI 30.0 / ARS 50.0",
+  "level": 1,
+  "operation": "gap_quadrant",
+  "rationale": "브랜드 파워로 버티는 중. 답변 내용을 자사가 통제하지 못한다. 사분면 판정이 처방을 완전히 갈라놓으므로 4사분면을 모두 고정한다.",
+  "spec_refs": [
+    "scoring.md §1",
+    "scoring.md §5",
+    "avr-model.md §4.1"
+  ],
+  "input": {
+    "avi": 30.0,
+    "ars": 50.0
+  },
+  "expected": {
+    "quadrant_id": "Q3",
+    "label": "브랜드 관성형",
+    "avi_band": "high",
+    "ars_band": "low"
+  },
+  "tolerance": {
+    "absolute": 1e-09
+  },
+  "reference_implementation": {
+    "status": "implemented"
+  }
+}

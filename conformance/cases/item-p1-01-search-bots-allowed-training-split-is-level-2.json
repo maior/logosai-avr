@@ -1,0 +1,24 @@
+{
+  "id": "item-p1-01-search-bots-allowed-training-split-is-level-2",
+  "title": "검색봇 3종 Allow + 학습봇 분리 설정 → P1-01 = 2",
+  "level": 2,
+  "operation": "item_p1_01",
+  "rationale": "2점은 '차단하지 않았다' 가 아니라 '의도적으로 설계했다' 를 요구한다. 답변 인용에 필요한 검색봇 3종(OAI-SearchBot·Claude-SearchBot·PerplexityBot)을 허용하면서 학습봇(GPTBot·ClaudeBot·Google-Extended)의 허용/차단을 분리 선언한 상태다. 이 케이스가 없으면 '아무 robots.txt 나 200 이면 2점' 인 구현도 통과한다.",
+  "spec_refs": [
+    "pillars.yaml P1-01 levels"
+  ],
+  "input": {
+    "status": 200,
+    "body": "User-agent: OAI-SearchBot\nAllow: /\n\nUser-agent: Claude-SearchBot\nAllow: /\n\nUser-agent: PerplexityBot\nAllow: /\n\nUser-agent: GPTBot\nDisallow: /\n\nUser-agent: ClaudeBot\nDisallow: /\n\nUser-agent: Google-Extended\nDisallow: /\n",
+    "retried": false
+  },
+  "expected": {
+    "score": 2
+  },
+  "tolerance": {
+    "absolute": 0
+  },
+  "reference_implementation": {
+    "status": "implemented"
+  }
+}

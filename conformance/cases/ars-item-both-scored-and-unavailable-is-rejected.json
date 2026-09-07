@@ -1,0 +1,30 @@
+{
+  "id": "ars-item-both-scored-and-unavailable-is-rejected",
+  "title": "같은 항목이 채점과 unavailable 에 동시에 있으면 거부한다",
+  "level": 1,
+  "operation": "compute_ars",
+  "rationale": "둘 다 있으면 어느 쪽을 쓸지 구현마다 갈린다. 갈리는 순간 같은 입력에 두 점수가 나오고, 그것은 적합성의 정의를 위반한다. 모호한 입력은 조용히 해석하지 말고 거부한다.",
+  "spec_refs": [
+    "plane-b-readiness.md §4.5"
+  ],
+  "input": {
+    "item_scores_default": 2,
+    "item_scores": {
+      "P1-01": 2
+    },
+    "unscored_item_ids": [],
+    "unavailable": {
+      "P1-01": "robots.txt 타임아웃"
+    }
+  },
+  "expected": {
+    "rejected": true,
+    "reason_contains": "P1-01"
+  },
+  "tolerance": {
+    "absolute": 1e-09
+  },
+  "reference_implementation": {
+    "status": "implemented"
+  }
+}
