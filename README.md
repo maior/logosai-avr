@@ -3,7 +3,7 @@
 A diagnostic specification for **AEO** (Answer Engine Optimization): measuring whether a
 brand appears in AI-generated answers, and — separately — *why it doesn't*.
 
-**Canon versions:** rubric `1.5.0` · scoring `1.1.0` · channels `1.0.0` · schema `1.2.0`
+**Canon versions:** rubric `1.6.0` · scoring `1.1.0` · channels `1.0.0` · schema `1.2.0`
 **Status:** specification frozen · reference implementation running · 3 pilot rounds completed
 **License:** [CC BY 4.0](LICENSE) — use, modify, and sell derivatives freely; just credit the source.
 
