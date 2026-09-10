@@ -1,0 +1,36 @@
+{
+  "id": "ars-evidence-field-does-not-affect-score",
+  "title": "항목마다 증거 등급(evidence)이 추가되어도 동일 채점표의 ARS 는 완전히 동일하다",
+  "level": 1,
+  "operation": "compute_ars",
+  "rationale": "rubric v1.7.0 은 45항목 전부에 evidence 필드를 추가했다(spec plane-b-readiness.md §10). 이 필드가 채점에 조금이라도 관여하면 그 순간 등급은 정직성 장치가 아니라 **점수 조작 레버**가 된다 — 'unverified 항목은 감점' 같은 규칙을 몰래 넣을 수 있고, 반대로 근거를 부풀려 점수를 올릴 수도 있다. 그래서 관여하지 않음을 계약으로 고정한다.\n\n45항목을 균일하게 1점으로 채점하면 spec §4.3 의 구조적 사실에 따라 raw_ARS 는 정확히 50 이다. evidence 가 산식에 들어갔다면 이 값이 먼저 깨진다. 대조군은 이 스위트의 다른 채점 케이스들이다 — 다른 입력은 다른 ARS 를 내야 하고, 그것이 이미 검증돼 있다.",
+  "spec_refs": [
+    "plane-b-readiness.md §10.6",
+    "plane-b-readiness.md §4.3",
+    "plane-b-readiness.md §3.1"
+  ],
+  "notes": "v1.6.0(remediation 추가) 에서도, v1.7.0(evidence 추가) 에서도 같은 입력이 같은 50.0 을 낸다. 순수 정보 필드가 늘어날 때마다 이 형태의 케이스를 하나씩 남기는 이유는, 필드가 늘어난 커밋에서 산식에 손이 갔는지를 케이스가 대신 감시하게 하기 위해서다.",
+  "input": {
+    "item_scores_default": 1
+  },
+  "expected": {
+    "ars": 50.0,
+    "raw_ars": 50.0,
+    "gated": false,
+    "weight_renormalized": false,
+    "excluded_pillars": [],
+    "inapplicable_pillars": [],
+    "unscored_item_ids": [],
+    "judgeable_count": 45,
+    "not_applicable_count": 0,
+    "design_limit_count": 0,
+    "applicability": 1.0
+  },
+  "tolerance": {
+    "absolute": 1e-09
+  },
+  "reference_implementation": {
+    "status": "conformant",
+    "note": "app/domain/scoring.py 의 compute_ars 는 RubricItem.remediation 필드를 참조하지 않는다 -- app/domain/rubric.py 의 RubricItem 데이터클래스에 remediation 이 추가되었을 뿐 채점 경로(scored dict 구성, pillar 정규화, 게이팅)의 어느 단계도 이 필드를 읽지 않는다."
+  }
+}

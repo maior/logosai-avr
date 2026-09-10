@@ -173,6 +173,17 @@
       "description": "이 항목이 미달일 때 누가 고쳐야 하는가의 5분류 (spec plane-b-readiness.md §9, rubric v1.6.0 이후). 채점(score)에는 관여하지 않는 순수 정보 필드다 — 같은 item_id 는 rubric 버전이 같은 한 항상 같은 remediation 을 갖는다. 자동화 가능 여부가 아니라 '어떤 종류의 일인가'로 나눈다.",
       "$comment": "config=사이트 설정·파일 하나로 오늘 끝난다(사이트 관리자). dev=템플릿·코드·인프라 수정(개발자). content=글·자료 작성(콘텐츠 담당). operations=사이트 밖 등록·프로세스·담당자 지정(운영·마케팅). earned=남이 해줘야 한다, 살 수 없고 벌어야 한다(백링크·언론·제3자 언급) — 오늘 실행할 수 없는 일이라는 것 자체가 이 값의 정보다."
     },
+    "evidence_grade": {
+      "type": "string",
+      "enum": [
+        "standard",
+        "provider_documented",
+        "observed",
+        "unverified"
+      ],
+      "description": "이 항목이 재는 **메커니즘의 근거** 강도 (spec plane-b-readiness.md §10, rubric v1.7.0 이후). 채점(score)에는 관여하지 않는 순수 정보 필드다 — 같은 item_id 는 rubric 버전이 같은 한 항상 같은 evidence 를 갖는다. ⚠️ 인과를 주장하지 않는다: standard 라도 '이걸 고치면 AI 답변 노출이 오른다'는 뜻이 아니며, 인과는 avr-model.md §6 의 회귀 전까지 어떤 등급으로도 주장하지 않는다.",
+      "$comment": "standard=거버넌스가 있는 표준이 메커니즘을 규정(RFC 9309 robots.txt, RFC 9110 상태코드). provider_documented=AI·검색 제공사 공개 문서가 이 신호를 소비한다고 서술. observed=우리 측정으로 관계를 관측했고 표본 수를 공시할 수 있음 — 현재 0개이며, 유의한 관측이 없어서 비어 있는 것이 정직한 상태다(avr-model.md §5.2 는 n=3, p=0.083). unverified=표준도 제공사 문서도 우리 관측도 없는 업계 관행 — P2·P4 대부분이 여기 속하는 것은 개별 항목의 결함이 아니라 이 분야의 상태다. 리포트는 unverified 항목의 미달을 '반드시 고쳐야 할 결함'으로 제시하지 않는다."
+    },
     "score_0_100": {
       "type": "number",
       "minimum": 0,
@@ -676,6 +687,14 @@
             "type": "integer",
             "minimum": 0
           }
+        },
+        "evidence_counts": {
+          "type": "object",
+          "description": "증거 등급(standard|provider_documented|observed|unverified) 별 **채점된** 항목 수 (rubric v1.7.0 이후, spec plane-b-readiness.md §10). 미판정 항목은 세지 않는다 -- 세면 '안 잰 것'이 '근거가 이만큼 있다'로 둔갑한다. 이 분포가 리포트에 없으면 독자는 점수가 얼마나 단단한 근거 위에 있는지 알 수 없다.",
+          "additionalProperties": {
+            "type": "integer",
+            "minimum": 0
+          }
         }
       }
     },
@@ -793,6 +812,17 @@
         },
         "blocking": {
           "type": "boolean"
+        },
+        "evidence_grade": {
+          "$ref": "#/$defs/evidence_grade",
+          "description": "이 항목 id 의 고정 증거 등급 (rubric v1.7.0 이후 도입, 선택 필드). ⚠️ 같은 객체의 `evidence`(배열)와 **전혀 다른 것**이다 — `evidence` 는 이 사이트에서 관측한 근거(URL·스니펫)이고, `evidence_grade` 는 이 항목이 재는 메커니즘 자체의 근거 강도로 사이트와 무관하게 고정이다. remediation 과 같은 이유로 required 로 강제하지 않는다. 값이 없으면 '아직 등급을 매기지 않았다'는 뜻이며 unverified 와 다르다."
+        },
+        "evidence_note": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "근거 결손을 구체적으로 적은 문장. unverified 항목 중 근거 상태가 항목마다 다른 것(예: 제공사가 명시적으로 반박한 경우 vs 단순히 아무도 말한 적 없는 경우)에만 채운다. 리포트에 그대로 노출한다."
         },
         "remediation": {
           "$ref": "#/$defs/remediation_tier",

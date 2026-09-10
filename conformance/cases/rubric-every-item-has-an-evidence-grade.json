@@ -1,0 +1,44 @@
+{
+  "id": "rubric-every-item-has-an-evidence-grade",
+  "title": "45항목 전부가 증거 등급을 갖고, observed 는 비어 있다",
+  "level": 1,
+  "operation": "rubric_evidence",
+  "rationale": "rubric v1.7.0 은 항목마다 evidence(standard|provider_documented|observed|unverified) 를 부여한다(spec plane-b-readiness.md §10). 등급이 빠진 항목은 리포트에서 조용히 '근거가 확인된 항목'처럼 보이고, 그건 우리가 등급을 안 매긴 게으름을 그 항목의 근거로 둔갑시키는 일이다. 그래서 누락 0 을 계약으로 고정한다.\n\n**observed 가 0 인 것도 계약이다.** 우리에게 관측이 없어서가 아니라 유의한 관측이 없어서다 (avr-model.md §5.2 는 n=3, p=0.083). 유의하지 않은 관측을 근거 등급으로 승격시키면 이 필드 전체가 정직성 장치가 아니라 마케팅 문구가 된다. 유의한 관측이 생기면 이 케이스를 고치는 것이 맞고, 그때는 그 표본 수를 rationale 에 적는다.\n\n**blocking 항목이 unverified 가 아닌 것도 계약이다.** 근거 없는 항목이 남의 총점에 상한 40 을 거는 것은 변호할 수 없다.",
+  "spec_refs": [
+    "plane-b-readiness.md §10",
+    "plane-b-readiness.md §10.4",
+    "plane-b-readiness.md §10.5"
+  ],
+  "input": {
+    "vocabulary": [
+      "standard",
+      "provider_documented",
+      "observed",
+      "unverified"
+    ]
+  },
+  "expected": {
+    "total": 45,
+    "missing_item_ids": [],
+    "unknown_grade_item_ids": [],
+    "blocking_unverified_item_ids": [],
+    "counts": {
+      "standard": 6,
+      "provider_documented": 14,
+      "unverified": 25
+    },
+    "items_with_note": [
+      "P1-04",
+      "P1-10",
+      "P3-08",
+      "P4-09"
+    ]
+  },
+  "tolerance": {
+    "absolute": 0
+  },
+  "reference_implementation": {
+    "status": "implemented"
+  },
+  "notes": "counts 에 observed 키가 없는 것이 '0개'의 표현이다 — 등급이 하나도 없으면 카운터에 키가 생기지 않는다. items_with_note 4건은 근거 결손의 성격이 항목마다 다른 것들이다: P1-04 는 제공사가 명시적으로 반박했고(Google 공식 문서), P1-10·P4-09 는 로직이 비공개이며, P3-08 은 로컬 검색 관행에서 넘어온 항목이다."
+}

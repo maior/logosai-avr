@@ -8,7 +8,8 @@ brand appears in AI-generated answers, and — separately — *why it doesn't*.
 **License:** [CC BY 4.0](LICENSE) — use, modify, and sell derivatives freely; just credit the source.
 
 > **한국어 문서:** [README.ko.md](README.ko.md). The specification documents in
-> `spec/`, `ARCHITECTURE.md`, `CONFORMANCE.md`, `GOVERNANCE.md` and `ADOPTION.md` are
+> `spec/`, `ARCHITECTURE.md`, `CONFORMANCE.md`, `GOVERNANCE.md`, `ADOPTION.md` and
+> `STANDARDS.md` are
 > currently Korean-only. The machine-readable canon — `rubric/*.yaml`, `schema/`,
 > `conformance/cases/*.json` — is language-independent and is what an implementation
 > actually consumes.
@@ -147,10 +148,22 @@ Compute the interval on `n_eff`, and report `n`, `n_eff` and `ρ` together. Skip
 yields an interval about **63%** of its true width at ρ=0.5, k=4 — and an interval that is
 too narrow is worse than no interval, because it certifies precision that isn't there.
 
-**3. Improvement claims require a significance test.** Two-proportion z-test. If the
-intervals overlap, do not call it an improvement. A worked example is in
-`conformance/cases/stat-two-proportion-not-significant.json`: a publicly claimed
-`35.4% → 40.6%` improvement is **p ≈ 0.145 at n=400** — not significant.
+**3. Improvement claims require a significance test — on the effective sample.**
+Two-proportion z-test. If the intervals overlap, do not call it an improvement. But the
+test is only as good as its denominator: probing is *questions × models × repeats*, so
+observations are not independent, and the raw `n` overstates what you know.
+
+A worked example is in `conformance/cases/stat-two-proportion-clustered-flips-significance.json`.
+A publicly claimed `35.4% → 40.6%` improvement over **3,141 matched pairs** is
+`p = 2.3e-05` uncorrected — clearly significant. Correct for clustering at the publisher's
+own channel count (k=12) and a moderate intraclass correlation (ρ=0.5) and the effective
+sample falls to `n_eff = 483`, where `p = 0.097` — no longer significant.
+
+The point is not that the claim is false. **The point is that without a disclosed ρ,
+neither the publisher nor the reader can tell.** That is why AVR requires `n`, `n_eff`
+and `ρ` to ship together with every ratio. An improvement claim missing any of the three
+is unverifiable, and selling an unverifiable claim as a result is the failure this model
+exists to prevent.
 
 **4. Sample size is computable, so compute it.** For ±5%p at p=0.5, `n ≥ 385`; multiply by
 DEFF when clustered. "Not enough sample to decide" is a valid, expected result — say it
@@ -192,6 +205,7 @@ ARCHITECTURE.md      layering, dependency direction, known gaps
 CONFORMANCE.md       adapter contract, tolerances, how to self-declare
 GOVERNANCE.md        versioning rules, what forces MAJOR
 ADOPTION.md          implementation guide
+STANDARDS.md         what is and is not a standard in AEO (surveyed 2026-09-10)
 spec/
   avr-model.md            the two-plane model and why it is split
   plane-a-visibility.md   MR · SoV · PosScore · CitShare, probe statuses
