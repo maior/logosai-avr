@@ -198,7 +198,7 @@ pillars:
         check: auto
         evidence_grade: unverified
         evidence_note: >-
-          어떤 AI 제공사도 남의 llms.txt 를 읽는다고 공개 진술한 바 없고, Google 공식 문서는 '새 기계판독 파일·AI 텍스트 파일이 필요 없다'고 직접 반박한다 (STANDARDS.md §2, 2026-09-10 확인). 제안 자체에 거버넌스가 없다. 점수는 유지하되 이 사실을 리포트에 공시한다.
+          어떤 AI 제공사도 남의 llms.txt 를 읽는다고 공개 진술한 바 없고, Google 공식 문서는 '새 기계판독 파일·AI 텍스트 파일이 필요 없다'고 직접 반박한다 (STANDARDS.md §2, 2026-09-10 확인). 제안 자체에 표준화 기구도 거버넌스도 없다.
         blocking: false
         remediation: config
         levels:
@@ -636,7 +636,7 @@ pillars:
         check: manual
         evidence_grade: unverified
         evidence_note: >-
-          네이버 생태계 채널이 AI 브리핑 출처로 '관측'되지만 선정 로직은 비공개다. 리포트에서 '네이버가 이 신호를 본다'고 단정하지 않고 '출처로 관측되는 채널'로 서술한다.
+          네이버 생태계 채널이 AI 브리핑 출처로 '관측'되지만 선정 로직은 비공개다. 따라서 이 채널들은 '네이버가 보는 신호'가 아니라 '네이버 AI 답변의 출처로 관측되는 채널'로만 말할 수 있다.
         blocking: false
         remediation: operations
         levels:
