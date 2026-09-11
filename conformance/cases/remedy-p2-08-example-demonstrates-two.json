@@ -1,0 +1,27 @@
+{
+  "id": "remedy-p2-08-example-demonstrates-two",
+  "title": "발행된 P2-08 예시를 두 페이지에 놓고 수집기에 돌리면 level 2 가 나온다 — 정의문 일치율이 분모를 갖는다",
+  "level": 2,
+  "operation": "remedy_demonstrates",
+  "rationale": "이 케이스가 증명하는 것은 '이 틀이 그 점수에 닿을 수 있다' 하나뿐이고, 고객의 글이 2점이 된다는 뜻이 아니다. 기대값 2 는 rubric v1.7.0 P2-08 levels.'2' 에서 유도했다: '브랜드 정의 한 문장(30어절 이내)이 홈·About·주요 랜딩에서 동일하게 반복되고, 일치율 60% 이상'. 발행된 예시의 정의문은 11어절로 30 이내이고, 픽스처가 같은 예시를 홈과 /about 두 곳에 놓으므로 일치율 2/2 = 100% >= 60% 다. 두 곳에 놓는 것이 이 항목의 요구 그 자체다 -- 한 장만 있으면 '페이지마다 같은가' 라는 물음이 성립하지 않아 판정이 input_missing 으로 빠진다(0점이 아니다).",
+  "spec_refs": [
+    "plane-b-readiness.md §5",
+    "plane-b-readiness.md §8.2"
+  ],
+  "notes": "예시 HTML 을 복사하지 않는다. 러너가 framework/remedies/P2-08.yaml 을 직접 읽으므로, 정의문의 '~다' 종결이나 '은/는' 주제격을 빼면 정의문으로 세지 않아 빨개진다. 정의문 판정은 형태(주제격 + '~다' 종결 + 30어절 이내)로 하며 의미를 보지 않는다 -- 그래서 예시의 나머지 문장은 우연히 그 형태에 걸리지 않도록 썼다.",
+  "input": {
+    "item_id": "P2-08"
+  },
+  "expected": {
+    "level": 2,
+    "unavailable_kind": null,
+    "declared_demonstrates_level": 2
+  },
+  "tolerance": {
+    "absolute": 0
+  },
+  "reference_implementation": {
+    "status": "conformant",
+    "note": "2026-09-12 구현. 러너의 _run_remedy_demonstrates 가 app/domain/remedies.load_remedies 로 발행본을 읽는다."
+  }
+}

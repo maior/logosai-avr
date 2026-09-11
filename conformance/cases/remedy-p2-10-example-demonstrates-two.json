@@ -1,0 +1,27 @@
+{
+  "id": "remedy-p2-10-example-demonstrates-two",
+  "title": "발행된 P2-10 예시를 수집기에 돌리면 level 2 가 나온다 — 의미 있는 슬러그 id 와 목차가 함께 있어야 닿는다",
+  "level": 2,
+  "operation": "remedy_demonstrates",
+  "rationale": "이 케이스가 증명하는 것은 '이 틀이 그 점수에 닿을 수 있다' 하나뿐이고, 고객의 페이지가 2점이 된다는 뜻이 아니다. 기대값 2 는 rubric v1.7.0 P2-10 levels.'2' 에서 유도했다: 'H2/H3에 의미 있는 슬러그 id가 있고, 장문 문서에 앵커 링크 목차가 제공됨'. 발행된 예시는 H2 6개 모두에 단어로 읽히는 슬러그 id(hyeonhwang-josa 등)를 두어 첫 조건을 채우고, 그 id 를 가리키는 #프래그먼트 링크 6개짜리 목록을 본문 앞에 두어 둘째 조건을 채운다. 헤딩을 6개로 둔 것이 판정의 핵심이다 -- levels.'2' 의 목차 조건은 '장문 문서에' 한정이라, 헤딩이 적은 예시는 그 조건을 비운 채 2 를 받아 '목차는 없어도 된다' 는 인상을 남긴다.",
+  "spec_refs": [
+    "plane-b-readiness.md §5",
+    "plane-b-readiness.md §2.1"
+  ],
+  "notes": "예시 HTML 을 복사하지 않는다. 러너가 framework/remedies/P2-10.yaml 을 직접 읽으므로, 목차의 링크를 지우면 '장문인데 목차 없음' 으로 level 1 이 되고, id 를 heading-1 류로 바꾸면 '의미 있는 슬러그' 조건에서 깎여 역시 level 1 이 된다 -- 어느 쪽이든 빨개진다.",
+  "input": {
+    "item_id": "P2-10"
+  },
+  "expected": {
+    "level": 2,
+    "unavailable_kind": null,
+    "declared_demonstrates_level": 2
+  },
+  "tolerance": {
+    "absolute": 0
+  },
+  "reference_implementation": {
+    "status": "conformant",
+    "note": "2026-09-12 구현. 러너의 _run_remedy_demonstrates 가 app/domain/remedies.load_remedies 로 발행본을 읽는다."
+  }
+}

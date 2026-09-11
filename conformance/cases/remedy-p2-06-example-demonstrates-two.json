@@ -1,0 +1,27 @@
+{
+  "id": "remedy-p2-06-example-demonstrates-two",
+  "title": "발행된 P2-06 예시를 수집기에 돌리면 level 2 가 나온다 — 틀이 그 점수에 닿을 수 있음을 보인다",
+  "level": 2,
+  "operation": "remedy_demonstrates",
+  "rationale": "이 케이스가 증명하는 것은 '이 틀이 그 점수에 닿을 수 있다' 하나뿐이고, 고객의 글이 2점이 된다는 뜻이 아니다. 기대값 2 는 rubric v1.7.0 P2-06 levels.'2' 에서 유도했다: '단락의 70% 이상이 2~4문장이고, 6문장 초과 단락 10% 미만'. 발행된 예시는 단락 4개가 모두 3문장이므로 2~4문장 비율 4/4 = 100% >= 70% 이고 6문장 초과 0/4 = 0% < 10% 다. 둘째 조건만 보면 한 문장짜리 단락을 늘어놓아도 통과하지만 그때는 첫 조건이 0% 가 되어 2 에 닿지 않는다 -- 이 항목은 '짧을수록 좋다' 가 아니라 '2~4문장이 다수' 를 요구한다.",
+  "spec_refs": [
+    "plane-b-readiness.md §5",
+    "plane-b-readiness.md §2.1"
+  ],
+  "notes": "예시 HTML 을 복사하지 않는다. 러너가 framework/remedies/P2-06.yaml 을 직접 읽으므로, 네 단락을 한 단락으로 합치면 12문장짜리 단락 하나가 되어 6문장 초과 100% 로 level 0 이 되고 빨개진다. 예시에 리스트를 두지 않은 것은 구현 편의가 아니다 -- <li> 를 단락으로 세는 감사이므로 한 줄짜리 <li> 가 섞이면 2~4문장 비율이 떨어진다. 표와 리스트는 P2-07 이 따로 본다.",
+  "input": {
+    "item_id": "P2-06"
+  },
+  "expected": {
+    "level": 2,
+    "unavailable_kind": null,
+    "declared_demonstrates_level": 2
+  },
+  "tolerance": {
+    "absolute": 0
+  },
+  "reference_implementation": {
+    "status": "conformant",
+    "note": "2026-09-12 구현. 러너의 _run_remedy_demonstrates 가 app/domain/remedies.load_remedies 로 발행본을 읽는다."
+  }
+}

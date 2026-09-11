@@ -1,0 +1,27 @@
+{
+  "id": "remedy-p2-03-example-demonstrates-two",
+  "title": "발행된 P2-03 예시를 수집기에 돌리면 level 2 가 나온다 — 틀이 그 점수에 닿을 수 있음을 보인다",
+  "level": 2,
+  "operation": "remedy_demonstrates",
+  "rationale": "structure 처방은 artifact 와 주장이 다르다. artifact 는 '이걸 붙이면 N점' 이고 structure 는 '이 예시가 N점' 이다 -- 고객의 글이 N점이 된다는 뜻이 **아니다**. 이 케이스가 증명하는 것은 하나뿐이다: 그 틀이 그 점수에 닿을 수 있다. 닿을 수 없는 틀을 처방으로 내보내지 않기 위한 하한선이다. 기대값 2 는 구현이 아니라 rubric v1.7.0 P2-03 levels.'2' 에서 유도했다: '미일치 섹션 15% 미만. 모든 H2가 직후 첫 문장에서 해당 표제어를 다시 언급'. 발행된 예시는 H1 1개와 H2 3개, 곧 섹션 4개를 두고 네 섹션 모두 헤딩의 표제어(재고관리 시스템 도입 / 현황 조사 / 데이터 이관 / 인수인계)를 직후 첫 문장에서 그대로 다시 쓴다. 미일치 0/4 = 0% < 15% 이고 둘째 조건(모든 H2)도 참이므로 2 다. H1 아래에 문단을 둔 것이 판정에 필요하다 -- 헤딩과 다음 헤딩 사이에 본문이 없으면 그 섹션은 표제어가 등장할 자리 자체가 없어 미일치 1/4 = 25% 가 되고 level 1 로 내려간다.",
+  "spec_refs": [
+    "plane-b-readiness.md §5",
+    "plane-b-readiness.md §2.1"
+  ],
+  "notes": "declared_demonstrates_level 을 함께 내보내 처방 파일이 선언한 값과 실제 판정을 대조한다 -- 갈라지면 처방 파일의 verify 가 거짓이 된다. 이 케이스는 예시 HTML 을 복사하지 않는다. 러너가 framework/remedies/P2-03.yaml 을 직접 읽으므로, 어느 H2 의 첫 문장을 '이 단계에서는…' 같은 대명사로 바꾸면 빨개진다. StructureCollector 는 P2-02·03·05·06·07·08 을 한꺼번에 판정하지만 이 케이스는 자기 항목(P2-03)의 level 만 본다.",
+  "input": {
+    "item_id": "P2-03"
+  },
+  "expected": {
+    "level": 2,
+    "unavailable_kind": null,
+    "declared_demonstrates_level": 2
+  },
+  "tolerance": {
+    "absolute": 0
+  },
+  "reference_implementation": {
+    "status": "conformant",
+    "note": "2026-09-12 구현. 러너의 _run_remedy_demonstrates 가 app/domain/remedies.load_remedies 로 발행본을 읽는다."
+  }
+}

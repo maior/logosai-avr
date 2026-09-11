@@ -1,0 +1,75 @@
+# P2-10 앵커 가능한 구조
+#
+# **이 처방은 붙여넣는 것이 아니다.** id 슬러그는 헤딩마다 다르므로 전문을 줄 수
+# 없다. 아래 `example` 은 채워진 예시이고, 우리가 확인할 수 있는 것은 하나뿐이다 --
+# 이 **틀이 2점에 닿을 수 있다**. 당신 페이지가 2점이 된다는 뜻이 아니다.
+
+item_id: P2-10
+
+target_state: |
+  H2/H3 에 **의미 있는 슬러그 id** 가 있고, 장문 문서에는 그 id 를 가리키는 **앵커
+  링크 목차**가 있다.
+
+  "의미 있는 슬러그" 란 `#hyeonhwang-josa`·`#pricing-faq` 처럼 무엇에 대한
+  섹션인지 읽히는 id 다. `#heading-3`·`#a3f9c12e` 같은 자동 생성 id 는 앵커로
+  쓸 수는 있어도 무엇을 가리키는지 알려주지 않는다.
+
+  **왜 이게 인용에 관계되는가**: 문서 전체가 아니라 섹션 하나를 가리킬 수 있으면
+  그 섹션이 인용의 단위가 될 수 있다. 목차는 사람을 위한 것이기도 하지만, 문서
+  안에 무엇이 있는지를 문서 스스로 적어두는 일이기도 하다.
+
+  **id 만 넣고 목차를 빠뜨리는 것이 가장 흔한 미완성이다.** rubric level 1 이
+  그 상태를 그대로 적고 있다 — "id 는 있으나 목차(TOC)가 없거나".
+
+example: |
+  <h1>재고관리 시스템 도입 가이드</h1>
+  <ul>
+    <li><a href="#hyeonhwang-josa">현황 조사</a></li>
+    <li><a href="#deiteo-igwan">데이터 이관</a></li>
+    <li><a href="#gwonhan-seoljeong">권한 설정</a></li>
+    <li><a href="#jaego-silsa">재고 실사</a></li>
+    <li><a href="#allim-seoljeong">알림 설정</a></li>
+    <li><a href="#unyeong-insugingye">운영 인수인계</a></li>
+  </ul>
+  <h2 id="hyeonhwang-josa">현황 조사</h2>
+  <p>창고별 품목 수와 입출고 빈도를 센다.</p>
+  <h2 id="deiteo-igwan">데이터 이관</h2>
+  <p>엑셀 장부를 CSV 로 내보내 일괄 등록한다.</p>
+  <h2 id="gwonhan-seoljeong">권한 설정</h2>
+  <p>발주 권한과 조회 권한을 나눈다.</p>
+  <h2 id="jaego-silsa">재고 실사</h2>
+  <p>분기에 한 번 장부와 실물을 대조한다.</p>
+  <h2 id="allim-seoljeong">알림 설정</h2>
+  <p>기준 수량 아래로 떨어지면 알린다.</p>
+  <h2 id="unyeong-insugingye">운영 인수인계</h2>
+  <p>도입 4주차에 현업 담당자에게 넘긴다.</p>
+
+not_verifiable: null
+
+verify:
+  collector: AnchorStructureCollector
+  demonstrates_level: 2
+  note: |
+    골든 케이스 `remedy-p2-10-example-demonstrates-two` 가 **이 파일을 직접 읽어**
+    돌린다. 목차의 `<a href="#…">` 를 지우면 장문 문서에 목차가 없는 상태가 되어
+    level 1 로 내려가고, id 를 `heading-1` 류로 바꿔도 "의미 있는 슬러그"가 아니라
+    깎인다 -- 어느 쪽이든 그 케이스가 빨개진다.
+
+    헤딩을 여섯 개 둔 것은 장식이 아니다. 이 감사는 H2/H3 가 6개 이상인 페이지를
+    장문으로 보고 그때만 목차를 요구한다 -- 헤딩이 셋뿐인 예시는 목차 조건을
+    비워둔 채 2점을 받아, **목차가 필요 없다는 인상**을 남긴다.
+
+fixture:
+  # 예시가 문서 그 자체다. 이 수집기는 홈부터 읽으므로 "/" 에 놓는다 -- 러너의
+  # 보일러플레이트에는 H2/H3 가 없어 앵커 통계의 분모를 만들지 못한다.
+  place: document
+  targets: ["/"]
+
+adapters:
+  - platform: any
+    where: "헤딩을 렌더링하는 곳. 대부분의 마크다운 변환기(GitHub·Docusaurus·Hugo)는
+      헤딩 id 를 자동 생성하고 목차 삽입 기능도 갖고 있다 — **자동 생성 id 가
+      의미 있는 슬러그인지**만 확인하면 되는 경우가 많다"
+    status: unconfirmed
+    note: "어느 변환기의 슬러그 규칙도 실제로 확인하지 않았다. 한글 헤딩을
+      퍼센트 인코딩으로 만드는 구현이 있어 결과가 갈릴 수 있다"

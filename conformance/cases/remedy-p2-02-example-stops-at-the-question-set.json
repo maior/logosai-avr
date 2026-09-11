@@ -1,0 +1,29 @@
+{
+  "id": "remedy-p2-02-example-stops-at-the-question-set",
+  "title": "발행된 P2-02 예시는 질문형 비율을 100% 로 채우고도 input_missing 에서 멈춘다 — level 2 의 둘째 조건이 문서 밖에 있다",
+  "level": 2,
+  "operation": "remedy_demonstrates",
+  "rationale": "structure 처방도 artifact 처럼 천장을 만난다. 기대값은 rubric v1.7.0 P2-02 levels.'2' 에서 유도했다: '질문형 헤딩 비율 40% 이상이고, 목표 질문 세트의 상위 20개 중 10개 이상이 어떤 페이지의 H1/H2와 어휘 수준에서 대응'. 두 조건의 and 인데 앞 조건만 문서 안에서 확인된다 -- 목표 질문 세트는 Plane A 의 입력(무엇을 물어볼 것인가)이고 사이트를 아무리 잘 써도 거기서 나오지 않는다. 발행된 예시는 H1 1개와 H2 3개가 모두 질문형이라 비율 4/4 = 100% >= 40% 로 앞 조건을 채우고, 뒤 조건을 확인할 입력이 없어 unavailable_kind = input_missing 에서 멈춘다. 이것을 demonstrates_level 2 로 적으면 거짓이고, 1 로 적으려면 levels.'1'(질문형 10~39%)에 맞춰 예시를 나쁘게 고쳐야 한다 -- 그래서 세 번째 선언(천장)을 쓴다. 미판정은 0점이 아니므로 ARS 점수 분모에서는 빠지고 unscored_item_ids 로 공시되지만, input_missing 은 '우리가 모르면 남긴다' 에 해당해 커버리지 분모에는 남는다(§8.2·§8.3) -- 감사를 덜 한 것이 커버리지 이득이 되면 안 되기 때문이다.",
+  "spec_refs": [
+    "plane-b-readiness.md §8.2",
+    "plane-b-readiness.md §8.3",
+    "plane-b-readiness.md §5"
+  ],
+  "notes": "예시 HTML 을 복사하지 않는다. 러너가 framework/remedies/P2-02.yaml 을 직접 읽는다. 천장에 '닿는 것' 자체가 이 케이스가 재는 값이다 -- 헤딩을 평서문으로 바꾸면 비율이 40% 아래로 떨어져 판정이 level 0/1 로 내려가고 빨개진다. 즉 이 케이스는 '2가 안 나온다' 를 재는 것이 아니라 '확인 가능한 조건은 전부 통과했다' 를 잰다.",
+  "input": {
+    "item_id": "P2-02"
+  },
+  "expected": {
+    "level": null,
+    "unavailable_kind": "input_missing",
+    "declared_demonstrates_level": null,
+    "declared_demonstrates_unavailable_kind": "input_missing"
+  },
+  "tolerance": {
+    "absolute": 0
+  },
+  "reference_implementation": {
+    "status": "conformant",
+    "note": "2026-09-12 구현. StructureCollector 가 target_questions 없이 질문형 비율 40% 이상을 만나면 input_missing 으로 남긴다."
+  }
+}
