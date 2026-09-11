@@ -1,0 +1,37 @@
+{
+  "id": "remedy-p4-08-artifact-scores-two",
+  "title": "발행된 P4-08 처방 산출물을 치환해 수집기에 돌리면 level 2 이 나온다",
+  "level": 2,
+  "operation": "remedy_applies",
+  "rationale": "다섯 사실(정의문·설립연도·대표자·사업자정보/소재지·연락수단)을 모두 담은 산출물이 About 페이지에 놓이면 rubric v1.7.0 P4-08 levels.'2' 의 조건이 그대로 충족된다. 기대값은 구현이 아니라 그 문구에서 유도했다. 픽스처는 /about 을 표본에 넣어 수집기가 그 페이지를 About 으로 식별하게 한다 -- 홈 내비 링크 경로는 이 케이스가 재는 대상이 아니다(그쪽은 수집기 시험이 따로 덮는다). fact 분류는 artifact 와 마크업 모양이 같고 **치환값의 성격**이 다르다 -- 넣을 사실이 아직 없을 수 있어 prerequisites 를 필수로 둔다. 이 케이스가 증명하는 것은 '사실만 갖추면 붙여넣기로 그 점수에 닿는다' 이지 '사실 없이도 된다' 가 아니다.",
+  "spec_refs": [
+    "plane-b-readiness.md §7",
+    "plane-b-readiness.md §2.1"
+  ],
+  "notes": "산출물을 케이스에 복사하지 않는다. 러너가 framework/remedies/P4-08.yaml 을 직접 읽으므로 발행본을 망가뜨리면 이 케이스가 빨개진다.",
+  "input": {
+    "item_id": "P4-08",
+    "placeholder_values": {
+      "{{ORG_NAME}}": "예시상사",
+      "{{DEFINITION}}": "중소기업용 재고 관리 소프트웨어를 만드는 회사입니다",
+      "{{FOUNDED_YEAR}}": "2018",
+      "{{TRACTION}}": "1,200개 사업장이 이용하고 있습니다",
+      "{{PRINCIPAL_NAME}}": "권민수",
+      "{{BUSINESS_NUMBER}}": "123-45-67890",
+      "{{ADDRESS}}": "서울특별시 강남구 테헤란로 123",
+      "{{CONTACT_EMAIL}}": "hello@example.com"
+    }
+  },
+  "expected": {
+    "level": 2,
+    "unavailable_kind": null,
+    "declared_expect_level": 2
+  },
+  "tolerance": {
+    "absolute": 0
+  },
+  "reference_implementation": {
+    "status": "conformant",
+    "note": "2026-09-12 구현."
+  }
+}

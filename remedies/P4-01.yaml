@@ -1,0 +1,76 @@
+# P4-01 명시적 저자 표기
+#
+# `fact` 분류다 — 바이라인 마크업은 드리지만 **저자가 누구인지는 우리가 정할 수 없다.**
+# 그리고 실명을 밝히는 것은 마크업 결정이 아니라 회사의 결정이다.
+
+item_id: P4-01
+
+target_state: |
+  문서형 페이지(블로그·가이드·뉴스)의 70% 이상에 **실명 저자**가 표기되고, 각 저자가
+  전용 프로필 페이지로 연결된다.
+
+  "관리자"·"편집팀"·"운영자" 는 실명이 아니다. 그런 표기는 저자가 없는 것과 같게
+  채점된다 — E-E-A-T 의 A(Authoritativeness)는 조직이 아니라 **사람**에 붙기 때문이다.
+
+  저자 이름은 셋 중 아무 방식으로 밝혀도 된다. JSON-LD `author`, `<meta name="author">`,
+  본문 바이라인("글 ○○○"). 우리 수집기는 셋 다 읽는다.
+
+  **가격·문의 페이지에는 저자가 없어도 된다.** 이 항목의 분모는 문서형 페이지뿐이다.
+
+prerequisites:
+  - what: "실명을 공개할 저자"
+    why: "누구 이름을 걸지는 회사와 그 사람이 정할 일이다. 외주로 쓴 글에 직원 이름을
+      올리는 것은 이 항목이 재려는 것과 정반대다 — 확인 가능한 책임 주체가 목적이다"
+  - what: "저자별 프로필 페이지 (소개 + 연락 수단)"
+    why: "CMS 가 자동 생성하는 '이 저자의 글 목록' 태그 페이지는 프로필이 아니다.
+      level 2 는 소개·이력·연락처를 요구한다. 글 목록만 있으면 1점에서 멈춘다"
+
+artifact: |
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "{{HEADLINE}}",
+    "datePublished": "{{PUBLISHED}}",
+    "dateModified": "{{MODIFIED}}",
+    "author": {
+      "@type": "Person",
+      "name": "{{AUTHOR_NAME}}",
+      "url": "{{AUTHOR_PROFILE_URL}}"
+    }
+  }
+  </script>
+  <p class="byline">글 <a href="{{AUTHOR_PROFILE_URL}}">{{AUTHOR_NAME}}</a></p>
+
+placeholders:
+  - key: "{{HEADLINE}}"
+    meaning: "글 제목. 화면의 H1 과 같게 쓴다"
+  - key: "{{PUBLISHED}}"
+    meaning: "발행일 (YYYY-MM-DD)"
+  - key: "{{MODIFIED}}"
+    meaning: "최종 수정일. 발행 후 안 고쳤으면 발행일과 같게 둔다"
+  - key: "{{AUTHOR_NAME}}"
+    meaning: "저자 실명. '편집팀'·'관리자' 는 익명 표기로 판정되어 0점이 된다"
+  - key: "{{AUTHOR_PROFILE_URL}}"
+    meaning: "저자 프로필 페이지 주소. 경로에 author/writer/profile/member 가 들어가야
+      우리 수집기가 프로필 링크로 읽는다 — 예: /authors/kwon"
+
+verify:
+  collector: AuthorBylineCollector
+  expect_level: 2
+  note: |
+    **자동 판정이 확인하는 것은 링크까지다.** 프로필 페이지가 이번 회차 표본에 있으면
+    내용(소개 산문 + 연락 수단)까지 보지만, 없으면 `profile_content_verified=no` 를
+    근거에 남기고 링크 존재만으로 2 를 준다. 그래서 전제조건에 프로필 페이지의 내용을
+    적어 두었다 — 표본에 잡혔는데 글 목록뿐이면 **1점으로 떨어진다.**
+
+fixture:
+  place: body
+  targets: ["/blog/a", "/blog/b", "/blog/c"]
+  extra_urls: ["/blog/a", "/blog/b", "/blog/c"]
+
+adapters:
+  - platform: any
+    where: "글 템플릿. JSON-LD 는 <head> 든 <body> 든 응답 본문에 있으면 된다"
+    status: unconfirmed
+    note: "어느 사이트에도 적용해 재진단한 적 없다"
