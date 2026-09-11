@@ -1,0 +1,77 @@
+# P3-01 Organization 스키마
+#
+# **목표 상태가 정본이고 산출물은 그것을 만족시키는 한 예다.** 아래 JSON-LD 를 그대로
+# 쓸 필요는 없다 -- 같은 필드를 담은 응답이면 무엇이든 level 2 다. 우리가 발명한
+# 마크업이 아니라 schema.org 어휘이고, 우리는 그 어휘를 AVR 기준으로 채점할 뿐이다.
+
+item_id: P3-01
+
+target_state: |
+  홈 URL 의 HTTP 응답 본문에 `@type: Organization`(또는 하위 타입) JSON-LD 가
+  포함되고, 그 노드가 다음을 **모두** 갖는다.
+
+    name · url · logo · description · @id
+    contactPoint 또는 address 중 최소 하나
+
+  @id 가 이 항목의 핵심이다. 다른 스키마(WebSite 의 publisher, Article 의
+  publisher)가 이 조직을 **참조**할 앵커이기 때문이다. @id 가 없으면 각 페이지의
+  Organization 이 서로 다른 조직인지 같은 조직인지 기계가 알 수 없다.
+
+  JS 로 주입해도 응답 본문에 없으면 소용없다 -- 크롤러가 받는 것은 최초 응답이다
+  (P1-03 이 그 층을 따로 잰다).
+
+artifact: |
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "@id": "{{SITE_URL}}#organization",
+    "name": "{{ORG_NAME}}",
+    "url": "{{SITE_URL}}",
+    "logo": "{{LOGO_URL}}",
+    "description": "{{DESCRIPTION}}",
+    "contactPoint": {
+      "@type": "ContactPoint",
+      "contactType": "customer support",
+      "email": "{{CONTACT_EMAIL}}"
+    }
+  }
+  </script>
+
+placeholders:
+  - key: "{{SITE_URL}}"
+    meaning: "사이트 정본 URL. www 포함 여부와 끝 슬래시까지 canonical 과 일치시킨다 —
+      다르면 WebSite·Article 이 이 @id 를 못 찾는다"
+  - key: "{{ORG_NAME}}"
+    meaning: "법인명이 아니라 **브랜드가 불리는 이름**. 검색·AI 답변에 등장하는 표기와 같아야 한다"
+  - key: "{{LOGO_URL}}"
+    meaning: "로고 이미지의 절대 URL. 상대 경로는 쓰지 않는다"
+  - key: "{{DESCRIPTION}}"
+    meaning: "한 문장 정의. '무엇을 하는 조직인가'에 답한다. 슬로건이 아니다"
+  - key: "{{CONTACT_EMAIL}}"
+    meaning: "실제 수신되는 주소. address 로 대체해도 된다 — 둘 중 하나면 충족된다"
+
+verify:
+  collector: SchemaOrgCollector
+  expect_level: 2
+  note: |
+    골든 케이스 `remedy-p3-01-artifact-scores-two` 가 **이 파일을 직접 읽어**
+    치환 후 수집기에 돌린다. 산출물을 고치면 그 케이스가 빨개진다.
+
+adapters:
+  # status 의 뜻: **이 저장소의 누군가가 실제로 그 플랫폼에 적용해 재진단으로 level 2
+  # 를 확인했는가.** 아직 아무 플랫폼도 확인하지 않았으므로 전부 unconfirmed 다.
+  # "문서에 그렇게 적혀 있다" 는 확인이 아니다.
+  - platform: nextjs
+    where: "app/layout.tsx 에서 <script type=\"application/ld+json\"> 를 직접 렌더링"
+    status: unconfirmed
+    note: "실제 적용 후 재진단으로 확인한 적 없음. App Router 기준이며 Pages Router 는 자리가 다르다"
+  - platform: wordpress
+    where: "테마 functions.php 의 wp_head 훅, 또는 SEO 플러그인의 스키마 설정"
+    status: unconfirmed
+    note: "확인 안 함. 플러그인이 이미 Organization 을 발행하면 **중복 노드**가 생겨
+      오히려 1점이 될 수 있다 — 적용 전 기존 발행 여부를 먼저 봐야 한다"
+  - platform: cafe24
+    where: "관리자 > 디자인 > HTML 편집 (레이아웃 head 영역)"
+    status: unconfirmed
+    note: "확인 안 함. 호스팅형 빌더라 head 편집 허용 범위가 요금제·스킨에 따라 다를 수 있다"

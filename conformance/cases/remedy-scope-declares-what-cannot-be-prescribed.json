@@ -1,0 +1,39 @@
+{
+  "id": "remedy-scope-declares-what-cannot-be-prescribed",
+  "title": "처방 카탈로그 분류표는 45항목과 1:1 이고, earned 항목은 언제나 none 이며, artifact 는 담당 수집기가 있어야 한다",
+  "level": 1,
+  "operation": "remedy_scope",
+  "rationale": "리포트의 할 일 목록은 rubric 의 levels 문구를 그대로 쓴다(frontend/src/lib/readiness-plan.ts 의 now/next). 그건 '무엇이 있어야 하는가'(판정 기준)이지 '무엇을 하는가'(조치)가 아니다. 처방 카탈로그가 그 간극을 메우는데, 메우는 순간 45항목이 전부 붙여넣기로 해결되는 것처럼 보이는 거짓말이 가능해진다. 실제로는 전문을 줄 수 있는 것이 12개뿐이고(artifact), 11개는 틀만(structure), 4개는 고객이 사실을 만들어야 하며(fact), 4개는 서버·아키텍처(infra), 9개는 운영 절차(process), 그리고 5개는 카탈로그가 줄 수 있는 것이 아무것도 없다(none). 세 불변식이 이 정직성을 강제한다. ① 45항목 1:1 -- 빠진 항목은 '처방 없음'으로 보이고 그건 '줄 것이 없다'와 구별되지 않는다(전자는 우리 결손, 후자는 사실). ② remediation:earned 는 언제나 none -- rubric 이 이미 '사이트 밖에서 얻는 것'이라고 적어둔 항목에 처방을 달면 rubric 과 카탈로그가 서로 다른 말을 하고, 우리는 못 하는 대행이 된다. ③ artifact 는 담당 수집기 필수 -- 적용 결과를 못 재면 '이렇게 하면 점수가 오릅니다'가 근거 없는 약속이 된다. 기대값은 framework/remedies/scope.yaml 에서 유도했으며, 분포(12/11/4/4/9/5=45)는 rubric v1.7.0 의 45항목과 remediation 티어 배정에서 나온다.",
+  "spec_refs": [
+    "plane-b-readiness.md §9",
+    "plane-b-readiness.md §10",
+    "STANDARDS.md §0"
+  ],
+  "notes": "이 operation 은 계산이 아니라 정본 데이터 자체를 재는 케이스다 -- rubric_remediation·rubric_evidence 와 같은 종류다. 제3자 구현이 자기 처방 카탈로그를 만들 때 재현해야 하는 계약이 여기 있다. counts 의 합이 45 인지와 각 목록이 비어 있는지가 본체이고, 분포 자체는 카탈로그가 자라면 바뀔 수 있다(그때 이 케이스를 갱신한다).",
+  "input": {
+    "vocabulary": ["artifact", "structure", "fact", "infra", "process", "none"]
+  },
+  "expected": {
+    "total": 45,
+    "counts": {
+      "artifact": 12,
+      "structure": 11,
+      "fact": 4,
+      "infra": 4,
+      "process": 9,
+      "none": 5
+    },
+    "missing_item_ids": [],
+    "unknown_item_ids": [],
+    "unknown_kind_item_ids": [],
+    "earned_not_none_item_ids": [],
+    "artifact_without_collector_item_ids": []
+  },
+  "tolerance": {
+    "absolute": 0
+  },
+  "reference_implementation": {
+    "status": "conformant",
+    "note": "2026-09-11 구현. app/domain/remedies.py 의 load_scope 가 framework/remedies/scope.yaml 을 읽고, backend/tests/test_remedy_catalog.py 가 같은 불변식을 단위 시험으로도 고정한다."
+  }
+}
