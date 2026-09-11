@@ -365,8 +365,20 @@ rubric 이 규정하지 않아 **구현이 정해버린** 값들이 있다. 이 
    요구하는 규칙인데 산출 경로가 없다. 골든 케이스 2건이 이 결손을 고정하고 있다.
 4. **사분면 식별자가 두 벌이다.** 스키마는 `Q1`~`Q4`, 참조 구현은
    `leader`/`prepared`/`coasting`/`untapped`. 어느 쪽이 정본인지 명시되어 있지 않다.
-5. **`check: auto` 33개 중 참조 구현이 담당하는 것은 22개다.** 나머지 11개는 코드에
-   `UNCOVERED_AUTO_ITEM_IDS` 로 사유와 함께 열거되어 있으나, **리포트로는 사유가 흘러가지 않고**
-   `unscored_item_ids` 에 미판정으로만 남는다. 결과적으로 리포트에서 "구현하지 않았다"와
-   "측정을 시도했으나 실패했다"가 구분되지 않는다. 스키마에 항목별 미판정 사유 구분
-   (`not_implemented` / `measurement_failed` / `input_missing`)을 두는 것을 검토해야 한다.
+5. **`check: auto` 34개 중 참조 구현이 담당하는 것은 27개다.** 나머지 7개
+   (P1-08·P1-09·P2-01·P2-04·P2-09·P4-01·P4-08)는 코드에 `UNCOVERED_AUTO_ITEM_IDS` 로
+   열거되어 있고, 커버리지 **분모에 남는다** — 우리가 안 만든 것을 분모에서 빼면
+   아무것도 구현하지 않은 구현이 커버리지 100% 를 주장하게 된다.
+
+   *(2026-09-11 해소)* 사유가 리포트로 흘러가지 않던 문제는 닫혔다. 미판정 항목은 이제
+   전부 `unavailable_kinds` 로 사유를 싣는다. 그 전까지는 파일럿 회차 리포트에만 실리고
+   제품 리포트에는 안 실렸다 — 실측으로 45항목 중 25개가 미판정인데 **18개에 사유가
+   없었다**(no_collector 7 + awaiting_manual 11). 어휘·의미·분모 규칙·화면 렌더링이 모두
+   있었고 **제품 경로만 그 표를 읽지 않았다.**
+
+   어휘는 `not_implemented`/`measurement_failed` 가 아니라 6종이다 (`scoring.md` §8.4):
+   `not_applicable`·`design_limit`(분모 제외) / `inconclusive`·`no_collector`·
+   `input_missing`·`awaiting_manual`(분모 포함). 구별이 필요한 이유는 고객이 할 수 있는
+   일이 서로 다르기 때문이다 — `no_collector` 는 우리 로드맵 결손이고,
+   `awaiting_manual` 은 사람이 보면 판정되며, `input_missing` 은 고객이 입력을 주면
+   지금 해소된다.
