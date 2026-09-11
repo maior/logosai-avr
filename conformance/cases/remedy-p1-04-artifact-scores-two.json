@@ -1,0 +1,39 @@
+{
+  "id": "remedy-p1-04-artifact-scores-two",
+  "title": "발행된 P1-04 처방 llms.txt 를 치환해 /llms.txt 로 놓으면 실제로 level 2 가 나온다",
+  "level": 2,
+  "operation": "remedy_applies",
+  "rationale": "기대값 2 는 rubric v1.7.0 P1-04 levels.'2' 에서 유도했다: '/llms.txt 가 200으로 응답하고, H1 사이트명 + 요약 문단 + 링크 5개 이상 각각 한 줄 설명을 포함'. 처방 산출물은 H1 한 줄, 링크가 없는 요약 문단 한 줄, 그리고 설명이 붙은 링크 6개를 담는다. 최소치 5개가 아니라 6개인 이유는 설명 하나를 지우는 돌연변이가 링크 수가 아니라 '각각 한 줄 설명' 조건을 때리게 하기 위함이다.",
+  "spec_refs": [
+    "plane-b-readiness.md §6",
+    "plane-b-readiness.md §2.1"
+  ],
+  "notes": "⚠️ 이 케이스가 초록이라는 것은 **형식이 rubric 을 만족한다**는 뜻이지 이 파일이 AI 에 읽힌다는 뜻이 아니다. rubric 은 이 항목에 evidence_grade: unverified 를 붙였고, 주요 AI 가 llms.txt 를 실제로 읽는다는 실증은 약하다. 이 처방으로 오르는 것은 ARS 뿐이다.",
+  "input": {
+    "item_id": "P1-04",
+    "placeholder_values": {
+      "{{ABOUT_DESC}}": "설립 연도, 대표자, 주요 연혁",
+      "{{CONTACT_DESC}}": "이메일 문의, 영업일 기준 1일 내 회신",
+      "{{FAQ_DESC}}": "도입 기간·데이터 이관·해지에 대한 질문",
+      "{{GUIDES_DESC}}": "재고 실사와 발주점 설정을 다루는 문서 모음",
+      "{{ONE_LINE_SUMMARY}}": "예시상사는 중소기업용 재고 관리 소프트웨어를 만듭니다.",
+      "{{ORG_NAME}}": "예시상사",
+      "{{PRICING_DESC}}": "사용자당 월정액 과금 기준",
+      "{{SERVICES_DESC}}": "재고 관리·발주 자동화 제공 품목과 대상 고객",
+      "{{SITE_URL}}": "https://example.com"
+    }
+  },
+  "expected": {
+    "level": 2,
+    "unavailable_kind": null,
+    "declared_expect_level": 2,
+    "declared_expect_unavailable_kind": null
+  },
+  "tolerance": {
+    "absolute": 0
+  },
+  "reference_implementation": {
+    "status": "conformant",
+    "note": "2026-09-11 구현. 러너의 _run_remedy_applies 가 처방의 fixture 선언대로 픽스처 사이트를 짓고 발행본을 놓는다."
+  }
+}

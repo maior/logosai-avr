@@ -1,0 +1,136 @@
+# P3-04 FAQPage 스키마
+#
+# ⚠️ **완전한 산출물을 붙여도 자동 판정은 level 2 에 닿지 않는다.**
+#    rubric level 2 의 마지막 조건이 "질문이 실제 **목표 질문 세트**에서 유래" 이고,
+#    그건 마크업 안에 있는 사실이 아니라 마크업 **밖에서 주어져야 하는 입력**이다.
+#    우리 수집기는 그것을 추측하지 않고 미판정(input_missing)으로 남긴다 -- 추측으로
+#    2 점을 주면 리포트가 거짓이 된다. 아래 verify.ceiling 이 그 지점을 못박는다.
+#
+# 이 항목이 카탈로그의 한계를 가장 정직하게 보여준다. 붙여넣을 틀은 완전히 줄 수
+# 있는데, 그 틀에 **무엇을 넣어야 하는지**는 측정(Plane A) 없이는 정할 수 없다.
+# 그게 "붙여넣기가 되는 부분이 제일 안 중요한 부분이다" 의 뜻이다.
+
+item_id: P3-04
+
+target_state: |
+  FAQ 페이지에 `@type: FAQPage` JSON-LD 가 있고 다음을 갖는다.
+
+    mainEntity 가 **5개 이상**의 Question
+    각 Question 의 acceptedAnswer 텍스트가 **화면 표시 텍스트와 일치**
+    질문이 **실제 목표 질문 세트에서 유래**
+
+  앞 둘은 마크업의 성질이고 셋째는 아니다. 셋째는 "사람들이 AI 에게 실제로 묻는
+  질문을 우리가 알고 있고, 그 질문에 답을 달았는가" 이며, 그 목록은 Plane A 프로빙의
+  질문 세트에서 나온다. 사이트만 봐서는 확인할 방법이 없다.
+
+  **그래서 이 처방을 다 적용해도 이 항목은 미판정으로 남는다.** 미판정은 0 점이 아니다
+  (ARS 는 분모에서 빼고 `unscored_item_ids` 로 공시한다). 2 점을 받으려면 목표 질문
+  세트를 정하고, 그 질문으로 이 FAQ 를 다시 써야 한다 -- 그것은 붙여넣기가 아니라
+  2층(선택)의 작업이다.
+
+  "화면 표시 텍스트와 일치" 도 가볍게 볼 조건이 아니다. 마크업에만 답이 있고 화면에
+  없으면 그것은 검색엔진용 숨은 콘텐츠이고, 지금은 감점 사유일 뿐 아니라 스팸 정책
+  위반이다. 아래 산출물이 JSON-LD 와 화면 마크업을 **한 덩어리로** 주는 이유다.
+
+artifact: |
+  <section class="faq">
+    <h2>자주 묻는 질문</h2>
+    <dl>
+      <dt>{{Q1}}</dt><dd>{{A1}}</dd>
+      <dt>{{Q2}}</dt><dd>{{A2}}</dd>
+      <dt>{{Q3}}</dt><dd>{{A3}}</dd>
+      <dt>{{Q4}}</dt><dd>{{A4}}</dd>
+      <dt>{{Q5}}</dt><dd>{{A5}}</dd>
+    </dl>
+  </section>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "@id": "{{PAGE_URL}}#faq",
+    "mainEntity": [
+      { "@type": "Question", "name": "{{Q1}}",
+        "acceptedAnswer": { "@type": "Answer", "text": "{{A1}}" } },
+      { "@type": "Question", "name": "{{Q2}}",
+        "acceptedAnswer": { "@type": "Answer", "text": "{{A2}}" } },
+      { "@type": "Question", "name": "{{Q3}}",
+        "acceptedAnswer": { "@type": "Answer", "text": "{{A3}}" } },
+      { "@type": "Question", "name": "{{Q4}}",
+        "acceptedAnswer": { "@type": "Answer", "text": "{{A4}}" } },
+      { "@type": "Question", "name": "{{Q5}}",
+        "acceptedAnswer": { "@type": "Answer", "text": "{{A5}}" } }
+    ]
+  }
+  </script>
+
+placeholders:
+  - key: "{{PAGE_URL}}"
+    meaning: "이 FAQ 가 놓인 페이지의 절대 URL. (적합성 러너는 픽스처 페이지 URL 로 자동 치환한다)"
+  - key: "{{Q1}}"
+    meaning: "**목표 질문 세트의 질문을 그대로.** 사람이 AI 에게 묻는 말투여야 한다 —
+      '서비스 소개' 가 아니라 '재고관리 프로그램 어디가 제일 싸요?' 쪽이다.
+      이 자리에 무엇을 넣을지가 이 항목의 전부이고, 카탈로그가 못 정해주는 부분이다"
+  - key: "{{A1}}"
+    meaning: "1번 질문의 답. **화면 `<dd>` 와 마크업 text 가 같은 문자열이어야 한다** —
+      산출물이 둘을 한 덩어리로 주는 이유다. 큰따옴표는 `\\\"` 로 이스케이프한다"
+  - key: "{{Q2}}"
+    meaning: "2번 질문. 1번과 다른 의도의 질문이어야 한다(같은 질문의 말바꿈은 5개로 안 센다)"
+  - key: "{{A2}}"
+    meaning: "2번 질문의 답. 화면과 마크업이 같은 문자열"
+  - key: "{{Q3}}"
+    meaning: "3번 질문"
+  - key: "{{A3}}"
+    meaning: "3번 질문의 답. 화면과 마크업이 같은 문자열"
+  - key: "{{Q4}}"
+    meaning: "4번 질문"
+  - key: "{{A4}}"
+    meaning: "4번 질문의 답. 화면과 마크업이 같은 문자열"
+  - key: "{{Q5}}"
+    meaning: "5번 질문. rubric 이 요구하는 최소치가 5개이며, 4개면 level 1 이다"
+  - key: "{{A5}}"
+    meaning: "5번 질문의 답. 화면과 마크업이 같은 문자열"
+
+verify:
+  collector: SchemaOrgCollector
+  expect_unavailable_kind: input_missing
+  ceiling: |
+    **자동 판정의 천장은 level 2 가 아니라 미판정(input_missing)이다.**
+
+    rubric v1.7.0 P3-04 levels."2" 는 세 조건을 AND 로 건다 — ① mainEntity 5개 이상
+    ② acceptedAnswer 가 화면 표시 텍스트와 일치 ③ **질문이 실제 목표 질문 세트에서
+    유래**. 산출물은 ①·②를 구조적으로 보장하지만 ③은 사이트 안에 있는 사실이 아니다.
+    목표 질문 세트는 Plane A 프로빙의 입력이며, 사이트만 보는 감사에는 그 입력이 없다.
+
+    그래서 기대값은 "level 2" 가 아니라 "①·②를 충족한 상태에서 ③ 때문에 미판정" 이다.
+    골든 케이스는 그 지점을 그대로 단언한다. 질문을 4개로 줄이면 ①이 깨져 level 1 로
+    떨어지고, 답 하나를 화면과 다르게 쓰면 ②가 깨져 역시 level 1 이다 -- 그래서 이
+    케이스는 '아무것도 안 재는 케이스' 가 아니다.
+
+    **이 처방이 미판정을 만든다는 사실을 결함으로 읽지 마라.** 미판정은 0 점이 아니고,
+    ARS 분모에서 빠진 뒤 `unscored_item_ids` 로 공시된다. 2 점으로 올리는 길은 마크업이
+    아니라 질문 세트를 정하는 일이다.
+  note: |
+    골든 케이스 `remedy-p3-04-artifact-reaches-the-machine-ceiling` 이 이 파일을 읽어
+    홈 `<body>` 에 놓고 돌린다. `<head>` 가 아니라 `<body>` 인 이유: 조건 ②가
+    **화면에 보이는 텍스트**와의 일치이고, head 안의 텍스트는 화면이 아니다.
+
+fixture:
+  place: body
+  targets: ["/"]
+
+adapters:
+  - platform: nextjs
+    where: "FAQ 페이지 컴포넌트에서 같은 데이터 배열로 화면과 JSON-LD 를 **함께** 렌더링"
+    status: unconfirmed
+    note: "확인 안 함. 화면과 마크업을 따로 쓰면 한쪽만 고쳐져 ②가 조용히 깨지는데,
+      그 상태를 실제 사이트에서 재본 적 없다"
+  - platform: wordpress
+    where: "FAQ 플러그인(아코디언 등)의 스키마 출력 옵션, 또는 SEO 플러그인의 FAQ 블록"
+    status: unconfirmed
+    note: "확인 안 함. 아코디언 플러그인은 답변을 JS 로 주입하는 경우가 있고, 그러면
+      최초 응답에 화면 텍스트가 없어 ②가 깨진다 — P1-03 과 같은 종류의 문제다"
+  - platform: cafe24
+    where: "관리자 > 디자인 > HTML 편집 (FAQ 게시판 스킨)"
+    status: unconfirmed
+    note: "확인 안 함. 게시판형 FAQ 는 목록 페이지에 답변 본문이 없어 한 페이지에서 ②를
+      만족시키기 어려울 수 있다"

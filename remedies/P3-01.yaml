@@ -63,9 +63,22 @@ adapters:
   # 를 확인했는가.** 아직 아무 플랫폼도 확인하지 않았으므로 전부 unconfirmed 다.
   # "문서에 그렇게 적혀 있다" 는 확인이 아니다.
   - platform: nextjs
-    where: "app/layout.tsx 에서 <script type=\"application/ld+json\"> 를 직접 렌더링"
-    status: unconfirmed
-    note: "실제 적용 후 재진단으로 확인한 적 없음. App Router 기준이며 Pages Router 는 자리가 다르다"
+    where: "app/layout.tsx 의 <head> 안에서 <script type=\"application/ld+json\"> 를 직접 렌더링
+      (React 가 문자열을 이스케이프하므로 dangerouslySetInnerHTML 로 넣는다)"
+    status: confirmed
+    note: |
+      2026-09-11 확인. 이 저장소의 Next.js 16 App Router 앱(frontend/)에 **이 파일의
+      발행본을 그대로** 적용하고 프로덕션 빌드 후 실제 HTTP 응답을 우리 수집기로 쟀다:
+      P3-01 이 **0 → 2**. 응답 본문에 JSON-LD 블록은 하나뿐이었다(중복 없음).
+
+      확인한 것은 **자리**다 -- "여기 넣으면 서버 응답에 실린다". 확인하지 **않은** 것:
+      Pages Router(자리가 다르다), 그리고 이 처방이 인용을 늘리는지(그건 Plane A 로만
+      알 수 있고 P3-01 의 근거 등급은 provider_documented 다 -- "제공사가 읽는다고
+      문서화했다" 이지 "인용이 늘었다" 가 아니다).
+
+      ⚠️ 우리 사이트에는 **게시하지 않았다.** 정본 도메인·로고 URL·지원 연락처가 아직
+      없어서 치환값을 지어내야 했는데, 진단 제품이 자기 사이트에 기계가독 형태로 거짓
+      사실을 싣는 것은 없느니만 못하다. 확인 후 원복했다.
   - platform: wordpress
     where: "테마 functions.php 의 wp_head 훅, 또는 SEO 플러그인의 스키마 설정"
     status: unconfirmed

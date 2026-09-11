@@ -1,0 +1,97 @@
+# P3-02 WebSite 스키마
+#
+# 이 항목은 혼자서는 성립하지 않는다. level 1·2 를 가르는 조건이 "publisher 가
+# Organization **@id 를 참조**" 이므로, 참조 대상이 먼저 존재해야 한다 -- 그것이
+# P3-01 이 발행하는 `#organization` 노드다. 그래서 fixture 가 P3-01 을 요구한다.
+#
+# 이 처방은 그 마크업을 복사해 두지 않는다. 복사하면 P3-01 의 @id 규칙이 바뀌어도
+# 여기는 옛 사본으로 초록이고, 그 순간 두 처방이 서로 다른 조직을 가리키게 된다.
+
+item_id: P3-02
+
+target_state: |
+  홈 URL 의 HTTP 응답 본문에 `@type: WebSite` JSON-LD 가 있고 다음을 갖는다.
+
+    name · url · inLanguage
+    publisher → Organization 의 **@id 참조**
+    사이트 내 검색이 있으면 potentialAction(SearchAction)
+
+  `inLanguage` 를 요구하는 이유: AI 답변 엔진은 질문 언어와 문서 언어를 맞춰 인용
+  후보를 고른다. 한국어 질문에 대한 후보로 뽑히려면 이 사이트가 한국어 사이트라는
+  선언이 기계가 읽는 자리에 있어야 한다.
+
+  `publisher` 는 **객체를 다시 쓰는 것이 아니라 @id 로 가리키는 것**이다. 조직 정보를
+  페이지마다 통째로 반복하면 기계는 그것들이 같은 조직인지 알 수 없다. 앵커는 하나여야
+  하고, 그 앵커의 정본은 P3-01 이다.
+
+  SearchAction 은 **사이트 내 검색이 실제로 있을 때만** 필요하다. 검색이 없는 사이트에
+  이 블록을 넣으면 존재하지 않는 기능을 선언하는 것이고, 그건 마크업과 화면이 어긋나는
+  다른 종류의 결함이다.
+
+artifact: |
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "@id": "{{SITE_URL}}#website",
+    "name": "{{SITE_NAME}}",
+    "url": "{{SITE_URL}}",
+    "inLanguage": "{{SITE_LANGUAGE}}",
+    "publisher": { "@id": "{{SITE_URL}}#organization" },
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": {
+        "@type": "EntryPoint",
+        "urlTemplate": "{{SEARCH_URL_TEMPLATE}}"
+      },
+      "query-input": "required name=search_term_string"
+    }
+  }
+  </script>
+
+placeholders:
+  - key: "{{SITE_URL}}"
+    meaning: "사이트 정본 URL. **P3-01 에 넣은 값과 글자 하나까지 같아야 한다** —
+      `#organization` 앵커가 그 값으로 만들어지므로, 여기서 www 나 끝 슬래시가 달라지면
+      publisher 가 존재하지 않는 조직을 가리킨다"
+  - key: "{{SITE_NAME}}"
+    meaning: "사이트 이름. 조직명과 다를 수 있다(브랜드 사이트·서비스 사이트).
+      화면 타이틀에 쓰는 표기와 같게 한다"
+  - key: "{{SITE_LANGUAGE}}"
+    meaning: "BCP 47 언어 태그. 한국어 사이트는 `ko` 또는 `ko-KR`. `<html lang>` 과 같아야 한다"
+  - key: "{{SEARCH_URL_TEMPLATE}}"
+    meaning: "사이트 내 검색 결과 URL 에 `{search_term_string}` 을 끼운 형태
+      (예: `https://example.com/search?q={search_term_string}`).
+      **사이트 내 검색이 없으면 potentialAction 블록을 통째로 지운다** — 없는 기능을
+      선언하는 것이 빈 템플릿을 남기는 것보다 낫지 않다"
+
+verify:
+  collector: SchemaOrgCollector
+  expect_level: 2
+  note: |
+    골든 케이스 `remedy-p3-02-artifact-scores-two` 가 **P3-01 의 발행본과 함께** 홈
+    `<head>` 에 놓고 돌린다. P3-01 의 @id 형식을 바꾸면 여기 publisher 가 가리킬 곳을
+    잃어 이 케이스가 빨개진다 — 그 결합이 실제로 존재한다는 증거다.
+
+fixture:
+  place: head
+  targets: ["/"]
+  requires: ["P3-01"]
+
+adapters:
+  - platform: nextjs
+    where: "app/layout.tsx 에서 P3-01 과 같은 자리에 두 번째 JSON-LD 블록으로 렌더링"
+    status: unconfirmed
+    note: "확인 안 함. 두 블록을 하나의 @graph 로 합치는 편이 흔하나, 합치면 P3-01 처방과
+      경계가 사라져 한쪽만 고치기 어려워진다 — 어느 쪽이 나은지 재본 적 없다"
+  - platform: wordpress
+    where: "SEO 플러그인의 스키마 설정(대개 WebSite 를 기본 발행한다)"
+    status: unconfirmed
+    note: "확인 안 함. 플러그인이 이미 WebSite 를 내고 있으면 **중복 노드**가 생긴다.
+      수집기는 가장 큰 노드 하나를 보므로 결과가 어느 쪽으로 갈지 예측할 수 없다 —
+      적용 전 기존 발행 여부를 먼저 봐야 한다"
+  - platform: cafe24
+    where: "관리자 > 디자인 > HTML 편집 (레이아웃 head 영역)"
+    status: unconfirmed
+    note: "확인 안 함. 검색 결과 URL 형식이 스킨마다 달라 urlTemplate 을 실제 검색 동작과
+      맞춰봐야 한다"

@@ -1,0 +1,40 @@
+{
+  "id": "remedy-p3-04-artifact-reaches-the-machine-ceiling",
+  "title": "발행된 P3-04 처방을 다 붙여도 자동 판정은 level 2 가 아니라 미판정(input_missing)에서 멈춘다",
+  "level": 2,
+  "operation": "remedy_applies",
+  "rationale": "기대값을 2 가 아니라 미판정으로 둔 근거는 rubric v1.7.0 P3-04 levels.'2' 의 문구다: 'FAQPage에 mainEntity 5개 이상, 각 Question의 acceptedAnswer가 화면 표시 텍스트와 일치, **질문이 실제 목표 질문 세트에서 유래**'. 앞 두 조건은 마크업의 성질이라 산출물이 구조적으로 보장하지만, 셋째는 마크업 안에 있는 사실이 아니라 Plane A 프로빙의 입력(목표 질문 세트)이다. 사이트만 보는 감사에는 그 입력이 없으므로 참조 구현은 추측하지 않고 input_missing 으로 남긴다 — 추측으로 2점을 주면 리포트가 거짓이 된다. 이 케이스는 '2점이 안 나온다'가 아니라 '①②를 충족한 상태에서 ③ 때문에 멈춘다'를 단언한다. 질문을 4개로 줄이면 ①이 깨져 level 1 로, 답 하나를 화면과 다르게 쓰면 ②가 깨져 역시 level 1 로 떨어지므로 아무것도 재지 않는 케이스가 아니다.",
+  "spec_refs": [
+    "plane-b-readiness.md §6",
+    "plane-b-readiness.md §2.1"
+  ],
+  "notes": "미판정은 0점이 아니다 — ARS 는 분모에서 빼고 unscored_item_ids 로 공시한다. 산출물을 head 가 아니라 body 에 놓는 이유는 조건 ②가 화면에 보이는 텍스트와의 일치이고 head 안의 텍스트는 화면이 아니기 때문이다. 2점으로 올리는 길은 마크업이 아니라 질문 세트를 정하는 일이다.",
+  "input": {
+    "item_id": "P3-04",
+    "placeholder_values": {
+      "{{A1}}": "표준 설정 기준 영업일 5일이 걸립니다.",
+      "{{A2}}": "엑셀 파일을 그대로 올리면 품목과 수량을 자동으로 읽어 옮깁니다.",
+      "{{A3}}": "사용자당 월정액이며 10명을 넘으면 단가가 내려갑니다.",
+      "{{A4}}": "해지 시점에 전체 데이터를 엑셀로 내려받을 수 있습니다.",
+      "{{A5}}": "휴대폰 카메라로 바코드를 읽으므로 별도 장비가 필요하지 않습니다.",
+      "{{Q1}}": "재고관리 프로그램 도입에 얼마나 걸리나요?",
+      "{{Q2}}": "엑셀 재고 데이터를 그대로 옮길 수 있나요?",
+      "{{Q3}}": "사용자가 늘면 요금이 어떻게 되나요?",
+      "{{Q4}}": "해지하면 데이터는 어떻게 되나요?",
+      "{{Q5}}": "바코드 스캐너를 따로 사야 하나요?"
+    }
+  },
+  "expected": {
+    "level": null,
+    "unavailable_kind": "input_missing",
+    "declared_expect_level": null,
+    "declared_expect_unavailable_kind": "input_missing"
+  },
+  "tolerance": {
+    "absolute": 0
+  },
+  "reference_implementation": {
+    "status": "conformant",
+    "note": "2026-09-11 구현. 러너의 _run_remedy_applies 가 처방의 fixture 선언대로 픽스처 사이트를 짓고 발행본을 놓는다."
+  }
+}

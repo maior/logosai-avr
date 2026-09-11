@@ -1,6 +1,6 @@
 # 처방 카탈로그
 
-**상태: 0.1.0 — 형태 확정 단계. 처방 1건(P3-01)만 있다.**
+**상태: 0.2.0 — `artifact` 12개 전부 발행. 나머지 33개는 여전히 분류만 있다.**
 
 AVR 리포트는 점수와 함께 "무엇이 있어야 하는가"를 말한다. 그런데 그건 rubric 의
 **판정 기준**이지 조치가 아니다. 기준은 *"Organization 에 @id 가 부여됨"* 이고,
@@ -67,6 +67,15 @@ Gap Matrix 상 `prepared`(준비됐는데 안 보임) 사분면이고, 그 사�
 치환하고 수집기에 돌린다 (`remedy_applies`). 그래서 처방을 고쳐 망가뜨리면 적합성
 스위트가 빨개진다 — 복사해뒀다면 처방과 검증이 조용히 갈라졌을 것이다.
 
+케이스 입력에 담기는 것은 **무엇을 검증할지뿐**이다: `item_id` 와 치환값. 산출물 본문도,
+픽스처 HTML 도 들어가지 않는다. 산출물이 놓이는 자리는 케이스가 아니라 **처방 파일이**
+선언한다(`fixture`) — 자리도 처방의 일부이기 때문이다. robots.txt 를 `<head>` 에 넣는
+검증은 처방이 통하는지가 아니라 검증기가 틀렸는지를 재게 된다.
+
+카탈로그를 자라게 할 때 확인할 것: `test_every_verifiable_remedy_has_a_golden_case`
+(처방 1건 = 케이스 1건), `test_a_golden_case_never_copies_the_artifact`(입력에 허용된
+키는 둘뿐), `test_a_golden_case_never_pins_the_reserved_placeholder`(`{{PAGE_URL}}` 금지).
+
 ---
 
 ## 근거 등급은 여기 적지 않는다
@@ -101,7 +110,13 @@ placeholders:            # key 는 artifact 안에 실제로 있어야 한다
   - {key: "{{...}}", meaning: "무엇을 넣는가"}
 verify:                  # artifact 분류에 필수
   collector: SchemaOrgCollector
-  expect_level: 2
+  expect_level: 2        # 또는 expect_unavailable_kind + ceiling (아래)
+fixture:                 # 산출물이 놓이는 자리. 생략하면 "홈 <head> 한 장"
+  place: head            # head | body | file
+  targets: ["/"]
+  requires: []           # 먼저 적용돼 있어야 하는 다른 처방
+  serves: []             # 200 으로 응답만 하면 되는 URL
+  extra_urls: []         # 수집기에 넘길 대표 페이지 집합 (비율의 분모)
 adapters:                # 우리가 검증할 수 없는 칸
   - platform: nextjs
     where: "..."
@@ -111,3 +126,62 @@ adapters:                # 우리가 검증할 수 없는 칸
 
 불변식은 `backend/tests/test_remedy_catalog.py` 와 골든 케이스
 `remedy-scope-declares-what-cannot-be-prescribed` 가 강제한다.
+
+### `fixture` — 산출물이 **어디에** 놓이는가
+
+0.1.0 의 검증기는 산출물을 `<head>` 에 넣은 HTML 한 장만 만들었다. 그 가정 위에서는
+`artifact` 12개 중 셋만 검증할 수 있다.
+
+| 왜 한 장으로 안 되는가 | 해당 항목 |
+|---|---|
+| 산출물이 **HTML 이 아니다** | P1-01·P1-02(`robots.txt`), P1-04(`llms.txt`), P1-05(`sitemap.xml`) |
+| **비율**이라 분모가 필요하다 | P3-03 ("서비스 페이지의 70%") |
+| **화면에 보여야** 한다 — head 는 화면이 아니다 | P3-04(답변 텍스트 일치), P5-01·P5-02(날짜 표기) |
+| 홈이 아니라 **문서 페이지**를 잰다 | P3-05, P3-06 |
+| **다른 처방이 먼저** 있어야 성립한다 | P3-02·P3-03·P3-05(→P3-01), P1-05(→P1-01) |
+
+`requires` 는 그 처방의 마크업을 여기에 **복사하지 않는다.** 검증기가 그 처방의
+발행본을 읽어 함께 놓는다 — 복사해 두면 P3-01 의 `@id` 규칙이 바뀌어도 P3-02 는 옛
+사본으로 초록이고, 그 순간 두 처방이 서로 다른 조직을 가리킨다.
+
+`{{PAGE_URL}}` 은 **예약 placeholder** 다. 고객이 채우는 값이 아니라 산출물이 놓인
+그 페이지의 절대 URL 이며, 검증기가 페이지마다 다르게 채운다. 골든 케이스는 이 값을
+주지 않는다 — 주는 순간 여러 페이지에 놓는 처방이 전부 같은 `@id` 를 갖게 되고,
+비율 항목이 페이지 세 장을 쓰는 척만 하게 된다. 그래도 `placeholders` 에는 적는다.
+검증기가 알아서 채운다는 이유로 설명을 빼면, 처방을 받은 사람은 바꿀 자리가 있는
+줄도 모르고 그대로 붙여넣는다.
+
+### `verify` — 붙여넣으면 어디까지 가는가
+
+```yaml
+verify:
+  collector: FreshnessCollector
+  expect_unavailable_kind: design_limit
+  ceiling: |
+    왜 완전한 산출물도 2 에 닿지 않는가 (rubric levels 문구에서 유도)
+```
+
+`expect_level` 과 `expect_unavailable_kind` 중 **정확히 하나**를 적는다.
+
+`artifact` 12개 중 **둘은 완전한 산출물을 붙여도 자동 판정이 level 2 에 닿지 않는다.**
+rubric 이 요구하는 조건이 마크업 밖에 있기 때문이다.
+
+| 항목 | 마크업 밖에 있는 조건 | 천장 |
+|---|---|---|
+| P3-04 | "질문이 실제 **목표 질문 세트**에서 유래" — Plane A 의 입력이다 | `input_missing` |
+| P5-02 | "**본문 변경 시에만** 갱신" — 시계열이 있어야 안다 | `design_limit` |
+
+이 둘을 `expect_level: 2` 로 적으면 거짓이고, 등재하지 않으면 "처방이 없어서"와
+"검증기가 모자라서"가 화면에서 구별되지 않는다. 그래서 셋째 선택지를 뒀다 —
+**어디까지 가는지를 말로 적고 그것을 시험한다.** `ceiling` 은 필수이며, rubric 의
+`levels` 문구에서 유도해야 한다. 구현이 2 를 안 주더라를 근거로 적으면 구현의 한계가
+그대로 표준이 된다.
+
+천장은 예외로 남아야 한다. "2 가 안 나오면 천장으로 적으면 된다" 가 되는 순간
+`expect_level` 은 장식이고 처방은 전부 공허한 약속이 된다.
+`test_the_ceiling_is_the_exception_not_the_rule` 이 천장 선언 수가 2 도달 선언 수를
+넘지 못하게 막는다.
+
+**미판정은 0 점이 아니다.** ARS 는 분모에서 빼고 `unscored_item_ids` 로 공시한다
+(`design_limit` 은 커버리지 분모에서도 빠진다). 두 항목을 2 로 올리는 길은 마크업이
+아니라 각각 질문 세트를 정하는 일과 발행 운영이고, 둘 다 붙여넣기가 아니다.

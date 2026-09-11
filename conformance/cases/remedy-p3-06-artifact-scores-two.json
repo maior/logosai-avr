@@ -1,0 +1,42 @@
+{
+  "id": "remedy-p3-06-artifact-scores-two",
+  "title": "발행된 P3-06 처방의 HowTo + BreadcrumbList 를 2단계 깊이 문서에 놓으면 실제로 level 2 가 나온다",
+  "level": 2,
+  "operation": "remedy_applies",
+  "rationale": "기대값 2 는 rubric v1.7.0 P3-06 levels.'2' 에서 유도했다: '절차형 문서에 HowTo(step 3개 이상), 2단계 이상 깊이 페이지에 BreadcrumbList가 모두 존재'. 둘이 AND 이고 levels.'1' 이 '둘 중 하나만 존재' 이므로, 산출물도 두 노드를 한 @graph 로 묶어 준다. 케이스는 step 3개와 itemListElement 3단계를 담은 산출물을 깊이 2 의 문서 경로(/guides/how-to-be-cited)에 놓는다 — 깊이 1 의 페이지에 놓으면 BreadcrumbList 조건이 애초에 해당되지 않아 무엇을 쟀는지 알 수 없게 된다.",
+  "spec_refs": [
+    "plane-b-readiness.md §6",
+    "plane-b-readiness.md §2.1"
+  ],
+  "notes": "절차가 아닌 글에 HowTo 를 붙이는 것은 점수를 위한 거짓 선언이며 처방의 target_state 가 그것을 금한다. 이 케이스는 형식이 통한다는 것만 보이고, 그 문서가 실제로 절차형인지는 사람이 판단할 일이다.",
+  "input": {
+    "item_id": "P3-06",
+    "placeholder_values": {
+      "{{CRUMB_1_NAME}}": "홈",
+      "{{CRUMB_2_NAME}}": "가이드",
+      "{{CRUMB_2_PATH}}": "/guides",
+      "{{HOWTO_DESCRIPTION}}": "사이트를 AI 답변 엔진이 읽고 인용할 수 있는 상태로 만드는 절차입니다.",
+      "{{HOWTO_NAME}}": "AI 답변에 인용되게 만드는 법",
+      "{{SITE_URL}}": "https://example.com",
+      "{{STEP_1_NAME}}": "크롤러 접근 열기",
+      "{{STEP_1_TEXT}}": "robots.txt 에서 AI 검색봇 3종을 허용합니다.",
+      "{{STEP_2_NAME}}": "구조화 데이터 넣기",
+      "{{STEP_2_TEXT}}": "Organization 과 WebSite JSON-LD 를 발행합니다.",
+      "{{STEP_3_NAME}}": "측정하기",
+      "{{STEP_3_TEXT}}": "같은 질문 세트로 적용 전후를 재서 변화를 확인합니다."
+    }
+  },
+  "expected": {
+    "level": 2,
+    "unavailable_kind": null,
+    "declared_expect_level": 2,
+    "declared_expect_unavailable_kind": null
+  },
+  "tolerance": {
+    "absolute": 0
+  },
+  "reference_implementation": {
+    "status": "conformant",
+    "note": "2026-09-11 구현. 러너의 _run_remedy_applies 가 처방의 fixture 선언대로 픽스처 사이트를 짓고 발행본을 놓는다."
+  }
+}

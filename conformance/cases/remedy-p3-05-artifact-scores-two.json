@@ -1,0 +1,41 @@
+{
+  "id": "remedy-p3-05-artifact-scores-two",
+  "title": "발행된 P3-05 처방 Article JSON-LD 를 문서 페이지에 놓으면 실제로 level 2 가 나온다",
+  "level": 2,
+  "operation": "remedy_applies",
+  "rationale": "기대값 2 는 rubric v1.7.0 P3-05 levels.'2' 에서 유도했다: 'Article에 headline, datePublished, dateModified, author(Person 객체 + url), publisher(Organization @id)가 모두 존재'. author 를 문자열이 아니라 url 을 가진 Person 객체로 두는 것과 publisher 를 @id 참조로 두는 것이 level 1 과 2 를 가르는 두 지점이며, 산출물이 둘 다 만족한다. publisher 의 참조 대상은 fixture.requires 가 끌어온 P3-01 이 홈에 발행한다. 판정 대상이 '블로그·가이드 문서' 이므로 산출물을 홈이 아니라 문서 페이지에 놓고 그 페이지를 대표 문서 집합으로 넘긴다 — 홈에만 놓으면 수집기가 아예 보지 않는다.",
+  "spec_refs": [
+    "plane-b-readiness.md §6",
+    "plane-b-readiness.md §2.1"
+  ],
+  "notes": "저자를 지정하는 결정 자체는 카탈로그가 대신할 수 없다(rubric 은 저자 표기 항목 P4-01 을 fix_kind: fact 로 분류한다). 이 케이스의 치환값은 저자가 이미 정해진 사이트를 가정한다.",
+  "input": {
+    "item_id": "P3-05",
+    "placeholder_values": {
+      "{{AUTHOR_NAME}}": "권예시",
+      "{{AUTHOR_URL}}": "https://example.com/authors/kwon",
+      "{{CONTACT_EMAIL}}": "hello@example.com",
+      "{{DATE_MODIFIED}}": "2026-02-20",
+      "{{DATE_PUBLISHED}}": "2026-01-15",
+      "{{DESCRIPTION}}": "중소기업용 재고 관리 소프트웨어를 만드는 회사입니다.",
+      "{{HEADLINE}}": "AEO 점검 체크리스트",
+      "{{LOGO_URL}}": "https://example.com/logo.png",
+      "{{ORG_NAME}}": "예시상사",
+      "{{SITE_LANGUAGE}}": "ko",
+      "{{SITE_URL}}": "https://example.com"
+    }
+  },
+  "expected": {
+    "level": 2,
+    "unavailable_kind": null,
+    "declared_expect_level": 2,
+    "declared_expect_unavailable_kind": null
+  },
+  "tolerance": {
+    "absolute": 0
+  },
+  "reference_implementation": {
+    "status": "conformant",
+    "note": "2026-09-11 구현. 러너의 _run_remedy_applies 가 처방의 fixture 선언대로 픽스처 사이트를 짓고 발행본을 놓는다."
+  }
+}

@@ -1,0 +1,97 @@
+# P1-05 sitemap.xml
+#
+# **사이트맵은 손으로 쓰는 파일이 아니다.** 아래 산출물은 붙여넣을 전문이라기보다
+# 생성기가 내야 하는 **모양의 기준**이다. URL 이 스무 개 넘는 순간 손으로 유지하는
+# 것은 불가능하고, 손으로 유지하다 낡은 사이트맵은 없는 것보다 나쁘다 --
+# 죽은 URL 이 등재돼 있으면 level 1 로 떨어진다.
+#
+# 이 항목의 level 0 조건 하나가 사이트맵 자체와 무관하다: **robots.txt 에 Sitemap
+# 지시자가 없으면 사이트맵이 완벽해도 0 점이다.** 그래서 이 처방은 P1-01 의 산출물을
+# 전제로 검증된다(fixture.requires).
+
+item_id: P1-05
+
+target_state: |
+  다음 셋이 **모두** 성립한다.
+
+    ① `/robots.txt` 에 `Sitemap: <절대 URL>` 지시자가 있고 그 URL 이 사이트맵을 가리킨다
+    ② 사이트맵이 200 으로 응답하고 XML 로 파싱되며, **등재된 모든 URL 에 `<lastmod>`**
+       가 있다
+    ③ 등재 URL 중 non-200 응답이 1% 이하
+
+  ②의 "모든" 이 이 항목에서 가장 자주 깨지는 조건이다. 대다수 생성기는 lastmod 를
+  옵션으로 두고 끄면 아예 안 쓴다. 50% 초과 누락이면 level 1 이고, 한 건이라도
+  누락되면 level 2 가 아니다.
+
+  ③은 **사이트맵이 사이트의 실제 상태를 말하는가**를 묻는다. 지운 페이지가 남아 있는
+  사이트맵은 크롤러에게 거짓말을 하는 목록이고, 그 목록을 근거로 크롤 예산을 쓴
+  크롤러는 다음에 덜 온다.
+
+artifact: |
+  <?xml version="1.0" encoding="UTF-8"?>
+  <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+    <url>
+      <loc>{{SITE_URL}}/</loc>
+      <lastmod>{{HOME_LASTMOD}}</lastmod>
+    </url>
+    <url>
+      <loc>{{SITE_URL}}/about</loc>
+      <lastmod>{{ABOUT_LASTMOD}}</lastmod>
+    </url>
+    <url>
+      <loc>{{SITE_URL}}/services</loc>
+      <lastmod>{{SERVICES_LASTMOD}}</lastmod>
+    </url>
+    <!-- 나머지 URL 도 같은 모양으로. lastmod 가 없는 <url> 이 하나라도 있으면
+         level 2 가 아니다. 손으로 늘리지 말고 생성기가 이 모양을 내게 하라. -->
+  </urlset>
+
+placeholders:
+  - key: "{{SITE_URL}}"
+    meaning: "사이트 정본 URL (끝 슬래시 없이). `<loc>` 는 절대 URL 이어야 하고, www
+      포함 여부와 프로토콜이 canonical·robots.txt 의 Sitemap 지시자와 모두 같아야 한다"
+  - key: "{{HOME_LASTMOD}}"
+    meaning: "홈의 **실제 마지막 내용 변경일** (W3C Datetime, 예: 2026-01-15).
+      빌드 시각을 넣지 마라 — 내용이 안 변했는데 매일 갱신되는 lastmod 는 크롤러에게
+      무의미해지고, 같은 문제를 P5-02 가 따로 감점한다"
+  - key: "{{ABOUT_LASTMOD}}"
+    meaning: "회사 소개 페이지의 실제 마지막 변경일"
+  - key: "{{SERVICES_LASTMOD}}"
+    meaning: "서비스 페이지의 실제 마지막 변경일"
+
+verify:
+  collector: SitemapCollector
+  expect_level: 2
+  note: |
+    골든 케이스 `remedy-p1-05-artifact-scores-two` 가 이 파일을 `/sitemap.xml` 로 놓고,
+    **P1-01 의 발행본을 `/robots.txt` 로 함께 놓은 뒤** 돌린다. P1-01 의 Sitemap 지시자
+    한 줄을 지우면 이 케이스도 빨개진다 — 두 처방이 실제로 엮여 있다는 사실을
+    케이스가 그대로 재현한다.
+
+    등재한 URL 은 픽스처가 200 으로 응답한다(`fixture.serves`). 응답하지 않으면
+    non-200 비율이 100% 가 되어 level 1 이다 — 그게 실제 사이트에서도 일어나는 일이다.
+
+fixture:
+  place: file
+  targets: ["/sitemap.xml"]
+  requires: ["P1-01"]
+  serves: ["/", "/about", "/services"]
+
+adapters:
+  - platform: nextjs
+    where: "app/sitemap.ts (Metadata API). lastModified 를 반드시 채운다"
+    status: unconfirmed
+    note: "확인 안 함. lastModified 를 `new Date()` 로 두는 예제가 흔한데 그러면 빌드마다
+      전 URL 이 갱신돼 lastmod 가 신호가 아니라 잡음이 된다 — 등급은 2 로 나와도
+      의도한 상태가 아니다"
+  - platform: wordpress
+    where: "SEO 플러그인의 XML 사이트맵, 또는 워드프레스 코어의 wp-sitemap.xml"
+    status: unconfirmed
+    note: "확인 안 함. 코어 wp-sitemap.xml 은 lastmod 를 내지 않는 버전이 있어 그대로 두면
+      level 2 가 불가능하다. 플러그인 사이트맵과 코어 사이트맵이 동시에 존재하면
+      robots.txt 가 어느 쪽을 가리키는지도 확인해야 한다"
+  - platform: cafe24
+    where: "관리자 > 상점관리 > 검색엔진 최적화(SEO) > 사이트맵 자동 생성"
+    status: unconfirmed
+    note: "확인 안 함. 자동 생성 사이트맵의 lastmod 포함 여부와 상품 삭제 시 반영 지연을
+      확인하지 못했다"

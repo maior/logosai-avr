@@ -1,0 +1,104 @@
+# P3-03 서비스·상품 타입 스키마
+#
+# **이 항목은 페이지 한 장으로는 판정되지 않는다.** level 2 조건이 "서비스·상품
+# 페이지의 **70% 이상**" 이라 분모가 필요하기 때문이다. 그래서 이 처방은 붙여넣을
+# 한 덩어리가 아니라 **해당하는 모든 페이지에 반복해서 놓는 것**이고, 검증도
+# 페이지 세 장짜리 픽스처 위에서 한다.
+#
+# 70% 라는 숫자가 이 항목의 성격을 말한다: 대표 상품 하나에만 마크업을 붙이는 것은
+# 통하지 않는다. 목록 전체가 같은 어휘로 선언돼야 기계가 카탈로그로 읽는다.
+
+item_id: P3-03
+
+target_state: |
+  서비스·상품 페이지의 **70% 이상**에 해당 타입(Service · Product · 업종별
+  LocalBusiness 하위 타입 등) JSON-LD 가 선언되고, 각 노드가 다음을 갖는다.
+
+    name · description
+    provider 또는 brand → Organization **@id 참조**
+    offers 또는 areaServed (업종 필수 속성)
+
+  `provider` 의 @id 참조가 P3-01 을 전제로 한다. 참조가 없거나 존재하지 않는 @id 를
+  가리키면 그 페이지는 "완전하지 않은" 것으로 세어지고, 한 장이라도 불완전하면
+  비율이 70% 를 넘어도 level 2 가 아니다 -- 조건이 "비율 **그리고** 필수 속성" 이다.
+
+  `offers` 와 `areaServed` 중 무엇을 쓰는지는 업종이 정한다. 가격을 공개하는 제품은
+  offers, 지역 기반 서비스는 areaServed 가 자연스럽다. **없는 값을 지어내지 마라** --
+  공개하지 않는 가격을 마크업에만 적으면 화면과 마크업이 어긋나고, 그 어긋남은
+  P3-09(검증 통과)와 P2 쪽에서 따로 문제가 된다.
+
+artifact: |
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    "@id": "{{PAGE_URL}}#service",
+    "name": "{{SERVICE_NAME}}",
+    "description": "{{SERVICE_DESCRIPTION}}",
+    "url": "{{PAGE_URL}}",
+    "provider": { "@id": "{{SITE_URL}}#organization" },
+    "areaServed": "{{AREA_SERVED}}",
+    "offers": {
+      "@type": "Offer",
+      "priceCurrency": "KRW",
+      "price": "{{PRICE}}",
+      "url": "{{PAGE_URL}}"
+    }
+  }
+  </script>
+
+placeholders:
+  - key: "{{PAGE_URL}}"
+    meaning: "**이 산출물이 놓인 그 페이지**의 절대 URL. 페이지마다 다르다 — 복사해
+      옮길 때 여기를 안 바꾸면 서비스 세 개가 같은 @id 를 갖게 되고, 기계는 그것을
+      같은 서비스 하나로 읽는다. (적합성 러너는 픽스처 페이지 URL 로 자동 치환한다)"
+  - key: "{{SITE_URL}}"
+    meaning: "사이트 정본 URL. P3-01 에 넣은 값과 같아야 `#organization` 참조가 해결된다"
+  - key: "{{SERVICE_NAME}}"
+    meaning: "그 서비스가 **불리는 이름**. 내부 상품코드가 아니라 고객이 쓰는 말"
+  - key: "{{SERVICE_DESCRIPTION}}"
+    meaning: "무엇을 해주는 서비스인지 한두 문장. 화면에 있는 설명과 같은 내용이어야 한다"
+  - key: "{{AREA_SERVED}}"
+    meaning: "제공 지역 (예: `대한민국`, `서울특별시`). 지역 제한이 없으면 areaServed 를
+      지우고 offers 만 남긴다 — 둘 중 하나면 충족된다"
+  - key: "{{PRICE}}"
+    meaning: "숫자만 (예: `150000`). **가격을 공개하지 않는다면 offers 블록을 통째로
+      지우고 areaServed 를 남겨라.** 화면에 없는 가격을 마크업에만 적으면 안 된다"
+
+verify:
+  collector: SchemaOrgCollector
+  expect_level: 2
+  note: |
+    골든 케이스 `remedy-p3-03-artifact-scores-two` 가 이 산출물을 **서비스 페이지 세
+    장에 각각** 놓고(비율의 분모), P3-01 을 홈에 놓은 뒤 돌린다. 세 장에 모두 놓는
+    이유는 70% 분모가 실제로 계산되는지 보기 위함이다 -- 한 장이면 비율이 언제나
+    100% 라 조건을 재는 시늉만 하게 된다.
+
+fixture:
+  place: head
+  targets:
+    - "/services/inventory"
+    - "/services/consulting"
+    - "/services/audit"
+  requires: ["P3-01"]
+  extra_urls:
+    - "/services/inventory"
+    - "/services/consulting"
+    - "/services/audit"
+
+adapters:
+  - platform: nextjs
+    where: "서비스 상세 라우트의 page.tsx 에서 페이지별 데이터로 JSON-LD 를 렌더링"
+    status: unconfirmed
+    note: "확인 안 함. 레이아웃에 두면 모든 페이지가 같은 @id 를 갖게 되므로 반드시
+      페이지 컴포넌트에 둬야 하는데, 그 차이를 실제 적용으로 확인한 적 없다"
+  - platform: wordpress
+    where: "커스텀 포스트 타입 템플릿, 또는 SEO 플러그인의 스키마 타입 지정"
+    status: unconfirmed
+    note: "확인 안 함. 플러그인이 상품·서비스에 기본 스키마를 붙이는 경우 provider 가
+      @id 참조가 아니라 인라인 Organization 객체로 나갈 수 있고, 그러면 level 1 이다"
+  - platform: cafe24
+    where: "관리자 > 디자인 > HTML 편집 (상품 상세 레이아웃)"
+    status: unconfirmed
+    note: "확인 안 함. 상품 상세 템플릿의 치환 변수로 name·price 를 채울 수 있는지,
+      상품마다 다른 @id 를 만들 수 있는지 확인하지 못했다"

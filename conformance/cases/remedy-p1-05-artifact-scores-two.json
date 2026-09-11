@@ -1,0 +1,37 @@
+{
+  "id": "remedy-p1-05-artifact-scores-two",
+  "title": "발행된 P1-05 처방 sitemap.xml 과 P1-01 의 robots.txt 를 함께 놓으면 실제로 level 2 가 나온다",
+  "level": 2,
+  "operation": "remedy_applies",
+  "rationale": "기대값 2 는 rubric v1.7.0 P1-05 levels.'2' 에서 유도했다: 'sitemap이 robots.txt에서 참조되고, 전 URL에 lastmod 존재, non-200 응답 URL 1% 이하'. 세 조건이 AND 이고 첫째가 사이트맵 바깥에 있다 — 그래서 이 케이스의 픽스처는 P1-05 산출물만으로 지어지지 않고, 처방의 fixture.requires 가 P1-01 을 끌어와 그 발행본을 /robots.txt 로 함께 놓는다(Sitemap 지시자가 거기 있다). 셋째 조건을 재기 위해 등재한 세 URL 을 픽스처가 200 으로 서빙한다. 등재 URL 을 서빙하지 않으면 non-200 비율이 100% 가 되어 level 1 인데, 그것도 실제 사이트에서 일어나는 일이다.",
+  "spec_refs": [
+    "plane-b-readiness.md §6",
+    "plane-b-readiness.md §2.1"
+  ],
+  "notes": "두 처방이 실제로 엮여 있다는 사실을 케이스가 그대로 재현한다 — P1-01 의 Sitemap 지시자 한 줄을 지우면 이 케이스가 빨개진다. lastmod 치환값을 URL 마다 다르게 넣은 이유는 '전 URL 에 lastmod' 가 같은 값 하나를 복사하라는 뜻이 아니기 때문이다.",
+  "input": {
+    "item_id": "P1-05",
+    "placeholder_values": {
+      "{{ABOUT_LASTMOD}}": "2025-11-02",
+      "{{CLAUDEBOT_RULE}}": "Allow: /",
+      "{{GOOGLE_EXTENDED_RULE}}": "Allow: /",
+      "{{GPTBOT_RULE}}": "Disallow: /",
+      "{{HOME_LASTMOD}}": "2026-01-15",
+      "{{SERVICES_LASTMOD}}": "2026-02-01",
+      "{{SITE_URL}}": "https://example.com"
+    }
+  },
+  "expected": {
+    "level": 2,
+    "unavailable_kind": null,
+    "declared_expect_level": 2,
+    "declared_expect_unavailable_kind": null
+  },
+  "tolerance": {
+    "absolute": 0
+  },
+  "reference_implementation": {
+    "status": "conformant",
+    "note": "2026-09-11 구현. 러너의 _run_remedy_applies 가 처방의 fixture 선언대로 픽스처 사이트를 짓고 발행본을 놓는다."
+  }
+}

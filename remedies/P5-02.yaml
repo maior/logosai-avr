@@ -1,0 +1,112 @@
+# P5-02 최종 수정일 표기
+#
+# ⚠️ **완전한 산출물을 붙여도 자동 판정은 level 2 에 닿지 않는다.**
+#    rubric level 1 이 "dateModified 가 **본문 변경 없이 빌드마다 자동 갱신**되어
+#    신뢰할 수 없음" 인데, 그 판별에는 **시계열**이 필요하다. 한 시점의 스냅샷으로는
+#    "이 날짜가 진짜 수정일인가" 를 알 방법이 원리상 없다. 그래서 수집기는 1 과 2 를
+#    가르지 않고 미판정(design_limit)으로 남긴다. 아래 verify.ceiling 참조.
+#
+# design_limit 은 inconclusive 와 다르다. 표본을 늘려도, 입력을 더 줘도, 수집기를
+# 고쳐도 풀리지 않는다 -- 그래서 ARS 커버리지 분모에서 아예 빠진다.
+
+item_id: P5-02
+
+target_state: |
+  문서에 최종 수정일이 **마크업과 화면 양쪽에** 있고, 그 값이 **실제 본문 변경 시에만**
+  갱신된다.
+
+    마크업: `dateModified`(ISO 8601) — JSON-LD 또는 `article:modified_time` 메타
+    화면: '최종 수정일' 이라고 **이름 붙은** 표기
+
+  화면에 이름이 붙어야 하는 이유: 날짜 하나만 떠 있으면 그것이 발행일인지 수정일인지
+  읽는 사람이 알 수 없다. P5-01 과 이 항목이 별개인 것도 같은 이유다 -- 두 날짜는
+  서로 다른 것을 말하고, 구분되지 않으면 둘 다 정보가 아니다.
+
+  **가장 중요한 조건은 마크업이 아니라 운영이다.** dateModified 를 배포 시각으로 두면
+  이 항목은 형식상 충족되지만 rubric 이 level 1 로 규정한 바로 그 상태가 된다 --
+  매일 갱신되는 수정일은 "이 문서는 최근에 손봤다" 를 말하지 못하고, 그런 신호를
+  전 페이지가 내면 신호 자체가 잡음이 된다.
+
+  그 운영 조건은 사이트 한 장을 봐서 확인할 수 없다. 우리 리포트에서 이 항목이
+  **미판정으로 남는 이유이고**, 미판정은 0 점이 아니다.
+
+artifact: |
+  <p class="entry-meta">
+    최종 수정일: <time datetime="{{DATE_MODIFIED}}">{{DATE_MODIFIED}}</time>
+  </p>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "@id": "{{PAGE_URL}}#article",
+    "mainEntityOfPage": { "@type": "WebPage", "@id": "{{PAGE_URL}}" },
+    "headline": "{{HEADLINE}}",
+    "datePublished": "{{DATE_PUBLISHED}}",
+    "dateModified": "{{DATE_MODIFIED}}"
+  }
+  </script>
+
+placeholders:
+  - key: "{{DATE_MODIFIED}}"
+    meaning: "**실제 본문이 마지막으로 바뀐 날** (ISO 8601). 배포 시각도, 빌드 시각도,
+      `new Date()` 도 아니다 — 그렇게 두면 rubric 이 level 1 로 규정한 '빌드마다 자동
+      갱신' 상태가 된다. 이 값이 datePublished 와 같아도 괜찮다(고친 적 없는 문서)"
+  - key: "{{DATE_PUBLISHED}}"
+    meaning: "최초 발행일 (ISO 8601). 수정일만 있고 발행일이 없으면 둘의 차이를 읽을 수
+      없어 수정일이 의미를 잃는다. P5-01 산출물을 이미 넣었다면 그 값과 같아야 한다"
+  - key: "{{PAGE_URL}}"
+    meaning: "이 문서의 절대 URL. (적합성 러너는 픽스처 페이지 URL 로 자동 치환한다)"
+  - key: "{{HEADLINE}}"
+    meaning: "문서 제목. 이미 P3-05 나 P5-01 의 Article 블록이 있다면 블록을 새로 만들지
+      말고 거기에 dateModified 를 더하고 화면 줄만 붙여라 — 같은 페이지에 Article 노드가
+      둘이면 어느 쪽이 채점될지 예측할 수 없다"
+
+verify:
+  collector: FreshnessCollector
+  expect_unavailable_kind: design_limit
+  ceiling: |
+    **자동 판정의 천장은 level 2 가 아니라 미판정(design_limit)이다.**
+
+    rubric v1.7.0 P5-02 의 levels."1" 은 "dateModified 가 있으나 **본문 변경 없이
+    빌드마다 자동 갱신**되어 datePublished 대비 신뢰할 수 없음" 이고, levels."2" 는
+    "dateModified 가 **실제 본문 변경 시에만 갱신**되고, 화면에도 '최종 수정일'로
+    표시됨" 이다. 두 등급을 가르는 것은 날짜의 **존재**가 아니라 **갱신 규율**이며,
+    그것은 같은 문서를 여러 시점에 관측해야 알 수 있다.
+
+    산출물은 화면 표기와 마크업을 둘 다 보장하지만 갱신 규율은 마크업의 성질이 아니다.
+    그래서 기대값은 "level 2" 가 아니라 "두 조건을 충족한 상태에서 갱신 규율을 확인할
+    수 없어 1 과 2 를 가르지 못함" 이다.
+
+    분류가 `inconclusive` 가 아니라 `design_limit` 인 것이 중요하다 -- 전자는 "이번에
+    실패" 라 재시도로 풀리지만, 후자는 **단일 시점 관측으로는 원리상 불가**라 ARS
+    커버리지 분모에서 빠진다. "원리상 불가" 를 "이번에 실패" 로 적으면 우리 한계가
+    고객 사이트의 결함으로 기록된다.
+
+    2 점으로 올리는 길은 마크업이 아니라 발행 운영이다 -- 그것을 다루는 항목이
+    P5-03·P5-05 이고, 둘 다 `fix_kind: process` 다.
+  note: |
+    골든 케이스 `remedy-p5-02-artifact-reaches-the-machine-ceiling` 이 이 파일을 읽어
+    홈 `<body>` 에 놓고 돌린다. JSON-LD 의 `dateModified` 를 지우면 level 0 으로
+    떨어지고(화면의 `<time>` 은 dateModified 로 세지 않는다), 화면의 '최종 수정일'
+    줄을 지우면 level 1 로 떨어진다 -- 천장 케이스도 두 방향으로 빨개진다.
+
+fixture:
+  place: body
+  targets: ["/"]
+
+adapters:
+  - platform: nextjs
+    where: "CMS·git 의 실제 수정 시각을 프런트매터로 받아 `<time>` 과 JSON-LD 에 함께 렌더링"
+    status: unconfirmed
+    note: "확인 안 함. 파일시스템 mtime 을 쓰면 체크아웃마다 바뀌어 빌드 시각과 같아진다 —
+      형식은 충족하고 의도는 어기는 전형적인 경로인데, 실제로 재본 적 없다"
+  - platform: wordpress
+    where: "테마 템플릿에서 the_modified_time() 을 `<time datetime>` 과 함께 출력"
+    status: unconfirmed
+    note: "확인 안 함. 워드프레스의 post_modified 는 오탈자 수정이나 카테고리 변경에도
+      갱신되므로 '본문 변경 시에만' 과 어긋날 수 있다"
+  - platform: cafe24
+    where: "관리자 > 디자인 > HTML 편집 (게시판 본문 레이아웃)"
+    status: unconfirmed
+    note: "확인 안 함. 수정일 치환 변수가 있는지, 있다면 목록·본문 어디에서 쓸 수 있는지
+      확인하지 못했다"

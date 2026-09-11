@@ -1,0 +1,101 @@
+# P1-02 AI 봇별 명시적 정책
+#
+# P1-01 과 **같은 파일을 본다.** 둘을 함께 적용할 때 robots.txt 를 두 장 두지 마라 --
+# 이 파일의 산출물 한 장이 P1-01 의 조건(검색봇 3종 Allow + 학습봇 3종 분리 선언)을
+# 포함하므로 둘 다 충족된다. 카탈로그가 항목별로 나뉘어 있는 것은 채점이 항목별이기
+# 때문이지 파일이 여러 장이어서가 아니다.
+#
+# P1-01 이 "결정했는가" 를 묻는다면 P1-02 는 "몇 개나 결정했는가" 를 묻는다.
+
+item_id: P1-02
+
+target_state: |
+  `/robots.txt` 에 **AI 봇 User-agent 블록이 4개 이상** 있고, 각 블록에 Allow 또는
+  Disallow **경로가 명시**되어 있다.
+
+  "경로가 명시" 가 조건인 이유: `Disallow:` (값이 빈 줄)는 문법상 유효하지만 아무
+  경로도 지정하지 않은 상태라 **의도를 읽을 수 없다.** rubric 이 요구하는 것은
+  블록의 존재가 아니라 그 블록이 무엇을 말하는지다. 그래서 각 블록은 최소 한 줄의
+  경로를 갖는다.
+
+  차단 대상 목록을 늘리는 것 자체가 목표가 아니다. 여기서 얻는 것은 "우리는 AI
+  크롤러를 봇별로 구분해 다룬다" 는 상태이고, 그 상태의 값어치는 P1-01 의 게이팅을
+  피하는 것 다음으로 작다 -- 1층(도달)은 필요조건이지 충분조건이 아니다.
+
+artifact: |
+  User-agent: *
+  Allow: /
+  Disallow: /admin/
+
+  # ── 답변 인용에 쓰이는 검색봇: 허용 ──
+  User-agent: OAI-SearchBot
+  Allow: /
+
+  User-agent: Claude-SearchBot
+  Allow: /
+
+  User-agent: PerplexityBot
+  Allow: /
+
+  # ── 모델 학습용 봇: 봇마다 따로 결정한다 ──
+  User-agent: GPTBot
+  {{GPTBOT_RULE}}
+
+  User-agent: ClaudeBot
+  {{CLAUDEBOT_RULE}}
+
+  User-agent: Google-Extended
+  {{GOOGLE_EXTENDED_RULE}}
+
+  # ── 대규모 수집 봇: 학습 데이터셋·크롤 아카이브 ──
+  User-agent: CCBot
+  {{CCBOT_RULE}}
+
+  User-agent: Bytespider
+  {{BYTESPIDER_RULE}}
+
+  Sitemap: {{SITE_URL}}/sitemap.xml
+
+placeholders:
+  - key: "{{GPTBOT_RULE}}"
+    meaning: "OpenAI 학습 크롤러 결정. `Allow: /` 또는 `Disallow: /` — **경로가 있어야 한다.**
+      값 없는 `Disallow:` 는 블록은 있으나 아무것도 말하지 않는 상태라 level 1 이다"
+  - key: "{{CLAUDEBOT_RULE}}"
+    meaning: "Anthropic 학습 크롤러 결정. `Allow: /` 또는 `Disallow: /`"
+  - key: "{{GOOGLE_EXTENDED_RULE}}"
+    meaning: "Gemini 학습 결정. `Allow: /` 또는 `Disallow: /`. 일반 Googlebot 색인과 무관하다"
+  - key: "{{CCBOT_RULE}}"
+    meaning: "Common Crawl 결정. 다수 모델의 학습 코퍼스 출처라 여기 차단은 파급이 넓다.
+      `Allow: /` 또는 `Disallow: /`"
+  - key: "{{BYTESPIDER_RULE}}"
+    meaning: "ByteDance 크롤러 결정. `Allow: /` 또는 `Disallow: /`"
+  - key: "{{SITE_URL}}"
+    meaning: "사이트 정본 URL (끝 슬래시 없이). Sitemap 지시자는 절대 URL 이어야 한다"
+
+verify:
+  collector: RobotsCollector
+  expect_level: 2
+  note: |
+    골든 케이스 `remedy-p1-02-artifact-scores-two` 가 이 파일을 읽어 `/robots.txt`
+    파일로 놓고 돌린다. 블록 수와 "경로 명시" 를 둘 다 재므로, 블록을 지우거나
+    경로를 비우면 케이스가 빨개진다.
+
+fixture:
+  place: file
+  targets: ["/robots.txt"]
+
+adapters:
+  - platform: nextjs
+    where: "app/robots.ts (Metadata API) 또는 public/robots.txt"
+    status: unconfirmed
+    note: "확인 안 함. Metadata API 는 rules 배열로 옮겨 적어야 하는데, allow/disallow 를
+      생략한 항목이 조용히 경로 없는 블록이 되어 level 1 로 떨어질 수 있다"
+  - platform: wordpress
+    where: "루트 정적 robots.txt, 또는 SEO 플러그인의 robots.txt 편집기"
+    status: unconfirmed
+    note: "확인 안 함. 일부 플러그인이 자체 AI 봇 차단 프리셋을 덧붙여 우리가 적은 결정과
+      충돌하는 블록이 중복 생성될 수 있다 — 적용 후 실제 응답을 받아 확인해야 한다"
+  - platform: cafe24
+    where: "관리자 > 상점관리 > 검색엔진 최적화(SEO) > robots.txt 설정"
+    status: unconfirmed
+    note: "확인 안 함. 임의 User-agent 블록을 몇 개까지 넣을 수 있는지 확인하지 못했다"

@@ -1,0 +1,36 @@
+{
+  "id": "remedy-p1-02-artifact-scores-two",
+  "title": "발행된 P1-02 처방 robots.txt 를 치환해 /robots.txt 로 놓으면 실제로 level 2 가 나온다",
+  "level": 2,
+  "operation": "remedy_applies",
+  "rationale": "기대값 2 는 rubric v1.7.0 P1-02 levels.'2' 에서 유도했다: 'AI 봇 User-agent 블록이 4개 이상 존재하고, 각 블록에 Allow 또는 Disallow 경로가 명시됨'. 처방 산출물은 AI 봇 블록 8개(검색봇 3 + 학습봇 3 + CCBot + Bytespider)를 주고 각 블록에 경로가 있는 규칙을 한 줄씩 둔다. 치환값은 봇마다 다른 결정(Allow/Disallow)을 넣어 '경로가 명시됨' 이 허용을 뜻하지 않는다는 점을 함께 보인다. 4개가 아니라 8개를 두는 이유는 rubric 의 최소치를 아슬아슬하게 맞춘 산출물이 블록 하나만 빠져도 무너지기 때문이고, 여유를 둔 만큼 이 케이스는 블록 수보다 '경로 명시' 쪽을 더 세게 잰다.",
+  "spec_refs": [
+    "plane-b-readiness.md §6",
+    "plane-b-readiness.md §2.1"
+  ],
+  "notes": "P1-01 과 같은 파일을 본다. 실제 적용에서는 robots.txt 를 두 장 두지 않고 이 산출물 한 장이 두 항목을 모두 충족한다 — 처방이 항목별로 나뉜 것은 채점이 항목별이기 때문이다.",
+  "input": {
+    "item_id": "P1-02",
+    "placeholder_values": {
+      "{{BYTESPIDER_RULE}}": "Disallow: /",
+      "{{CCBOT_RULE}}": "Disallow: /",
+      "{{CLAUDEBOT_RULE}}": "Allow: /",
+      "{{GOOGLE_EXTENDED_RULE}}": "Allow: /",
+      "{{GPTBOT_RULE}}": "Disallow: /",
+      "{{SITE_URL}}": "https://example.com"
+    }
+  },
+  "expected": {
+    "level": 2,
+    "unavailable_kind": null,
+    "declared_expect_level": 2,
+    "declared_expect_unavailable_kind": null
+  },
+  "tolerance": {
+    "absolute": 0
+  },
+  "reference_implementation": {
+    "status": "conformant",
+    "note": "2026-09-11 구현. 러너의 _run_remedy_applies 가 처방의 fixture 선언대로 픽스처 사이트를 짓고 발행본을 놓는다."
+  }
+}

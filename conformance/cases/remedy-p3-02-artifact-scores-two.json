@@ -1,0 +1,38 @@
+{
+  "id": "remedy-p3-02-artifact-scores-two",
+  "title": "발행된 P3-02 처방 WebSite JSON-LD 를 P3-01 산출물과 함께 놓으면 실제로 level 2 가 나온다",
+  "level": 2,
+  "operation": "remedy_applies",
+  "rationale": "기대값 2 는 rubric v1.7.0 P3-02 levels.'2' 에서 유도했다: 'WebSite에 name, url, inLanguage가 있고 publisher가 Organization @id를 참조. 사이트 내 검색이 있으면 potentialAction(SearchAction) 포함'. publisher 조건은 **참조 대상이 먼저 있어야** 성립하므로 이 케이스의 픽스처는 처방의 fixture.requires 를 따라 P3-01 의 발행본을 같은 head 에 함께 놓는다. 두 처방에 같은 {{SITE_URL}} 을 주어 #organization 앵커가 실제로 해소되는지를 재며, P3-01 의 @id 형식이 바뀌면 이 케이스가 함께 빨개진다. SearchAction 은 산출물이 포함하므로 검색 유무와 무관하게 조건을 만족한다.",
+  "spec_refs": [
+    "plane-b-readiness.md §6",
+    "plane-b-readiness.md §2.1"
+  ],
+  "notes": "픽스처를 P3-01 없이 지으면 참조 대상이 없는 상태가 되는데, 참조 구현은 org_ids 가 **비어 있을 때** publisher 링크를 관대하게 통과시킨다(schema_org.py 의 'publisher_id in org_ids or not org_ids'). 그래서 requires 로 대상을 실제로 놓는다. 돌연변이로 확인한 이 케이스의 감도: P3-01 의 @id 값을 바꾸면(#organization → #org) 빨개지고, 이 처방의 publisher 줄을 지워도 빨개진다. 다만 **P3-01 의 @id 를 통째로 지우면 초록으로 남는다** — 조직 노드가 하나도 없는 사이트에서 참조 구현이 관대해지기 때문이다. 이 케이스는 '참조가 어긋났는가' 는 잡지만 '참조 대상이 아예 없는가' 는 잡지 않는다. 그 구멍은 P3-01 자신의 케이스가 막는다(@id 없으면 level 1).",
+  "input": {
+    "item_id": "P3-02",
+    "placeholder_values": {
+      "{{CONTACT_EMAIL}}": "hello@example.com",
+      "{{DESCRIPTION}}": "중소기업용 재고 관리 소프트웨어를 만드는 회사입니다.",
+      "{{LOGO_URL}}": "https://example.com/logo.png",
+      "{{ORG_NAME}}": "예시상사",
+      "{{SEARCH_URL_TEMPLATE}}": "https://example.com/search?q={search_term_string}",
+      "{{SITE_LANGUAGE}}": "ko",
+      "{{SITE_NAME}}": "예시상사",
+      "{{SITE_URL}}": "https://example.com"
+    }
+  },
+  "expected": {
+    "level": 2,
+    "unavailable_kind": null,
+    "declared_expect_level": 2,
+    "declared_expect_unavailable_kind": null
+  },
+  "tolerance": {
+    "absolute": 0
+  },
+  "reference_implementation": {
+    "status": "conformant",
+    "note": "2026-09-11 구현. 러너의 _run_remedy_applies 가 처방의 fixture 선언대로 픽스처 사이트를 짓고 발행본을 놓는다."
+  }
+}

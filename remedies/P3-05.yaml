@@ -1,0 +1,105 @@
+# P3-05 Article 계열 스키마
+#
+# 홈에는 붙일 수 없는 처방이다. 판정 대상이 "블로그·가이드 **문서**" 라서 문서 페이지
+# 집합이 있어야 하고, 그래서 검증도 문서 페이지 위에서 한다(fixture.targets).
+#
+# publisher 가 P3-01 의 @id 를 참조하므로 P3-01 을 전제로 한다. author 는 전제가 아니라
+# **결정**이다 -- 그 결정을 못 하는 사이트가 많고, 그래서 P4-01(저자 표기)은 artifact 가
+# 아니라 `fact` 로 분류돼 있다. 여기서는 이미 저자가 정해졌다고 가정한다.
+
+item_id: P3-05
+
+target_state: |
+  블로그·가이드 문서 페이지에 `@type: Article`(또는 BlogPosting·TechArticle 같은
+  하위 타입) JSON-LD 가 있고 다음을 **모두** 갖는다.
+
+    headline · datePublished · dateModified
+    author → **Person 객체 + url** (문자열이 아니다)
+    publisher → Organization **@id 참조**
+
+  `author` 가 문자열이면 level 1 이다. rubric 이 객체를 요구하는 이유는 저자를
+  **참조 가능한 엔티티**로 만들기 위함이다 -- 문자열 "홍길동" 은 어느 홍길동인지
+  기계가 알 수 없고, url 이 붙은 Person 은 그 사람의 프로필 페이지로 해소된다.
+  이것이 P4(권위) 쪽에서 값을 갖는 연결이다.
+
+  **없는 저자를 만들지 마라.** 실제로 그 글을 쓴 사람이 없거나 밝힐 수 없다면, 조직을
+  author 로 두는 편이 가짜 사람을 만드는 것보다 낫다(그 경우 이 항목은 level 1 에
+  머문다). 저자를 지정하는 결정 자체는 카탈로그가 대신할 수 없는 일이다.
+
+artifact: |
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "@id": "{{PAGE_URL}}#article",
+    "mainEntityOfPage": { "@type": "WebPage", "@id": "{{PAGE_URL}}" },
+    "headline": "{{HEADLINE}}",
+    "description": "{{DESCRIPTION}}",
+    "datePublished": "{{DATE_PUBLISHED}}",
+    "dateModified": "{{DATE_MODIFIED}}",
+    "inLanguage": "{{SITE_LANGUAGE}}",
+    "author": {
+      "@type": "Person",
+      "name": "{{AUTHOR_NAME}}",
+      "url": "{{AUTHOR_URL}}"
+    },
+    "publisher": { "@id": "{{SITE_URL}}#organization" }
+  }
+  </script>
+
+placeholders:
+  - key: "{{PAGE_URL}}"
+    meaning: "이 문서의 절대 URL. 문서마다 다르다 — 템플릿에 고정하면 모든 글이 같은
+      @id 를 갖는다. (적합성 러너는 픽스처 페이지 URL 로 자동 치환한다)"
+  - key: "{{SITE_URL}}"
+    meaning: "사이트 정본 URL. P3-01 에 넣은 값과 같아야 publisher 참조가 해결된다"
+  - key: "{{HEADLINE}}"
+    meaning: "문서 제목. 화면 H1 과 같게 한다. schema.org 는 110자 이내를 권장한다"
+  - key: "{{DESCRIPTION}}"
+    meaning: "이 문서가 무엇에 답하는지 한두 문장. 목록 카드에 쓰는 요약과 같은 내용"
+  - key: "{{DATE_PUBLISHED}}"
+    meaning: "최초 발행일 (ISO 8601, 예: `2026-01-15` 또는 `2026-01-15T09:00:00+09:00`).
+      화면 표시와 일치해야 P5-01 도 함께 충족된다"
+  - key: "{{DATE_MODIFIED}}"
+    meaning: "마지막 **내용** 수정일 (ISO 8601). 빌드 시각을 넣지 마라 — 본문이 안 변했는데
+      갱신되는 dateModified 는 P5-02 가 level 1 로 규정한 상태다"
+  - key: "{{SITE_LANGUAGE}}"
+    meaning: "BCP 47 언어 태그 (`ko` 등). 문서 언어가 사이트 기본과 다르면 그 문서의 언어를 적는다"
+  - key: "{{AUTHOR_NAME}}"
+    meaning: "실제 저자의 이름. **없는 사람을 만들지 마라** — 밝힐 저자가 없으면
+      author 를 Organization 으로 두고 level 1 에 머무는 편이 낫다"
+  - key: "{{AUTHOR_URL}}"
+    meaning: "저자 프로필 페이지의 절대 URL. url 없는 Person 은 level 2 가 아니다 —
+      참조로 해소되지 않는 이름은 기계에게 문자열과 같다"
+
+verify:
+  collector: SchemaOrgCollector
+  expect_level: 2
+  note: |
+    골든 케이스 `remedy-p3-05-artifact-scores-two` 가 이 산출물을 문서 페이지
+    `<head>` 에 놓고, P3-01 을 홈에 놓은 뒤 그 문서 페이지를 대표 문서 집합
+    (`extra_urls`)으로 넘겨 돌린다. 홈에만 놓으면 수집기가 아예 보지 않는다 --
+    이 항목의 분모는 문서 페이지 집합이지 홈이 아니다.
+
+fixture:
+  place: head
+  targets: ["/guides/aeo-checklist"]
+  requires: ["P3-01"]
+  extra_urls: ["/guides/aeo-checklist"]
+
+adapters:
+  - platform: nextjs
+    where: "문서 라우트의 page.tsx 에서 프런트매터·CMS 데이터로 JSON-LD 렌더링"
+    status: unconfirmed
+    note: "확인 안 함. MDX 프런트매터에 author 를 문자열로 두는 관습이 흔한데, 그대로
+      내보내면 level 1 이다 — 객체로 바꾸는 변환 지점을 실제로 확인한 적 없다"
+  - platform: wordpress
+    where: "SEO 플러그인의 Article 스키마 (대개 포스트에 기본 발행한다)"
+    status: unconfirmed
+    note: "확인 안 함. 플러그인이 author 를 Person 으로 내더라도 url 이 작성자 아카이브
+      페이지를 가리키는지, 그 페이지가 200 인지는 테마에 따라 다르다"
+  - platform: cafe24
+    where: "관리자 > 디자인 > HTML 편집 (게시판·블로그 스킨의 본문 레이아웃)"
+    status: unconfirmed
+    note: "확인 안 함. 게시판 스킨에서 글별 발행일·수정일 치환 변수를 ISO 8601 로 낼 수
+      있는지 확인하지 못했다"
