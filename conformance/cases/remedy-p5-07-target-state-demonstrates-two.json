@@ -1,0 +1,27 @@
+{
+  "id": "remedy-p5-07-target-state-demonstrates-two",
+  "title": "P5-07 처방이 말하는 목표 상태(내부 링크 broken 1% 미만)를 가진 사이트는 실제로 level 2 를 받는다",
+  "level": 2,
+  "operation": "remedy_demonstrates",
+  "rationale": "기대값 2 는 rubric v1.7.0 P5-07 levels.'2' 에서 유도했다: '확인에 성공한 내부 링크 중 broken 비율 1% 미만이고 리다이렉트 체인 3홉 초과 0건'. 외부(P5-04, 3%)보다 기준이 엄한 이유는 통제권이다 -- 남의 사이트가 사라지는 것은 우리 잘못이 아니지만 우리 사이트 안에서 없는 페이지를 가리키는 것은 전적으로 우리 일이고, 처방의 target_state 가 그 차이를 설명한다. 픽스처는 내부 링크를 200 으로 응답하게 한다. 어기는 쪽(내부 링크 404 -> level 0)과 그 위반이 P5-04 를 건드리지 않는다는 것은 참조 구현 쪽 시험이 함께 잰다.",
+  "spec_refs": [
+    "plane-b-readiness.md §8",
+    "plane-b-readiness.md §2.1"
+  ],
+  "notes": "P5-04 와 같은 수집기(FreshnessCollector)가 두 항목을 한꺼번에 판정하므로, 케이스는 **자기 항목의 level 만** 본다.",
+  "input": {
+    "item_id": "P5-07"
+  },
+  "expected": {
+    "level": 2,
+    "unavailable_kind": null,
+    "declared_demonstrates_level": 2
+  },
+  "tolerance": {
+    "absolute": 0
+  },
+  "reference_implementation": {
+    "status": "conformant",
+    "note": "2026-09-14 구현."
+  }
+}

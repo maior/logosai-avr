@@ -1,0 +1,27 @@
+{
+  "id": "remedy-p5-03-target-state-demonstrates-two",
+  "title": "P5-03 처방이 말하는 목표 상태(최근 6개월 내 갱신 40% 이상)를 가진 사이트는 실제로 level 2 를 받는다",
+  "level": 2,
+  "operation": "remedy_demonstrates",
+  "rationale": "기대값 2 는 rubric v1.7.0 P5-03 levels.'2' 에서 유도했다: '최근 6개월 내 갱신된 콘텐츠가 전체의 40% 이상이고 핵심 랜딩은 최근 3개월 내 갱신'. 픽스처의 sitemap 은 전 URL 의 lastmod 를 최근 날짜로 두므로 두 조건을 모두 넘는다. 처방의 target_state 는 여기에 한 문장을 더 붙인다 -- **lastmod 를 실제 변경 시점에 맞게 갱신하는 것 자체가 이 항목의 절반**이라는 것. 빌드마다 전부 오늘 날짜로 찍는 사이트는 이 항목에서 만점이지만 그 수치는 거짓이고, P5-02(최종수정일)가 그것을 따로 잡는다. 두 항목을 함께 읽어야 하는 이유가 거기 있다.",
+  "spec_refs": [
+    "plane-b-readiness.md §8",
+    "plane-b-readiness.md §2.1"
+  ],
+  "notes": "어기는 쪽(전부 2년 전 갱신 -> level 0)과 그 위반이 P5-04·P5-07 을 건드리지 않는다는 것은 참조 구현 쪽 시험이 잰다.",
+  "input": {
+    "item_id": "P5-03"
+  },
+  "expected": {
+    "level": 2,
+    "unavailable_kind": null,
+    "declared_demonstrates_level": 2
+  },
+  "tolerance": {
+    "absolute": 0
+  },
+  "reference_implementation": {
+    "status": "conformant",
+    "note": "2026-09-14 구현."
+  }
+}

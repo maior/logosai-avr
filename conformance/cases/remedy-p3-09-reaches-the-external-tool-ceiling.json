@@ -1,0 +1,34 @@
+{
+  "id": "remedy-p3-09-reaches-the-external-tool-ceiling",
+  "title": "구조화 데이터가 유효해도 자동 판정은 '경고 건수' 앞에서 멈춘다 — 그 값은 외부 도구의 출력이다",
+  "level": 2,
+  "operation": "remedy_demonstrates",
+  "rationale": "rubric v1.7.0 P3-09 levels.'2' 는 두 조건을 요구한다: 오류 0건, **경고 페이지당 평균 2건 이하**. 앞은 우리가 JSON-LD 를 파싱해 알 수 있지만 뒤는 구글 리치 결과 테스트의 출력이지 HTML 에서 읽어 낼 수 있는 값이 아니다. 실측으로 확인했다 -- 유효한 Organization JSON-LD 를 담은 픽스처가 input_missing 을 낸다('파싱 오류는 0건이나, level 1·2 를 가르는 경고 건수는 리치 결과 테스트 결과가 있어야 산출 가능'). 남의 도구 출력을 우리 진단에 끌어오지 않는 이유는 통제권이다: 그 도구의 판정 기준이 바뀌면 우리 점수가 조용히 바뀌고, 우리는 그 변경을 관측하지도 통제하지도 못한다. **분모에 남는 kind(input_missing)를 쓴 것도 의도다** -- not_applicable 로 적으면 자동화 한계가 커버리지 상승으로 둔갑한다.",
+  "spec_refs": [
+    "plane-b-readiness.md §8",
+    "plane-b-readiness.md §2.1"
+  ],
+  "notes": "fixture.requires 로 P3-01 의 발행본을 함께 놓는다 -- 조직 노드가 없으면 파싱할 대상 자체가 없어 다른 이유로 멈춘다.",
+  "input": {
+    "item_id": "P3-09",
+    "placeholder_values": {
+      "{{SITE_URL}}": "https://example.com",
+      "{{ORG_NAME}}": "예시상사",
+      "{{LOGO_URL}}": "https://example.com/logo.png",
+      "{{DESCRIPTION}}": "재고 관리 소프트웨어 회사입니다.",
+      "{{CONTACT_EMAIL}}": "hello@example.com"
+    }
+  },
+  "expected": {
+    "level": null,
+    "unavailable_kind": "input_missing",
+    "declared_demonstrates_level": null
+  },
+  "tolerance": {
+    "absolute": 0
+  },
+  "reference_implementation": {
+    "status": "conformant",
+    "note": "2026-09-14 구현."
+  }
+}
