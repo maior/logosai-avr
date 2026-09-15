@@ -45,7 +45,7 @@ not_verifiable: |
   스위트 전체가 죽는다. 제3자가 우리 명세를 재현하려는데 브라우저 설치부터 요구하면
   그건 공개 스위트가 아니다.
 
-  **그래서 이 blocking 항목은 렌더러를 켜야만 제대로 잰다** (`AEO_RENDER_MODE=playwright`).
+  **그래서 이 blocking 항목은 렌더러를 켜야만 제대로 잰다** (`AEO_AUDIT_RENDER_MODE=playwright`).
   안 켜면 게이팅이 늘 `gating_undetermined` 로 남는다. 그 상태 자체가 리포트에 공시된다.
 
 adapters:
