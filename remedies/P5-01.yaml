@@ -57,16 +57,23 @@ verify:
   collector: FreshnessCollector
   expect_level: 2
   note: |
-    골든 케이스 `remedy-p5-01-artifact-scores-two` 가 이 산출물을 홈 `<body>` 에 놓고
-    돌린다. 화면의 `<p class="entry-meta">` 줄을 지우면 마크업만 남아 level 1 로
-    떨어진다 -- 그게 이 항목이 재는 것의 절반이라는 증거다.
+    골든 케이스 `remedy-p5-01-artifact-scores-two` 가 이 산출물을 **문서 페이지**
+    `/blog/post` 의 `<body>` 에 놓고 돌린다 (홈에 놓으면 판정 대상이 아니다).
+    화면의 `<p class="entry-meta">` 줄을 지우면 마크업만 남아 level 1 로 떨어진다 --
+    그게 이 항목이 재는 것의 절반이라는 증거다.
 
     ⚠️ JSON-LD 의 `datePublished` 만 지우면 level 2 가 유지된다. `<time datetime>`
     속성 자체가 마크업 날짜로 세어지기 때문이다. 두 자리를 다 지워야 마크업이 사라진다.
 
 fixture:
+  # **문서 페이지에 놓는다. 홈이 아니다.** rubric 문구의 주어가 "콘텐츠에" 이고,
+  # 회사 홈페이지에 발행일이 없는 것은 결함이 아니다. 2026-09-15 까지 이 픽스처는
+  # `targets: ["/"]` 였고 -- 즉 우리가 발행한 처방이 "홈에 붙이시오" 라고 말하고
+  # 있었다 -- 참조 구현이 홈을 문서로 취급하고 있어서 그대로 초록이었다.
+  # P4-01(저자 표기)이 같은 이유로 진작 `/blog/*` 를 쓰고 있었다.
   place: body
-  targets: ["/"]
+  targets: ["/blog/post"]
+  extra_urls: ["/blog/post"]
 
 adapters:
   - platform: nextjs

@@ -86,13 +86,16 @@ verify:
     P5-03·P5-05 이고, 둘 다 `fix_kind: process` 다.
   note: |
     골든 케이스 `remedy-p5-02-artifact-reaches-the-machine-ceiling` 이 이 파일을 읽어
-    홈 `<body>` 에 놓고 돌린다. JSON-LD 의 `dateModified` 를 지우면 level 0 으로
-    떨어지고(화면의 `<time>` 은 dateModified 로 세지 않는다), 화면의 '최종 수정일'
-    줄을 지우면 level 1 로 떨어진다 -- 천장 케이스도 두 방향으로 빨개진다.
+    **문서 페이지** `/blog/post` 의 `<body>` 에 놓고 돌린다. JSON-LD 의
+    `dateModified` 를 지우면 level 0 으로 떨어지고(화면의 `<time>` 은 dateModified 로
+    세지 않는다), 화면의 '최종 수정일' 줄을 지우면 level 1 로 떨어진다 --
+    천장 케이스도 두 방향으로 빨개진다.
 
 fixture:
+  # P5-01 과 같은 이유로 문서 페이지에 놓는다 -- 갱신 이력은 콘텐츠의 성질이다.
   place: body
-  targets: ["/"]
+  targets: ["/blog/post"]
+  extra_urls: ["/blog/post"]
 
 adapters:
   - platform: nextjs
