@@ -1,9 +1,14 @@
 # AVR 모델 — Plane B (Readiness) 채점 정본
 # Single Source of Truth. 백엔드 스코어러는 이 파일만 파싱한다.
 # 항목 수정 시 framework/schema/report.schema.json 의 id enum 과 함께 갱신할 것.
-version: "1.7.0"
+version: "1.8.0"
 
 changelog:
+  - version: "1.8.0"
+    date: "2026-09-17"
+    breaking: false
+    summary: "`check` 가 거짓이던 두 항목을 고친다 — P1-09(모바일·데스크톱 콘텐츠 일치)와 P2-01(답변 우선 구조)을 auto 에서 manual 로. 둘 다 참조 구현이 **처음부터 담당하지 않기로 한** 항목인데(ARCHITECTURE.md §7-5 가 각각 '하지 않는다'·'만들지 않는다' 라고 적고 있다) check: auto 를 유지한 탓에, 모든 리포트가 두 항목을 no_collector('우리 로드맵 항목 — 곧 만듭니다')로 공시해 왔다. 영원히 만들지 않을 것을 곧 만들겠다고 말한 것이다. P1-09 는 모바일 UA 사칭이 필요해 하지 않는다(정체를 숨기는 크롤러는 이 프레임워크가 진단하는 문제 그 자체다). P2-01 은 '그 문장만 떼어도 질문에 답이 되는가' 라는 의미 판단이라 규칙으로 흉내내면 오답을 확신에 차서 낸다. **둘 다 사람은 판정할 수 있으므로** design_limit(아무도 못 푼다)이 아니라 check: manual 이 정확하고, 런타임 분류는 awaiting_manual('심화 진단에서 해소')이 된다. levels·weight·blocking·gating·remediation·evidence 는 변경 없음. auto/manual 분포는 34/11 에서 32/13 으로 바뀌고, 미담당 auto 항목은 3개에서 1개(P1-08)만 남는다."
+    comparability: "v1.7.0 과 총점·Pillar·항목 점수 **전부 비교 가능하며 재측정이 필요 없다.** no_collector 와 awaiting_manual 은 둘 다 judgeable 분모에 남는 kind 이므로(plane-b-readiness.md §8.2) 커버리지 분모가 동일하고, 두 항목은 어느 버전에서도 채점된 적이 없다. 실측 확인(mkiicorp.com): ARS 51.3095 -> 51.3095, 항목 점수 차이 없음. 바뀌는 것은 리포트가 미판정 사유를 무엇이라고 말하는가뿐이다. 다만 자동 티어의 auto 항목 수가 P4 제외 기준 32 에서 30 으로 줄어 min_item_coverage(0.7)를 **원리상 넘지 못하게** 됐다 — 30/45 = 66.7%. 이는 나빠진 것이 아니라 정확해진 것이다. 실측 채점은 그전에도 27~30 항목이라 이미 하한 아래였고, 71.1% 는 이론적 상한일 뿐 실제를 말한 적이 없다. 귀결로 자동 판정만으로 채운 사분면은 언제나 borderline 이며, 단정 대신 인접 사분면의 처방을 함께 제시한다."
   - version: "1.7.0"
     date: "2026-09-10"
     breaking: false
@@ -257,7 +262,14 @@ pillars:
       - id: P1-09
         title: 모바일·데스크톱 콘텐츠 일치
         description: 모바일 UA와 데스크톱 UA에 동일 본문이 제공되는가
-        check: auto
+        # check: manual (v1.8.0~). 이 항목의 levels 는 **모바일 UA 로 받은 응답**을
+        # 요구하는데, 우리 크롤러는 모바일 UA 를 보내지 않는다 — 정체를 숨기는
+        # 크롤러는 이 프레임워크가 진단하는 문제 그 자체다. 자동으로 재면 우리 UA
+        # 에는 늘 데스크톱 응답만 오므로 일치율이 항상 100% 로 나온다: 재는 시늉만
+        # 하고 만점을 주는 셈이다. 사람은 판정할 수 있다(모바일 브라우저로 열어
+        # 본문 비교 + canonical 확인). v1.7.0 까지 auto 였고, 그 때문에 모든
+        # 리포트가 이 항목을 "곧 수집기를 만들겠다"(no_collector)고 공시했다.
+        check: manual
         evidence_grade: provider_documented
         blocking: false
         remediation: dev
@@ -291,7 +303,12 @@ pillars:
       - id: P2-01
         title: 답변 우선 구조 (answer-first)
         description: 페이지 첫 문단에서 질문의 결론이 먼저 제시되는가
-        check: auto
+        # check: manual (v1.8.0~). levels 가 "그 문장만 떼어도 질문에 답이 되는가" 를
+        # 묻는다 — 이건 의미 판단이고, 규칙으로 흉내내면 오답을 확신에 차서 낸다
+        # (ARCHITECTURE.md §7-5: "만들지 않는다"). 만들지 않기로 한 것을 auto 로
+        # 두면 리포트가 "곧 수집기를 만들겠다"(no_collector)고 말하게 된다.
+        # 사람은 첫 문단을 읽어 판정할 수 있다.
+        check: manual
         evidence_grade: unverified
         blocking: false
         remediation: content

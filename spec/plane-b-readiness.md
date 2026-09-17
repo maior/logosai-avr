@@ -266,7 +266,7 @@ gating:
 - **P4는 9항목 중 7개가 manual이다.** 이는 결함이 아니라 P4의 성질이다.
   권위는 사이트 밖에서 만들어지므로 사이트를 긁어서 알 수 없다.
 - 따라서 **무료 셀프서브 진단은 P4를 채점할 수 없다.**
-  무료 티어는 P1·P2·P3·P5의 auto 항목 32개만으로 부분 ARS를 산출하고,
+  무료 티어는 P1·P2·P3·P5의 auto 항목 30개만으로 부분 ARS를 산출하고,
   §3.1의 커버리지 규칙에 따라 P4 weight(20)를 제외한 뒤 재정규화한다.
   리포트에는 "P4 미채점 — 권위 진단은 유료 진단에서 제공"을 명시한다.
 - 이 구조가 그대로 **무료 → 유료 전환 지점**이 된다. P4를 못 보면 Q2(준비만 된 상태)와
@@ -488,8 +488,8 @@ applicability  = judgeable / 전체 항목 수             ← 별도 공시. �
 
 ### 8.7 `awaiting_manual` — `check: manual`의 미판정 (rubric v1.5.0~)
 
-**왜 필요한가.** `check: manual` 항목 11개(`P1-10`·`P3-08`·`P4-02`~`P4-07`·`P4-09`·
-`P5-05`·`P5-06`)가 아직 사람 판정을 받지 못했을 때 붙일 kind가 v1.4.0까지는 존재하지
+**왜 필요한가.** `check: manual` 항목 13개(`P1-09`·`P1-10`·`P2-01`·`P3-08`·
+`P4-02`~`P4-07`·`P4-09`·`P5-05`·`P5-06` — `P1-09`·`P2-01` 은 rubric v1.8.0 에서 편입)가 아직 사람 판정을 받지 못했을 때 붙일 kind가 v1.4.0까지는 존재하지
 않았다. 파일럿 3회차 dry-run 실측(대상 10개, 미판정 291건 중 kind 없는 것 220건 —
 75.6%)이 이 공백을 드러냈다: 대상 1건 기준 미판정 28건 중 6건만 kind가 있었고 나머지
 22건 중 11건이 `no_collector`(로드맵 미구현 `check: auto` 항목)와 11건이 `check: manual`
@@ -763,6 +763,7 @@ P4 가 빠지면 §3.1 에 따라 남은 80점이 **재정규화**되어 100 으
 
 | rubric | 날짜 | 변경 | 과거 비교 |
 |---|---|---|---|
+| **1.8.0** | 2026-09-17 | `P1-09`(모바일·데스크톱 콘텐츠 일치)와 `P2-01`(답변 우선 구조)의 `check` 를 `auto` → `manual` 로. **rubric 이 틀렸던 것을 고친다** — 이 항목의 levels 는 모바일 UA 로 받은 응답을 요구하는데 우리 크롤러는 모바일 UA 를 보내지 않는다(정체를 숨기는 크롤러는 이 프레임워크가 진단하는 문제 그 자체다). 그 상태로 `auto` 를 유지한 탓에 모든 리포트가 이 항목을 `no_collector`("우리 로드맵 항목")로 공시했다 — 영원히 만들지 않을 것을. 사람은 판정할 수 있으므로(모바일 브라우저로 본문 비교 + canonical 확인) `manual` 이 정확하고 런타임 분류는 `awaiting_manual` 이 된다. auto/manual 분포 34/11 → 32/13. 미담당 auto 항목은 3개에서 1개(P1-08)만 남는다. levels·weight·blocking·gating·remediation·evidence 불변 | **총점 완전히 비교 가능, 재측정 불필요.** `no_collector` 와 `awaiting_manual` 은 둘 다 judgeable 분모에 남으므로(§8.2) 커버리지 분모가 동일하고, 이 항목은 어느 버전에서도 채점된 적이 없다. 바뀌는 것은 미판정 **사유의 문구**뿐이다. 다만 자동 티어의 auto 항목이 32 → 30 (P4 제외 기준)로 줄어 `min_item_coverage`(0.7)를 **원리상 넘지 못하게** 됐다 — 자동 판정만으로 채운 사분면은 언제나 borderline 이다 |
 | **1.7.0** | 2026-09-10 | §10 신설 — 항목마다 증거 등급(`evidence`) 도입: `standard`(6)·`provider_documented`(14)·`observed`(0)·`unverified`(25), 합계 45. 메커니즘의 근거를 등급화하며 **인과는 주장하지 않는다.** `P1-04`·`P1-10`·`P3-08`·`P4-09` 에는 `evidence_note` 로 근거 결손을 구체적으로 기술. 채점에 관여하지 않는 순수 정보 필드 | **총점 완전히 비교 가능.** levels·weight·blocking·gating·check·remediation 어디에도 변경 없음. `evidence` 유무로 동일 입력의 ARS·coverage·게이팅 판정이 하나도 달라지지 않는다 |
 | **1.6.0** | 2026-09-07 | §9 신설 — 항목마다 조치 분류(`remediation`) 필드 도입: `config`(3)·`dev`(17)·`content`(17)·`operations`(4)·`earned`(4), 합계 45. 채점에 관여하지 않는 순수 정보 필드. 리포트에 `plane_b.remediation_counts`(채점된 항목만 집계) 신설 | **총점 완전히 비교 가능.** levels·weight·blocking·gating·check 어디에도 변경 없음. `remediation` 유무로 동일 입력의 ARS·coverage·게이팅 판정이 하나도 달라지지 않는다 |
 | 1.5.0 | 2026-09-05 | §8.7 신설 — `unavailable_kind` 6번째 값 `awaiting_manual` 도입(정본은 `report.schema.json` 1.2.0). `check: manual` 항목(11개)의 사람 판정 대기 상태를 `no_collector`(로드맵 결손)·`input_missing`(정식 입력 부재)과 구분한다. `not_applicable`·`design_limit`과 달리 judgeable 분모에는 남는다 — §8.3 규칙(우리가 모르면 남긴다)의 적용일 뿐 새 규칙이 아니다. `blocking_forbidden_unavailable_kinds`에는 추가하지 않음(blocking 2개는 이미 전부 `check: auto`) | **총점 완전히 비교 가능.** kind를 명시하지 않은 기존 진단은 이미 분모에 남는 것으로 처리되어 왔으므로(§8.3), `awaiting_manual`로 명시해도 같은 항목·같은 대상의 ARS·coverage는 값이 하나도 바뀌지 않는다 — 가시성만 추가된다 |
