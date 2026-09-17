@@ -320,9 +320,9 @@ rubric 이 규정하지 않아 **구현이 정해버린** 값들이 있다. 이 
 | **P1** | `P2-03` | 헤딩 표제어 추출 규칙: 불용어 12개, 조사 17종 최장일치 제거, 2자 미만 토큰 폐기. "직후 2문단"을 **첫 2문장**으로 해석 | 동상 | rubric levels 문구 |
 | **P1** | `P3-07` | 지식베이스 호스트 4종·기업 DB 호스트 11종 목록. rubric 은 4개만 예시한다. 매칭이 **부분 문자열**이라 `notlinkedin.com.evil` 도 통과한다 | `audit/collectors/schema_org.py` | `rubric/` 별도 파일 |
 | **P1** | `P1-03` | "본문 텍스트" = 가시 텍스트 **문자 수**. CSR 셸 판정에 쓰는 200자·40자 임계와 마운트 id 6종 목록 | `audit/collectors/render.py`, `htmlutil.py` | rubric levels 문구 |
-| **P1** | 전역 | **표본 상한**: sitemap URL 20개, 자식 sitemap 3개, sameAs 링크 10개, 외부 링크 25개. 전부 **앞에서 N개**이지 무작위 표본이 아니다. 표본이 다르면 비율이 다르다 | 여러 수집기 | `plane-b-readiness.md` 새 절 |
-| **P1** | 전역 | "핵심 랜딩"의 정의. `P2-01`·`P2-07`·`P3-03` 등 여러 항목이 이 개념에 의존하는데 **정의가 어디에도 없다.** 참조 구현은 호출자가 넘긴 URL 목록으로 대체한다 | 정의 부재 | `plane-b-readiness.md` §2 |
-| **P1** | `P1-01` | 재시도 정책. rubric level 0 은 "**재시도 후에도** 5xx"를 요구하는데 참조 구현은 1회 요청 후 판정한다. 일시 장애가 게이팅을 발동시킬 수 있다 | `audit/collectors/fetching.py` | `plane-b-readiness.md` §4.6 |
+| **P1** | 전역 | **표본 상한**: 훑을 페이지 8개, sitemap URL 20개, robots 가 선언한 sitemap 5개, 인덱스당 자식 sitemap 3개(총 fetch 8), sameAs 링크 10개, 외부 링크 25개. 전부 **앞에서 N개**이지 무작위 표본이 아니다. 표본이 다르면 비율이 다르고, rubric v1.9.0 이 P1-05·P1-07 을 비율에서 건수로 바꾼 이유가 바로 이 표본 크기다 (`plane-b-readiness.md` §7.4-2) | 여러 수집기 · `audit/pageset.py` | `plane-b-readiness.md` 새 절 |
+| **P1** | 전역 | "핵심 랜딩"의 정의. `P2-01`·`P2-07`·`P3-03` 등 여러 항목이 이 개념에 의존하는데 **정의가 어디에도 없다.** 참조 구현은 호출자가 지정한 URL 이 있으면 그것을 쓰고(명시가 추측을 이긴다), 없으면 sitemap → 홈 링크 순서로 **스스로 고른다**(`audit/pageset.py::resolve_page_set`). 그 선택 규칙 자체가 미명세다 | `audit/pageset.py` | `plane-b-readiness.md` §2 |
+| **P2** | `P1-01` | 재시도 정책의 **횟수·백오프**. rubric 은 "재시도 후에도 5xx" 라고만 쓴다. 참조 구현은 실제로 재시도하며(`fetch_with_retry`, `DEFAULT_RETRY`) 백오프는 주입 가능하다 — 명세에 없는 것은 몇 번·얼마나 기다리는가다 | `audit/collectors/fetching.py` | `plane-b-readiness.md` §4.6 |
 | **P2** | `P5-01`·`P5-02` | 날짜 인식 문법(ISO·한국어)과 "최종 수정일" 라벨 어휘 10종 | `audit/collectors/freshness.py` | rubric levels 문구 |
 | **P2** | `P1-04` | llms.txt 링크 = **Markdown 링크만**. 맨 URL 은 세지 않는다 | `audit/collectors/llmstxt.py` | rubric levels 문구 |
 | **P2** | 전역 | 타임아웃 15초, 본문 5MB 상한, 리다이렉트 추적 | `audit/collectors/fetching.py` | 참조 구현 권장값으로 둔다 (점수 영향 간접) |
