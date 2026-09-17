@@ -1,0 +1,52 @@
+{
+  "id": "item-p1-07-transient-503-does-not-lower-the-level",
+  "title": "503 한 건은 등급을 내리지 않는다 (P1-07 = 2)",
+  "level": 2,
+  "operation": "item_p1_07",
+  "rationale": "spec plane-b-readiness.md §7.4-1 에서 유도했다 — 429·502·503·504·408 은 '그 URL 이 없다'가 아니라 '지금 확인하지 못했다'이고 분모에서 빠진다. 일시 오류를 영구 오류와 함께 세는 것은 §4(미측정 ≠ 0점)를 상태코드에서 되풀이하는 것이다. 특히 429 는 진단 도구가 만든 부하의 결과일 수 있어, 그걸 사이트의 성질로 적으면 측정이 대상을 바꾼 뒤 그 변화를 대상의 성질로 보고하는 셈이 된다. 실측 근거(2026-09-17, mkiicorp.com): 5분 간격 두 측정이 ARS 46.4 / 56.7 로 갈렸고 차이 전부가 P1-05·P1-07 이었으며, 그 시각 사이트의 18개 URL 은 전부 200 이었다.",
+  "spec_refs": [
+    "plane-b-readiness.md §7.4-1",
+    "plane-b-readiness.md §7.4-2",
+    "pillars.yaml P1-07 levels (v1.9.0)"
+  ],
+  "input": {
+    "urls": [
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 503
+      }
+    ]
+  },
+  "expected": {
+    "score": 2
+  },
+  "tolerance": {
+    "absolute": 0
+  },
+  "reference_implementation": {
+    "status": "implemented"
+  }
+}

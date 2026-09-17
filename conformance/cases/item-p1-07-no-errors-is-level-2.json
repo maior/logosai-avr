@@ -1,0 +1,52 @@
+{
+  "id": "item-p1-07-no-errors-is-level-2",
+  "title": "영구 오류 0건 → P1-07 = 2",
+  "level": 2,
+  "operation": "item_p1_07",
+  "rationale": "대조군. 아래 세 케이스의 기대값이 '등급이 내려간다'를 말하려면, 내려가지 않는 입력이 무엇인지 먼저 고정돼야 한다. rubric v1.9.0 P1-07 levels.'2'('영구 오류 0건이고 soft 404 0건')에서 직접 유도했다.",
+  "spec_refs": [
+    "plane-b-readiness.md §7.4-1",
+    "plane-b-readiness.md §7.4-2",
+    "pillars.yaml P1-07 levels (v1.9.0)"
+  ],
+  "input": {
+    "urls": [
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      }
+    ]
+  },
+  "expected": {
+    "score": 2
+  },
+  "tolerance": {
+    "absolute": 0
+  },
+  "reference_implementation": {
+    "status": "implemented"
+  }
+}

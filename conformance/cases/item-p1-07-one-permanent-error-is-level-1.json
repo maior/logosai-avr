@@ -1,0 +1,52 @@
+{
+  "id": "item-p1-07-one-permanent-error-is-level-1",
+  "title": "영구 오류 1건 → P1-07 = 1 (0 이 아니다)",
+  "level": 2,
+  "operation": "item_p1_07",
+  "rationale": "**이 케이스가 v1.9.0 변경의 본체다.** v1.8.0 의 밴드는 '4xx/5xx 비율 10% 초과면 level 0, 2~10% 면 level 1' 이었는데, 참조 구현의 표본은 사이트당 9~20 URL 이다. n=9 에서 1건은 11.1% 라 level 1 구간에 어떤 값도 들어갈 수 없었고 첫 오류가 곧장 최하가 됐다 — 밴드가 표본이 표현할 수 있는 해상도보다 촘촘했던 것이다. 기대값 1 은 v1.9.0 levels.'1'('영구 오류 1~2건')에서 유도했다. 한 페이지가 404 인 것과 사이트가 무너진 것은 같은 사실이 아니다.",
+  "spec_refs": [
+    "plane-b-readiness.md §7.4-1",
+    "plane-b-readiness.md §7.4-2",
+    "pillars.yaml P1-07 levels (v1.9.0)"
+  ],
+  "input": {
+    "urls": [
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 404
+      }
+    ]
+  },
+  "expected": {
+    "score": 1
+  },
+  "tolerance": {
+    "absolute": 0
+  },
+  "reference_implementation": {
+    "status": "implemented"
+  }
+}

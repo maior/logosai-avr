@@ -1,0 +1,52 @@
+{
+  "id": "item-p1-07-three-permanent-errors-is-level-0",
+  "title": "영구 오류 3건 → P1-07 = 0",
+  "level": 2,
+  "operation": "item_p1_07",
+  "rationale": "건수 밴드의 위쪽 경계. levels.'0'('영구 오류 3건 이상, 또는 500·501 이 1건 이상')에서 유도했다. 2건과 3건 사이에 경계가 있다는 것을 못 박지 않으면 구현이 임계를 임의로 옮겨도 스위트가 조용하다.",
+  "spec_refs": [
+    "plane-b-readiness.md §7.4-1",
+    "plane-b-readiness.md §7.4-2",
+    "pillars.yaml P1-07 levels (v1.9.0)"
+  ],
+  "input": {
+    "urls": [
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 200
+      },
+      {
+        "status": 404
+      },
+      {
+        "status": 410
+      },
+      {
+        "status": 404
+      }
+    ]
+  },
+  "expected": {
+    "score": 0
+  },
+  "tolerance": {
+    "absolute": 0
+  },
+  "reference_implementation": {
+    "status": "implemented"
+  }
+}

@@ -3,15 +3,25 @@
   "title": "P1-07 처방이 말하는 목표 상태(전 URL 200 · soft 404 없음)를 가진 사이트는 실제로 level 2 를 받는다",
   "level": 2,
   "operation": "remedy_demonstrates",
-  "rationale": "infra 처방의 위험은 **틀린 조언**이다. 붙여넣을 산출물이 없으니 고객은 우리 문장만 보고 서버를 고치는데, 그 문장이 틀렸으면 고치고도 점수가 안 오른다. 그래서 검증 대상이 '우리가 발행한 블록' 이 아니라 '우리가 서술한 목표 상태' 다. 기대값 2 는 rubric v1.7.0 P1-07 levels.'2' 에서 유도했다: '4xx/5xx 비율 2% 미만이고 5xx 0건. soft 404(200 응답 + 오류 문구) 없음'. 픽스처는 대표 URL 셋(/ · /a · /b)을 전부 200 으로 응답하게 하고 오류 문구를 담지 않으므로 세 조건이 모두 충족된다. **이 처방은 example 칸이 비어 있다** -- infra 의 '예시' 는 마크업 블록이 아니라 그 응답 상태를 가진 사이트이고, 보여줄 코드 상자가 없다. 그 예외는 infra 에만 열려 있으며 test_only_infra_may_demonstrate_without_an_example 이 못박는다.",
-  "spec_refs": ["plane-b-readiness.md §4", "plane-b-readiness.md §2.1"],
+  "rationale": "infra 처방의 위험은 **틀린 조언**이다. 붙여넣을 산출물이 없으니 고객은 우리 문장만 보고 서버를 고치는데, 그 문장이 틀렸으면 고치고도 점수가 안 오른다. 그래서 검증 대상이 '우리가 발행한 블록' 이 아니라 '우리가 서술한 목표 상태' 다. 기대값 2 는 rubric v1.9.0 P1-07 levels.'2' 에서 유도했다: '영구 오류 0건이고 soft 404 0건'. 픽스처는 대표 URL 셋(/ · /a · /b)을 전부 200 으로 응답하게 하고 오류 문구를 담지 않으므로 세 조건이 모두 충족된다. **이 처방은 example 칸이 비어 있다** -- infra 의 '예시' 는 마크업 블록이 아니라 그 응답 상태를 가진 사이트이고, 보여줄 코드 상자가 없다. 그 예외는 infra 에만 열려 있으며 test_only_infra_may_demonstrate_without_an_example 이 못박는다. v1.9.0 에서 밴드가 건수로 바뀌었고 일시 오류(429·503 등)가 분모에서 빠졌지만(spec §7.4-1) 이 케이스의 기대값은 변하지 않는다 — 픽스처는 셋 다 200 이라 영구 오류도 일시 오류도 0건이다.",
+  "spec_refs": [
+    "plane-b-readiness.md §4",
+    "plane-b-readiness.md §2.1"
+  ],
   "notes": "목표 상태가 **실제로 그 점수를 만드는가**는 양쪽으로 확인해야 의미가 있다. 이 케이스는 만족하는 쪽만 보고, 어기는 쪽(soft 404 → 1, 5xx → 0)은 backend/tests/test_remedy_catalog.py 의 test_the_p1_07_target_state_is_what_actually_makes_the_difference 가 잰다 -- 픽스처에 상태코드를 선언하는 문법을 공개 계약에 넣기보다, 그 대조는 참조 구현 쪽 시험에 두는 편이 계약을 작게 유지한다.",
-  "input": {"item_id": "P1-07"},
+  "input": {
+    "item_id": "P1-07"
+  },
   "expected": {
     "level": 2,
     "unavailable_kind": null,
     "declared_demonstrates_level": 2
   },
-  "tolerance": {"absolute": 0},
-  "reference_implementation": {"status": "conformant", "note": "2026-09-12 구현."}
+  "tolerance": {
+    "absolute": 0
+  },
+  "reference_implementation": {
+    "status": "conformant",
+    "note": "2026-09-12 구현."
+  }
 }
