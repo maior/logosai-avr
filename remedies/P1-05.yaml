@@ -80,10 +80,18 @@ fixture:
 adapters:
   - platform: nextjs
     where: "app/sitemap.ts (Metadata API). lastModified 를 반드시 채운다"
-    status: unconfirmed
-    note: "확인 안 함. lastModified 를 `new Date()` 로 두는 예제가 흔한데 그러면 빌드마다
-      전 URL 이 갱신돼 lastmod 가 신호가 아니라 잡음이 된다 — 등급은 2 로 나와도
-      의도한 상태가 아니다"
+    status: confirmed
+    note: "2026-09-17 mkiicorp.com 재진단으로 확인. P1-05 가 0→2 로 올랐다(같은 회차에서
+      P1-01 도 함께 갖춰짐 — 이 항목은 robots.txt 의 Sitemap 지시자를 전제한다,
+      fixture.requires 그대로). **여전히 유효한 경고**: lastModified 를 `new Date()`
+      로 두면 빌드마다 전 URL 이 갱신돼 lastmod 가 신호가 아니라 잡음이 된다 —
+      등급은 2 로 나와도 의도한 상태가 아니다. mkiicorp 는 이 함정을 피해
+      `git log -1 --format=%cs -- <page>` 로 뽑은 **페이지별 실제 마지막 변경일**을
+      리터럴 문자열(예: `2026-09-14`)로 박아 넣었다 — Next 는 lastModified 가
+      string 이면 그대로 통과시키므로(Date 를 주면 toISOString() 이 걸려 매번
+      시분초가 붙는다) 이 값이 빌드 시각으로 오염되지 않는다. 등재한 16개 URL
+      전부에 lastmod 가 있고, 인증 라우트·noindex 페이지는 목록에서 빼 non-200
+      비율을 0 으로 유지했다. 커밋 af3a75f."
   - platform: wordpress
     where: "SEO 플러그인의 XML 사이트맵, 또는 워드프레스 코어의 wp-sitemap.xml"
     status: unconfirmed

@@ -86,10 +86,14 @@ fixture:
 
 adapters:
   - platform: nextjs
-    where: "app/robots.ts (Metadata API) 또는 public/robots.txt"
-    status: unconfirmed
-    note: "확인 안 함. Metadata API 는 rules 배열로 옮겨 적어야 하는데, allow/disallow 를
-      생략한 항목이 조용히 경로 없는 블록이 되어 level 1 로 떨어질 수 있다"
+    where: "public/robots.txt (정적 파일). app/robots.ts(Metadata API) 는 이번 적용에
+      쓰지 않았다 — P1-01 과 같은 파일을 공유하므로 그쪽의 이유(comment 불가)가
+      여기도 그대로 적용된다"
+    status: confirmed
+    note: "2026-09-17 mkiicorp.com 재진단으로 확인 (P1-01 과 같은 파일, 같은 회차).
+      P1-02 가 0→2 로 올랐다. 검색봇 3종 + 학습봇 3종(GPTBot·ClaudeBot·
+      Google-Extended) + 대규모 수집봇 2종(CCBot·Bytespider), 총 8개 블록 전부에
+      `Allow: /` 로 경로를 명시했다. 커밋 af3a75f."
   - platform: wordpress
     where: "루트 정적 robots.txt, 또는 SEO 플러그인의 robots.txt 편집기"
     status: unconfirmed
