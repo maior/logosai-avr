@@ -211,14 +211,16 @@ spec/
   plane-a-visibility.md   MR · SoV · PosScore · CitShare, probe statuses
   plane-b-readiness.md    5 pillars, 45 items, coverage, unavailable_kind
   scoring.md              AVI/ARS formulas, thresholds, Gap Matrix
+  reliability.md          how an implementation measures and discloses its own
+                          reproducibility — determinism, time sensitivity, test-retest
 rubric/
-  pillars.yaml     1.5.0  scoring canon — 5 pillars, 45 items, gating
-  channels.yaml    1.0.0  6 channels, weights summing to 1.0
+  pillars.yaml     1.9.0  scoring canon — 5 pillars, 45 items, gating
+  channels.yaml    1.1.0  6 channels, weights summing to 1.0
   scoring.yaml     1.1.0  thresholds and coefficients
 schema/
-  report.schema.json  1.2.0  the report output contract
+  report.schema.json  1.3.0  the report output contract
 conformance/
-  cases/  54 golden cases
+  cases/  94 golden cases
 ```
 
 ### What is **not** here
