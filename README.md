@@ -203,6 +203,8 @@ prescription is printed alongside.
 README.md  README.ko.md  LICENSE
 ARCHITECTURE.md      layering, dependency direction, known gaps
 CONFORMANCE.md       adapter contract, tolerances, how to self-declare
+DECLARATION.md       our own conformance self-declaration — Level 2, with the
+                     numbers a third party can check and what we do NOT claim
 GOVERNANCE.md        versioning rules, what forces MAJOR
 ADOPTION.md          implementation guide
 STANDARDS.md         what is and is not a standard in AEO (surveyed 2026-09-10)
