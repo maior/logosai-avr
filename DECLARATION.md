@@ -1,7 +1,7 @@
 # 적합성 자기 선언 — 참조 구현
 
 ```
-AVR Level 2 conformant · rubric 1.9.0 · channels 1.1.0 · scoring 1.1.0 · schema 1.3.0
+AVR Level 2 conformant · rubric 1.9.0 · channels 1.2.0 · scoring 1.1.0 · schema 1.3.0
   (auto coverage 32/32, known gaps: 0, manual tier: 13 items)
   reliability disclosed: spec/reliability.md §8
   Level 3: NOT claimed — Plane A 프로빙 재현성 미측정

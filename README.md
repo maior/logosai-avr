@@ -217,7 +217,7 @@ spec/
                           reproducibility — determinism, time sensitivity, test-retest
 rubric/
   pillars.yaml     1.9.0  scoring canon — 5 pillars, 45 items, gating
-  channels.yaml    1.1.0  6 channels, weights summing to 1.0
+  channels.yaml    1.2.0  6 channels, weights summing to 1.0
   scoring.yaml     1.1.0  thresholds and coefficients
 schema/
   report.schema.json  1.3.0  the report output contract

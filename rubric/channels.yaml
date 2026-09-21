@@ -10,9 +10,50 @@
 #   그 몫을 ChatGPT·Claude에 재배분했다. 재배분 근거는 추정이며 파일럿 이후 재검토 대상.
 #
 # 주의: weight 합은 반드시 1.0 이어야 한다. 채널 추가/삭제 시 전 채널 재정규화 필요.
-version: "1.1.0"
+version: "1.2.0"
 
 changelog:
+  - version: "1.2.0"
+    date: "2026-09-21"
+    breaking: true
+    summary: >-
+      gemini·claude 채널의 모델 교체와 **모델 선택 근거 칸 신설**.
+      가중치·채널 구성은 변경 없음.
+
+      ① gemini 트래킹 gemini-3.1-flash-lite → gemini-3.8-flash, 캘리브레이션
+      gemini-3.1-pro → **제거**. 두 가지 이유다. 첫째, `gemini-3.1-pro` 는 **존재하지
+      않는 모델 ID** 다 -- 2026-09-21 Gemini API `models.list` 실조회에서 3.1 계열의
+      pro 는 `gemini-3.1-pro-preview` 뿐이었다. 캘리브레이션을 live 로 돌렸다면 이
+      채널은 그대로 실패했고, 한 번도 안 돌려서 아무도 몰랐다. 둘째, 3.8 세대에는
+      pro 가 없고 `gemini-3.8-flash` 가 소비자가 실제로 받는 모델이다. 그것으로
+      트래킹하면 **프록시 격차가 정의상 0** 이므로 캘리브레이션 자체가 불필요하다.
+      δ 는 재는 것보다 **없애는 것**이 낫다.
+
+      ② claude 캘리브레이션 claude-opus-5 → claude-sonnet-5. δ 의 정의는 "소비자가
+      실제로 쓰는 모델과의 격차" 인데, claude.ai 사용자가 받는 것은 Sonnet 이고
+      Opus 는 상위 유료 사용자만 쓴다. 아무도 경험하지 않는 격차를 가장 비싼 모델로
+      재고 있었다 -- 공식 요율 $5/$25 vs $2/$10.
+
+      실측 영향(사이트 1곳·질문 6·반복 2 기준, 월 단위): gemini $0.60 → $0.20(-68%),
+      claude $2.60 → $1.82(-30%). 트래킹 모델을 **더 비싼 것으로 올렸는데도** 총액이
+      줄었다 -- 캘리브레이션 회차가 사라지기 때문이다.
+
+      ③ `tracking_rationale`·`calibration_rationale` 칸을 신설한다. 이 파일은
+      가중치에는 `weight_rationale` 을 필수로 요구하면서 **모델 선택에는 아무 근거도
+      적지 않았다.** 그래서 "왜 opus-5 인가" 에 답할 문서가 없었고, 틀린 값이 조용히
+      살아남았다.
+    comparability: >-
+      **AVI 시계열은 이 두 채널에서 단절된다.** 다른 모델로 프로빙한 관측은 같은
+      채널의 과거 관측과 나란히 놓을 수 없다 -- MR·SoV·PosScore·CitShare 가 모델의
+      성질에 직접 의존하기 때문이다. 가중치와 채널 구성은 그대로이므로 **AVI 산식과
+      집계는 비교 가능**하고, chatgpt·perplexity 두 채널의 과거 관측도 그대로 유효하다.
+
+      실무상 영향은 작다. 이 두 채널로 발행한 AVI 는 **아직 없다**(2026-09-05
+      mkii-baseline-01 은 claude-haiku-4-5 트래킹만 썼고 캘리브레이션은 한 번도 돌지
+      않았다). 그래서 재측정이 필요한 과거 리포트가 없다.
+
+      `gemini-3.8-flash` 요율은 **2027-01-01 에 2배로 오른다**($0.75/$3.75 →
+      $1.50/$7.50). 예산 산정이 그 날짜를 넘어가면 다시 잡아야 한다.
   - version: "1.1.0"
     date: "2026-09-11"
     breaking: true
@@ -45,7 +86,16 @@ channels:
     supports_search_toggle: true
     api_available: true
     tracking_model: gpt-5.6-luna
+    tracking_rationale: >-
+      값싼 프록시이면서 **엄밀히 우월**하다. v1.1.0 의 gpt-5-mini 보다 입력 20%·출력
+      40% 싸고($0.20/$1.20 vs $0.25/$2.00) 답을 끝낸다 -- 2026-09-10 실측에서
+      gpt-5-mini 는 캡 1500 중 1344 를 추론에 써 6건 중 2건이 reasoning_budget_exhausted
+      였고, luna 는 추론 516 토큰에 본문 1872자를 냈다.
     calibration_model: gpt-5.6-terra
+    calibration_rationale: >-
+      소비자가 ChatGPT 에서 받는 5.6 세대 상위 모델. 소비자가 5.6 을 쓰는데 이전
+      세대로 캘리브레이션하면 δ 자체가 낡는다. 공식 요율 $2.00/$12.00 per Mtok
+      (developers.openai.com 공식 페이지 직접 조회, 2026-09-11).
 
   - id: gemini
     name: Gemini
@@ -54,8 +104,17 @@ channels:
     weight_rationale: "안드로이드 기본 탑재와 구글 계정 연동으로 국내 도달률이 넓다. GPTO 20%에 소폭 가산(추정). Google AI Overviews와는 별도 표면이므로 이중 계상 아님."
     supports_search_toggle: true
     api_available: true
-    tracking_model: gemini-3.1-flash-lite
-    calibration_model: gemini-3.1-pro
+    tracking_model: gemini-3.8-flash
+    tracking_rationale: >-
+      **소비자가 실제로 받는 모델로 직접 잰다.** Gemini 앱·검색 통합의 기본 응답이
+      flash 계열이고, 3.8 세대에는 pro 가 없다(2026-09-21 models.list 실조회).
+      공식 요율 $0.75/$3.75 per Mtok (2026-12-31까지, 이후 $1.50/$7.50).
+    calibration_model: null
+    calibration_rationale: >-
+      **트래킹이 이미 소비자 모델이라 프록시 격차가 정의상 0 이다.** 잴 것이 없으므로
+      캘리브레이션을 돌리지 않는다(`scripts/calibrate.py` 가 tracking == calibration
+      이거나 null 인 채널을 건너뛴다). v1.1.0 의 `gemini-3.1-pro` 는 **존재하지 않는
+      ID** 였고, 그 채널을 live 로 돌렸다면 그대로 실패했다.
 
   # ⚠️ 공식 API 없음 — SERP 스크래핑 또는 수동 캡처에 의존한다.
   #    리스크: 네이버 이용약관상 자동 수집 제한, 마크업 변경 시 파서 파손,
@@ -79,7 +138,15 @@ channels:
     supports_search_toggle: true
     api_available: true
     tracking_model: claude-haiku-4-5
-    calibration_model: claude-opus-5
+    tracking_rationale: >-
+      값싼 프록시. 공식 요율 $1/$5 per Mtok 로 소비자 모델(sonnet-5, $2/$10)의 절반이고,
+      주간 트래킹은 캘리브레이션보다 4배 자주 돌므로 여기서 아끼는 것이 크다.
+      대가는 프록시 격차이고, 그것을 아래 캘리브레이션으로 잰다.
+    calibration_model: claude-sonnet-5
+    calibration_rationale: >-
+      **claude.ai 사용자가 실제로 받는 모델.** Opus 는 상위 유료 사용자만 쓰므로
+      v1.1.0 까지의 `claude-opus-5` 는 아무도 경험하지 않는 격차를 가장 비싼 모델로
+      재고 있었다($5/$25 vs $2/$10). 공식 요율은 claude.com/pricing 직접 조회(2026-09-21).
 
   - id: perplexity
     name: Perplexity
@@ -89,7 +156,15 @@ channels:
     supports_search_toggle: false     # 검색이 상시 활성 — OFF 조건 질의 불가
     api_available: true
     tracking_model: sonar
+    tracking_rationale: >-
+      Perplexity 무료 사용자가 받는 기본 모델. 이 채널은 **토큰 요율보다 요청당 검색
+      수수료가 원가를 지배**하므로(spec plane-a §원가) 모델 선택의 비용 효과가 다른
+      채널보다 작다.
     calibration_model: sonar-pro
+    calibration_rationale: >-
+      Perplexity Pro 구독자가 받는 모델. 이 채널은 인용을 항상 동반해 CitShare 신호가
+      가장 선명한데(weight_rationale 참조), 그 신호가 구독 등급에 따라 달라지는지가
+      이 채널 δ 의 핵심 질문이다. **아직 측정하지 않았다.**
 
   # ⚠️ 공식 API 없음 — SERP 스크래핑 의존. naver_ai_briefing 과 동일한 리스크가 적용된다.
   #    AI Overviews 는 질의·지역·계정에 따라 노출 자체가 불안정하므로,
