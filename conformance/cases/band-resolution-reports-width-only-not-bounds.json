@@ -1,0 +1,82 @@
+{
+  "id": "band-resolution-reports-width-only-not-bounds",
+  "title": "해소 후에는 폭만 낸다 — 경계는 미지의 값에 따라 이동한다",
+  "level": 1,
+  "operation": "determinate_band",
+  "rationale": "**이 케이스가 §4.1-1 의 핵심 제약을 못 박는다.** P5-06(awaiting_manual)·P5-07(input_missing) 둘이 미관측이면 floor = 45 + 50/14, ceiling = 45 + 90/14, width = 40/14 = 20/7 이다. 한 kind 를 해소하면 그 항목은 *관측될* 뿐 값은 미지이므로 경계는 그 값에 따라 통째로 이동하지만, 폭은 W(A) = Σ w_p·|U\\A ∩ p| / n_p(A) 로 **값이 소거되어** 정확하다 — 분모 n_p 는 **해소와 무관하게 그 pillar 의 판정 대상 항목 수(7)** 다 — 남은 미관측 항목도 경계 계산에서 0/2 를 할당받으므로 분모에 들어간다. 따라서 10·1/7 = **10/7** 이고 정보 이득 G = 20/7 − 10/7 = 10/7 = 1.428571... (초안에서 n_p 를 6 으로 잘못 놓았다가 **이 골든 케이스가 그 대수 오류를 잡았다.** 기대값을 구현에 맞춘 것이 아니라, 손 계산을 다시 해서 구현이 옳음을 확인했다.) 두 kind 가 대칭이라 G 가 같고, 그 대칭성이 구현이 kind 이름을 보고 다른 계산을 하지 않는다는 것을 보인다. **해소 후 floor·ceiling 을 내는 구현은 미지의 값을 가정한 것이고, 가정을 넣는 순간 이 지표는 확정 구간이 아니라 추정치가 된다.**",
+  "spec_refs": [
+    "scoring.md §4.1-1",
+    "pillars.yaml (weights 25/25/20/20/10)",
+    "scoring.yaml item_levels.max_level"
+  ],
+  "input": {
+    "item_scores": {
+      "P1-01": 1,
+      "P1-02": 1,
+      "P1-03": 1,
+      "P1-04": 1,
+      "P1-05": 1,
+      "P1-06": 1,
+      "P1-07": 1,
+      "P1-08": 1,
+      "P1-09": 1,
+      "P1-10": 1,
+      "P2-01": 1,
+      "P2-02": 1,
+      "P2-03": 1,
+      "P2-04": 1,
+      "P2-05": 1,
+      "P2-06": 1,
+      "P2-07": 1,
+      "P2-08": 1,
+      "P2-09": 1,
+      "P2-10": 1,
+      "P3-01": 1,
+      "P3-02": 1,
+      "P3-03": 1,
+      "P3-04": 1,
+      "P3-05": 1,
+      "P3-06": 1,
+      "P3-07": 1,
+      "P3-08": 1,
+      "P3-09": 1,
+      "P4-01": 1,
+      "P4-02": 1,
+      "P4-03": 1,
+      "P4-04": 1,
+      "P4-05": 1,
+      "P4-06": 1,
+      "P4-07": 1,
+      "P4-08": 1,
+      "P4-09": 1,
+      "P5-01": 1,
+      "P5-02": 1,
+      "P5-03": 1,
+      "P5-04": 1,
+      "P5-05": 1
+    },
+    "unavailable_kinds": {
+      "P5-06": "awaiting_manual",
+      "P5-07": "input_missing"
+    }
+  },
+  "expected": {
+    "ars": 50.0,
+    "floor": 48.57142857142857,
+    "ceiling": 51.42857142857143,
+    "width": 2.857142857142857,
+    "unobserved_count": 2,
+    "res.awaiting_manual.width": 1.4285714285714286,
+    "res.awaiting_manual.information_gain": 1.4285714285714286,
+    "res.awaiting_manual.item_count": 1,
+    "res.input_missing.width": 1.4285714285714286,
+    "res.input_missing.information_gain": 1.4285714285714286,
+    "res.input_missing.item_count": 1
+  },
+  "tolerance": {
+    "absolute": 1e-09
+  },
+  "reference_implementation": {
+    "status": "implemented"
+  }
+}

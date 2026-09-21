@@ -1,0 +1,76 @@
+{
+  "id": "band-excludes-not-applicable-items",
+  "title": "not_applicable·design_limit 은 밴드에 기여하지 않는다",
+  "level": 1,
+  "operation": "determinate_band",
+  "rationale": "**대조군**. 같은 미관측 항목이라도 `not_applicable`·`design_limit` 은 '이 사이트에 성립하지 않는다' 는 뜻이라 judgeable_count 에서 빠지고(spec §4.1) 밴드에도 기여하지 않는다. 위 `band-one-unobserved-item-widens-by-its-share` 와 **입력이 같고 kind 만 다른데** width 가 10/7 에서 0 으로 바뀐다 — 구현이 kind 를 실제로 읽는지 여기서 갈린다. kind 를 무시하고 '미관측이면 전부 밴드' 로 구현하면 이 케이스만 빨개진다.",
+  "spec_refs": [
+    "scoring.md §4.1-1",
+    "pillars.yaml (weights 25/25/20/20/10)",
+    "scoring.yaml item_levels.max_level"
+  ],
+  "input": {
+    "item_scores": {
+      "P1-01": 1,
+      "P1-02": 1,
+      "P1-03": 1,
+      "P1-04": 1,
+      "P1-05": 1,
+      "P1-06": 1,
+      "P1-07": 1,
+      "P1-08": 1,
+      "P1-09": 1,
+      "P1-10": 1,
+      "P2-01": 1,
+      "P2-02": 1,
+      "P2-03": 1,
+      "P2-04": 1,
+      "P2-05": 1,
+      "P2-06": 1,
+      "P2-07": 1,
+      "P2-08": 1,
+      "P2-09": 1,
+      "P2-10": 1,
+      "P3-01": 1,
+      "P3-02": 1,
+      "P3-03": 1,
+      "P3-04": 1,
+      "P3-05": 1,
+      "P3-06": 1,
+      "P3-07": 1,
+      "P3-08": 1,
+      "P3-09": 1,
+      "P4-01": 1,
+      "P4-02": 1,
+      "P4-03": 1,
+      "P4-04": 1,
+      "P4-05": 1,
+      "P4-06": 1,
+      "P4-07": 1,
+      "P4-08": 1,
+      "P4-09": 1,
+      "P5-01": 1,
+      "P5-02": 1,
+      "P5-03": 1,
+      "P5-04": 1,
+      "P5-05": 1,
+      "P5-06": 1
+    },
+    "unavailable_kinds": {
+      "P5-07": "not_applicable"
+    }
+  },
+  "expected": {
+    "ars": 50.0,
+    "floor": 50.0,
+    "ceiling": 50.0,
+    "width": 0.0,
+    "unobserved_count": 0
+  },
+  "tolerance": {
+    "absolute": 1e-09
+  },
+  "reference_implementation": {
+    "status": "implemented"
+  }
+}

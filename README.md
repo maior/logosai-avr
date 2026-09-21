@@ -220,9 +220,9 @@ rubric/
   channels.yaml    1.2.0  6 channels, weights summing to 1.0
   scoring.yaml     1.1.0  thresholds and coefficients
 schema/
-  report.schema.json  1.3.0  the report output contract
+  report.schema.json  1.4.0  the report output contract
 conformance/
-  cases/  94 golden cases
+  cases/  98 golden cases
 ```
 
 ### What is **not** here

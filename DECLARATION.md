@@ -1,7 +1,7 @@
 # 적합성 자기 선언 — 참조 구현
 
 ```
-AVR Level 2 conformant · rubric 1.9.0 · channels 1.2.0 · scoring 1.1.0 · schema 1.3.0
+AVR Level 2 conformant · rubric 1.9.0 · channels 1.2.0 · scoring 1.1.0 · schema 1.4.0
   (auto coverage 32/32, known gaps: 0, manual tier: 13 items)
   reliability disclosed: spec/reliability.md §8
   Level 3: NOT claimed — Plane A 프로빙 재현성 미측정
@@ -38,7 +38,7 @@ Level 3 을 선언하지 않는 이유는 구현이 없어서가 아니다. Plan
 ```
 check: auto     32개 → 참조 구현이 32개 전부 담당 (미담당 0)
 check: manual   13개 → 기계 판정하지 않는다. 심화 진단(사람)에서 해소
-골든 케이스      94건 (L1 38 · L2 46 · L3 10) · known_gap 0
+골든 케이스      98건 (L1 42 · L2 46 · L3 10) · known_gap 0
 ```
 
 **`auto` 를 전부 담당한다고 해서 전부 점수가 나온다는 뜻이 아니다.** 예를 들어 `P1-08`
