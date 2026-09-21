@@ -1,6 +1,6 @@
 # Scoring — Gap Matrix 사분면 판정 규칙
 
-버전: 1.1.0 · 선행 문서: `plane-a-visibility.md`, `plane-b-readiness.md`
+버전: 1.2.0 · 선행 문서: `plane-a-visibility.md`, `plane-b-readiness.md`
 
 이 문서는 AVI(0~100)와 ARS(0~100)를 각각 이분해 사분면을 확정하는 규칙만 다룬다.
 각 지수의 산출 자체는 선행 문서에 있다.
@@ -388,5 +388,6 @@ def classify(avi, ars, avi_ci=None, coverage_ratio=1.0, free_tier=False):
 
 | scoring | 날짜 | 변경 | 과거 비교 |
 |---|---|---|---|
-| **1.1.0** | 2026-09-05 | §4.1 의 `min_item_coverage` 분모를 `total_items` 에서 `judgeable_count` 로 재정의 (`plane-b-readiness.md` §8). `unavailable_kind` 가 `not_applicable`·`design_limit` 인 항목만 분모에서 제외한다. 임계값(0.7) 자체는 불변 | `not_applicable`·`design_limit` 이 없는 진단은 `judgeable_count == total_items` 이므로 결과 불변. 이 kind 를 가진 항목이 있는 진단(2026-09-05 파일럿 2회차)만 재측정 필요 |
+| **1.2.0** | 2026-09-21 | §4.1-1 **ARS 확정 구간(Determinate Band)** 신설. 미관측 항목이 가질 수 있는 값이 `{0,1,2}` 로 유한하므로 ARS 의 최솟값·최댓값을 가정 없이 낸다 — 신뢰구간이 아니다. 해소 분해와 정보 이득 `G(a) = W(∅) − W({a})` 를 함께 정의하고, 해소 후에는 **폭만** 보고한다(경계는 값에 따라 움직인다). 임계값·계수는 불변이므로 `scoring.yaml` 은 1.1.0 그대로다 | **점수 비교 가능.** 산식을 건드리지 않고 칸을 더한 변경이다. 과거 리포트에는 `determinate_band` 가 없으므로 "이 회차부터 산출" 로 표기한다 |
+| 1.1.0 | 2026-09-05 | §4.1 의 `min_item_coverage` 분모를 `total_items` 에서 `judgeable_count` 로 재정의 (`plane-b-readiness.md` §8). `unavailable_kind` 가 `not_applicable`·`design_limit` 인 항목만 분모에서 제외한다. 임계값(0.7) 자체는 불변 | `not_applicable`·`design_limit` 이 없는 진단은 `judgeable_count == total_items` 이므로 결과 불변. 이 kind 를 가진 항목이 있는 진단(2026-09-05 파일럿 2회차)만 재측정 필요 |
 | 1.0.0 | 2026-09-05 | 최초 정의 — AVI 25 / ARS 60 임계값과 경계 사례 규칙 | 기준선 |

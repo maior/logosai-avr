@@ -1,6 +1,6 @@
 # Plane B — Readiness 채점 명세
 
-버전: 1.7.0 · 정본 rubric: `framework/rubric/pillars.yaml`
+버전: 1.9.0 · 정본 rubric: `framework/rubric/pillars.yaml`
 
 ---
 

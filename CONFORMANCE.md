@@ -282,23 +282,39 @@ cd backend && .venv/bin/python -m pytest tests/test_conformance_suite.py -q
 
 ## 6. 현재 케이스 인벤토리
 
-37건. 수준별 24 / 4 / 9.
+> 이 절은 `backend/tests/test_conformance_inventory.py` 가 `cases/*.json` 에서
+> 생성해 **글자 단위로** 대조한다. 손으로 고치면 시험이 빨개진다 — 사람이
+> 세는 표는 반드시 낡기 때문이다. 케이스를 더하면 시험이 새 표를 출력한다.
 
-| 영역 | 건수 | 커버 내용 |
+98건. 수준별 L1 42 / L2 46 / L3 10.
+
+| operation | 건수 | 수준 |
 |---|---|---|
-| ARS 산식 | 4 | 만점 100 · 균일 1점 = 50 · §3.3 계산 예 · 미판정 분모 제외 |
-| 게이팅 | 2 | 상한 40 발동 · 상한이 `min` 이지 대입이 아님 |
-| blocking 입력 검증 | 4 | 사유 없는 누락 거부 · 공백 사유 거부 · 중복 지정 거부 · 사유 있는 `unavailable` 통과 |
-| Pillar 커버리지 | 2 | 50% 미만 제외 + 재정규화 · 정확히 50% 는 포함 |
-| AVI 산식 | 4 | 만점 100 · 6채널 가중합 · 미측정 채널 재정규화 · CitShare null 재정규화 |
-| Gap Matrix | 8 | 4사분면 · 경계값(25 / 60) 포함 · 게이팅 ARS 는 never-high · borderline 2건 |
-| 통계 | 9 | Wilson 2건 + 기본 z 상수 · 표본수 385 · DEFF/n_eff · 클러스터 Wilson · z-test 유의/비유의/부호 |
-| 항목 판정 | 4 | robots 404 → 1 · 5xx → 0 · 6종 전부 차단 → 0 · 검색봇 허용 + 학습봇 분리 → 2 |
+| `compute_ars` | 23 | L1×23 |
+| `remedy_applies` | 15 | L2×15 |
+| `remedy_demonstrates` | 14 | L2×14 |
+| `gap_quadrant` | 8 | L1×8 |
+| `item_p1_07` | 5 | L2×5 |
+| `item_p5_04` | 5 | L2×5 |
+| `compute_avi` | 4 | L1×4 |
+| `determinate_band` | 4 | L1×4 |
+| `item_p1_01` | 4 | L2×4 |
+| `item_p5_07` | 3 | L2×3 |
+| `two_proportion_z` | 3 | L3×3 |
+| `wilson_interval` | 3 | L3×3 |
+| `cluster_correction` | 1 | L3×1 |
+| `remedy_scope` | 1 | L1×1 |
+| `required_sample_size` | 1 | L3×1 |
+| `rubric_evidence` | 1 | L1×1 |
+| `rubric_remediation` | 1 | L1×1 |
+| `two_proportion_z_clustered` | 1 | L3×1 |
+| `wilson_interval_clustered` | 1 | L3×1 |
 
 **미커버 영역** (숨기지 않는다)
 
-- `check: auto` 33개 중 `P1-01` 외 32개의 항목 판정 케이스가 없다. Level 2 를 실질적으로
-  검증하려면 항목당 level 0/1/2 각 1건, 최소 99건이 필요하다.
+- `check: auto` 32개 중 **4개**(`P1-01` · `P1-07` · `P5-04` · `P5-07`)에만
+  항목 판정 케이스가 있다. Level 2 를 항목 단위로 전부 검증하려면 항목당
+  level 0/1/2 각 1건, 최소 96건이 더 필요하다.
 - `report.schema.json` 검증 케이스가 없다. 스키마를 만족하는 문서를 생성하는 구현이 아직 없다.
 - 엔티티 baseline 보정(`MR_corrected = max(0, (MR_raw − f)/(1 − f))`) 케이스가 없다.
 - Holm–Bonferroni 다중 비교 보정 케이스가 없다.

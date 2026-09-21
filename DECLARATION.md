@@ -24,7 +24,7 @@ AVR Level 2 conformant · rubric 1.9.0 · channels 1.2.0 · scoring 1.1.0 · sch
 
 | 수준 | 요건 | 상태 |
 |---|---|---|
-| **Level 1** Scoring | 정본 YAML 파싱, ARS·AVI 산식, blocking 입력 검증, Gap Matrix, 스키마 통과 | ✅ 골든 케이스 `level:1` **38건 전부 통과** |
+| **Level 1** Scoring | 정본 YAML 파싱, ARS·AVI 산식, blocking 입력 검증, Gap Matrix, 스키마 통과 | ✅ 골든 케이스 `level:1` **42건 전부 통과** |
 | **Level 2** Assessment | + `check: auto` 항목 기계 판정, 근거 첨부, 미측정 사유 분류 | ✅ `level:2` **46건 전부 통과** |
 | **Level 3** Measurement | + Plane A 프로빙과 통계, **그리고 프로빙 재현성 공시** (`reliability.md` §7) | ❌ **선언하지 않는다** |
 
@@ -77,7 +77,7 @@ check: manual   13개 → 기계 판정하지 않는다. 심화 진단(사람)�
    심화 진단을 판매하기 전에 재야 한다
 4. **프록시 격차 δ.** 월간 캘리브레이션을 **한 번도 돌리지 않았다.** 모든 리포트가
    "δ 미측정" 으로 공시된다 — 그게 정직한 현재 상태다
-5. **제3자 재현.** 골든 케이스 94건을 우리 외에 아무도 돌린 적이 없다. 이 선언의 값은
+5. **제3자 재현.** 골든 케이스 98건을 우리 외에 아무도 돌린 적이 없다. 이 선언의 값은
    누군가 대조해 줄 때 비로소 생긴다
 
 ## 제3자가 이 선언을 검증하는 방법
@@ -110,4 +110,4 @@ git clone https://github.com/maior/logosai-avr
 
 | declaration | 날짜 | 변경 |
 |---|---|---|
-| **1.0.0** | 2026-09-21 | 최초 선언 — Level 2, rubric 1.9.0, auto 32/32, 골든 94건, 신뢰도 공시 포함 |
+| **1.0.0** | 2026-09-21 | 최초 선언 — Level 2, rubric 1.9.0, auto 32/32, 골든 98건, 신뢰도 공시 포함 |
