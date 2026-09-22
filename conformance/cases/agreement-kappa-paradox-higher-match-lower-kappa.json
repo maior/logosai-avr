@@ -1,0 +1,52 @@
+{
+  "id": "agreement-kappa-paradox-higher-match-lower-kappa",
+  "title": "일치율이 더 높은 쌍이 κ 는 0 인가 (κ 역설)",
+  "level": 3,
+  "operation": "weighted_cohen_kappa",
+  "rationale": "reliability.md §3.4-1 의 근거 자체다. 두 판정자가 거의 전부 등급 1 을 주면 우연 일치 기대가 그만큼 높아져 D_o = D_e = 1/40 이 되고 κ = 0 이다. 원시 일치율은 90% 로 앞 케이스(83.3%, κ=6/7)보다 **높다**. κ 를 단독으로 공시하면 더 잘 맞는 판정자 쌍을 더 나쁘게 보고하게 된다는 것을 이 두 케이스가 나란히 못박는다. 등급 분포가 치우치기 쉬운 rubric 항목에서 정확히 발생한다.",
+  "spec_refs": [
+    "reliability.md §3.4",
+    "reliability.md §3.4-1"
+  ],
+  "input": {
+    "rater_a": [
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0
+    ],
+    "rater_b": [
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1
+    ],
+    "max_level": 2
+  },
+  "expected": {
+    "kappa": 0.0,
+    "observed_disagreement": 0.025,
+    "expected_disagreement": 0.025,
+    "raw_agreement": 0.9,
+    "skewed": true
+  },
+  "tolerance": {
+    "absolute": 1e-09
+  },
+  "reference_implementation": {
+    "status": "conformant",
+    "note": "app/domain/agreement.py — weighted_cohen_kappa · weighted_disagreement."
+  }
+}

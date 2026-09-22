@@ -297,6 +297,12 @@ ARS 57.2  ·  확정 구간 [40.0, 77.6]  (미관측 14항목, 폭 37.6)
 | `W({a})` | `resolutions[].width` | number ≥ 0 | |
 | `G(a)` | `resolutions[].information_gain` | number ≥ 0 | |
 | `\|U ∩ a\|` | `resolutions[].item_count` | integer ≥ 1 | |
+| — | `resolutions[].reliability` | string \| null | 이 행동 **자체의** 신뢰도 공시 (`reliability.md` §3.4). 사람이 판정하는 행동에만 붙는다 |
+
+> **`reliability` 를 왜 여기에 두는가.** `awaiting_manual` 행은 "심화 진단을 받으면
+> 폭 0" 이라고 말한다. 그건 *값을 보게 된다* 이지 *본 값이 판정자마다 같다* 가 아니다 —
+> 확정 구간은 관측의 축, 판정자 일치도는 판정의 축이다. 두 문장을 갈라 두지 않으면
+> 고객은 하나로 읽고, 재지도 않은 일관성을 산 것이 된다 (`reliability.md` §3.4).
 
 `resolutions[]` 에 `floor`·`ceiling` 칸은 **없다.** 스키마가
 `additionalProperties: false` 로 막고 있으므로, 경계를 실어 보내려는 구현은

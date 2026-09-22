@@ -1,0 +1,36 @@
+{
+  "id": "agreement-single-category-leaves-kappa-undefined",
+  "title": "두 판정자가 한 등급만 썼을 때 κ 가 0 이 아니라 null 인가",
+  "level": 3,
+  "operation": "weighted_cohen_kappa",
+  "rationale": "D_e = 0 이면 κ = 1 − D_o/0 이 정의되지 않는다. 여기서 0 을 내면 '전혀 안 맞는다' 로 읽히는데 실제로는 **완벽히 맞은** 경우다 — 미측정과 0점을 구별하는 이 프레임워크의 규칙(plane-b-readiness.md §8)이 통계량에도 걸린다. 원시 일치율은 100% 로 정상 산출되어야 하며, 그 값이 독자에게 실제 상태를 알린다.",
+  "spec_refs": [
+    "reliability.md §3.4",
+    "reliability.md §3.4-1"
+  ],
+  "input": {
+    "rater_a": [
+      1,
+      1,
+      1
+    ],
+    "rater_b": [
+      1,
+      1,
+      1
+    ],
+    "max_level": 2
+  },
+  "expected": {
+    "kappa": null,
+    "raw_agreement": 1.0,
+    "expected_disagreement": 0.0
+  },
+  "tolerance": {
+    "absolute": 1e-09
+  },
+  "reference_implementation": {
+    "status": "conformant",
+    "note": "app/domain/agreement.py — weighted_cohen_kappa · weighted_disagreement."
+  }
+}

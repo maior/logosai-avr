@@ -3,7 +3,7 @@
 A diagnostic specification for **AEO** (Answer Engine Optimization): measuring whether a
 brand appears in AI-generated answers, and — separately — *why it doesn't*.
 
-**Canon versions:** rubric `1.6.0` · scoring `1.1.0` · channels `1.0.0` · schema `1.2.0`
+**Canon versions:** rubric `1.9.0` · scoring `1.1.0` · channels `1.2.0` · schema `1.5.0`
 **Status:** specification frozen · reference implementation running · 3 pilot rounds completed
 **License:** [CC BY 4.0](LICENSE) — use, modify, and sell derivatives freely; just credit the source.
 
@@ -213,16 +213,17 @@ spec/
   plane-a-visibility.md   MR · SoV · PosScore · CitShare, probe statuses
   plane-b-readiness.md    5 pillars, 45 items, coverage, unavailable_kind
   scoring.md              AVI/ARS formulas, thresholds, Gap Matrix
-  reliability.md          how an implementation measures and discloses its own
-                          reproducibility — determinism, time sensitivity, test-retest
+  reliability.md   1.1.0  how an implementation measures and discloses its own
+                          reproducibility — determinism, time sensitivity, test-retest,
+                          and inter-rater agreement for human-judged items (§3.4)
 rubric/
   pillars.yaml     1.9.0  scoring canon — 5 pillars, 45 items, gating
   channels.yaml    1.2.0  6 channels, weights summing to 1.0
   scoring.yaml     1.1.0  thresholds and coefficients
 schema/
-  report.schema.json  1.4.0  the report output contract
+  report.schema.json  1.5.0  the report output contract
 conformance/
-  cases/  98 golden cases
+  cases/  102 golden cases
 ```
 
 ### What is **not** here

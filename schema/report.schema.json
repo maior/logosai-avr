@@ -19,7 +19,7 @@
   "properties": {
     "schema_version": {
       "type": "string",
-      "const": "1.4.0"
+      "const": "1.5.0"
     },
     "report_id": {
       "type": "string",
@@ -1152,7 +1152,8 @@
               "resolved_by",
               "width",
               "information_gain",
-              "item_count"
+              "item_count",
+              "reliability"
             ],
             "properties": {
               "kind": {
@@ -1174,6 +1175,13 @@
               "item_count": {
                 "type": "integer",
                 "minimum": 1
+              },
+              "reliability": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "description": "이 행동 자체의 신뢰도 공시 (reliability.md §3.4). `awaiting_manual` 은 사람이 판정하므로 판정자 간 일치도가 붙는다 — 미측정이면 그 사실을 적는다. 구간 축소는 '값을 보게 된다'는 뜻이고 '본 값이 판정자마다 같다'는 뜻이 아니므로, 이 칸이 비면 두 문장이 하나로 읽힌다. 해당 없는 행동은 null."
               }
             },
             "description": "해소 후에는 **폭만 낸다.** 행동을 실행하면 그 항목은 관측될 뿐 값은 미지이므로 경계는 그 값에 따라 이동하지만 폭은 값이 소거되어 정확히 계산된다 (spec §4.1-1)."

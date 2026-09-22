@@ -1,0 +1,40 @@
+{
+  "id": "agreement-perfect-match-is-one",
+  "title": "두 판정자가 완전히 같으면 κ 가 1 인가",
+  "level": 3,
+  "operation": "weighted_cohen_kappa",
+  "rationale": "경계. D_o = 0 이므로 κ = 1 − 0/D_e = 1 이다. D_e 는 0 이 아니어야 하므로(두 등급 이상 사용) 이 케이스는 κ 가 정의되는 경로의 상한을 고정한다. 이것이 없으면 '언제나 0 을 돌려주는' 구현이 역설 케이스만으로 통과한다.",
+  "spec_refs": [
+    "reliability.md §3.4",
+    "reliability.md §3.4-1"
+  ],
+  "input": {
+    "rater_a": [
+      0,
+      1,
+      2,
+      1,
+      0
+    ],
+    "rater_b": [
+      0,
+      1,
+      2,
+      1,
+      0
+    ],
+    "max_level": 2
+  },
+  "expected": {
+    "kappa": 1.0,
+    "observed_disagreement": 0.0,
+    "raw_agreement": 1.0
+  },
+  "tolerance": {
+    "absolute": 1e-09
+  },
+  "reference_implementation": {
+    "status": "conformant",
+    "note": "app/domain/agreement.py — weighted_cohen_kappa · weighted_disagreement."
+  }
+}
