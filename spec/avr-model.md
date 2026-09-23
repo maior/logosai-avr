@@ -59,7 +59,7 @@ Plane B 개선은 배포 즉시 반영된다. Plane A 변화는 재크롤링·�
 |---|---|---|
 | 종합 지수 | **AVI** (AI Visibility Index) 0~100 | **ARS** (AEO Readiness Score) 0~100 |
 | 구성 | 6채널 가중합 (`rubric/channels.yaml`) | 5 Pillar 가중합 (`rubric/pillars.yaml`) |
-| 하위 지표 | MR, SoV, PosScore, CitShare, Sentiment SoV, FAI | 44개 항목 × 0/1/2 |
+| 하위 지표 | MR, SoV, PosScore, CitShare, Sentiment SoV, FAI | 항목별 0/1/2 (`pillars.yaml`) |
 | 불확실성 | Wilson score interval (이항비율) | 미판정 항목 공시 (manual 11개) |
 | 갱신 주기 | 주간(트래킹) + 월간(캘리브레이션) | 배포 시점 또는 월간 |
 | 상세 명세 | `plane-a-visibility.md` | `plane-b-readiness.md` |

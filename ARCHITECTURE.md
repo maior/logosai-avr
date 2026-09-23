@@ -339,15 +339,16 @@ rubric 이 규정하지 않아 **구현이 정해버린** 값들이 있다. 이 
 
 | 상수 | 값 | 명세 위치 | rubric 위치 |
 |---|---|---|---|
-| `MIN_PILLAR_COVERAGE` | 0.5 | `plane-b-readiness.md` §3.1 | **없음** |
-| `AVI_THRESHOLD` | 25.0 | `scoring.md` §1 | **없음** |
-| `ARS_THRESHOLD` | 60.0 | `scoring.md` §1 | **없음** |
-| `α / β / γ` | 0.5 / 0.3 / 0.2 | `plane-a-visibility.md` §2 | **없음** |
-| `z (95%)` | 1.959964 | `plane-a-visibility.md` §3.2 | **없음** |
+| `MIN_PILLAR_COVERAGE` | 0.5 | `plane-b-readiness.md` §3.1 | `scoring.yaml` `coverage.min_pillar_coverage` |
+| `AVI_THRESHOLD` | 25.0 | `scoring.md` §1 | `scoring.yaml` `gap_matrix.avi_threshold` |
+| `ARS_THRESHOLD` | 60.0 | `scoring.md` §1 | `scoring.yaml` `gap_matrix.ars_threshold` |
+| `α / β / γ` | 0.5 / 0.3 / 0.2 | `plane-a-visibility.md` §2 | `scoring.yaml` `avi_coefficients` |
+| `z (95%)` | 1.959964 | `plane-a-visibility.md` §3.2 | `scoring.yaml` `statistics.default_z` |
 
-**권고**: `rubric/scoring.yaml` 을 신설해 이 다섯을 기계가 읽는 정본으로 옮긴다.
-그러면 `scoring.md` 는 근거를 서술하고 값은 YAML 이 갖는, 다른 계층과 같은 구조가 된다.
-현재는 임계값을 바꾸려면 코드를 고쳐야 하고, 그것은 ①→④ 의존 방향 규칙 위반이다.
+> **해소됨.** 이 표는 원래 rubric 위치가 전부 **없음** 이었고, `rubric/scoring.yaml` 을
+> 신설하라고 권고했다. 권고대로 신설했고 참조 구현은 이 다섯을 YAML 에서 파싱한다 —
+> 코드의 상수 이름은 남아 있지만 값은 복제가 아니라 로드한 것이다. 이제 임계값을
+> 바꾸는 것은 코드 변경이 아니라 rubric 변경(`GOVERNANCE.md` §2)이다.
 
 ---
 
@@ -355,16 +356,18 @@ rubric 이 규정하지 않아 **구현이 정해버린** 값들이 있다. 이 
 
 숨기지 않고 나열한다. 전부 사용자 판단이 필요한 지점이다.
 
-1. **프레임워크에 단일 버전이 없다.** 현재 버전 축이 넷이다 —
-   `pillars.yaml` 1.2.0, `channels.yaml` 1.0.0, `report.schema.json` 1.0.0,
-   spec 문서 각각 1.0.0. `framework/README.md` 는 "버전 1.0.0" 이라고 적고 있어
-   `pillars.yaml` 1.2.0 과 이미 어긋나 있다. `GOVERNANCE.md` §2 참조.
-2. **`report.schema.json` 을 만족하는 문서를 아무도 만들지 않는다.** 출력 계약이 계약으로
-   작동하려면 참조 구현에 직렬화기와 스키마 검증 시험이 있어야 한다.
-3. **Gap Matrix 의 `borderline` 이 스키마에만 있고 구현에 없다.** `scoring.md` §4.1 이
-   요구하는 규칙인데 산출 경로가 없다. 골든 케이스 2건이 이 결손을 고정하고 있다.
-4. **사분면 식별자가 두 벌이다.** 스키마는 `Q1`~`Q4`, 참조 구현은
-   `leader`/`prepared`/`coasting`/`untapped`. 어느 쪽이 정본인지 명시되어 있지 않다.
+1. ~~**프레임워크에 단일 버전이 없다.**~~ **해소됨.** 버전 축은 여전히 여럿이지만
+   (rubric 셋·schema·spec 문서 각각) 모든 적합성 주장은 그 전부를 함께 적는다
+   (`CONFORMANCE.md` §2.4). README 머리글·DECLARATION 머리글·spec 문서의 머리와
+   변경 이력이 정본과 같은지 참조 구현의 시험이 대조한다.
+2. ~~**`report.schema.json` 을 만족하는 문서를 아무도 만들지 않는다.**~~ **해소됨.**
+   참조 구현에 직렬화기가 있고 그 산출을 스키마로 검증하는 시험이 있다.
+3. ~~**Gap Matrix 의 `borderline` 이 스키마에만 있고 구현에 없다.**~~ **해소됨.**
+   구현되어 있고 골든 케이스가 `known_gap` 이 아니라 적합으로 통과한다.
+4. **사분면 식별자가 두 벌이다.** 공개 명세와 스키마는 `Q1`~`Q4` 만 쓰고, 참조
+   구현의 도메인 계층은 `leader`/`prepared`/`coasting`/`untapped` 를 쓴 뒤 경계에서
+   `Q1`~`Q4` 로 옮긴다(매핑은 한 곳). **어느 쪽이 정본인지 공개 명세에 적혀 있지
+   않다** — 적합 구현은 스키마를 따르므로 사실상 `Q1`~`Q4` 가 공개 정본이다.
 5. **`check: auto` 32개 중 참조 구현이 담당하는 것은 32개다.** 나머지 0개 —
    `UNCOVERED_AUTO_ITEM_IDS` 는 **비어 있다** *(2026-09-17)*. 이 집합이 다시 채워지는
    경우는 rubric 에 새 auto 항목이 생겼을 때뿐이다.
