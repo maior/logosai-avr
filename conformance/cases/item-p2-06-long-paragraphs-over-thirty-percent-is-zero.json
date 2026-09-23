@@ -1,0 +1,32 @@
+{
+  "id": "item-p2-06-long-paragraphs-over-thirty-percent-is-zero",
+  "title": "산문 단락 중 6문장 초과가 30% 를 넘으면 0",
+  "level": 2,
+  "operation": "item_p2_06",
+  "rationale": "산문 [7,7,3,3,3] → long = 2/5 = 40% > 30% → level 0. 이 항목이 원래 잡으려던 '벽 같은 단락' 의 기준 사례다.",
+  "spec_refs": [
+    "plane-b-readiness.md §7.6",
+    "pillars.yaml P2-06 levels"
+  ],
+  "input": {
+    "pages": [
+      [
+        7,
+        7,
+        3,
+        3,
+        3
+      ]
+    ]
+  },
+  "expected": {
+    "level": 0
+  },
+  "tolerance": {
+    "absolute": 0
+  },
+  "reference_implementation": {
+    "status": "conformant",
+    "note": "app/audit/collectors/structure.py _p2_06"
+  }
+}

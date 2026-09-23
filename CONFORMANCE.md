@@ -286,7 +286,7 @@ cd backend && .venv/bin/python -m pytest tests/test_conformance_suite.py -q
 > 생성해 **글자 단위로** 대조한다. 손으로 고치면 시험이 빨개진다 — 사람이
 > 세는 표는 반드시 낡기 때문이다. 케이스를 더하면 시험이 새 표를 출력한다.
 
-102건. 수준별 L1 42 / L2 46 / L3 14.
+108건. 수준별 L1 42 / L2 52 / L3 14.
 
 | operation | 건수 | 수준 |
 |---|---|---|
@@ -294,6 +294,7 @@ cd backend && .venv/bin/python -m pytest tests/test_conformance_suite.py -q
 | `remedy_applies` | 15 | L2×15 |
 | `remedy_demonstrates` | 14 | L2×14 |
 | `gap_quadrant` | 8 | L1×8 |
+| `item_p2_06` | 6 | L2×6 |
 | `item_p1_07` | 5 | L2×5 |
 | `item_p5_04` | 5 | L2×5 |
 | `compute_avi` | 4 | L1×4 |
@@ -313,9 +314,9 @@ cd backend && .venv/bin/python -m pytest tests/test_conformance_suite.py -q
 
 **미커버 영역** (숨기지 않는다)
 
-- `check: auto` 32개 중 **4개**(`P1-01` · `P1-07` · `P5-04` · `P5-07`)에만
+- `check: auto` 32개 중 **5개**(`P1-01` · `P1-07` · `P2-06` · `P5-04` · `P5-07`)에만
   항목 판정 케이스가 있다. Level 2 를 항목 단위로 전부 검증하려면 항목당
-  level 0/1/2 각 1건, 최소 96건이 더 필요하다.
+  level 0/1/2 각 1건 — 나머지 27개 항목에 최소 81건이 더 필요하다.
 - `report.schema.json` 검증 케이스가 없다. 스키마를 만족하는 문서를 생성하는 구현이 아직 없다.
 - 엔티티 baseline 보정(`MR_corrected = max(0, (MR_raw − f)/(1 − f))`) 케이스가 없다.
 - Holm–Bonferroni 다중 비교 보정 케이스가 없다.

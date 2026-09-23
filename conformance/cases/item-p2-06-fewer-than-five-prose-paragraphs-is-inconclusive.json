@@ -1,0 +1,61 @@
+{
+  "id": "item-p2-06-fewer-than-five-prose-paragraphs-is-inconclusive",
+  "title": "산문 단락이 4개면 판정하지 않는다 (null)",
+  "level": 2,
+  "operation": "item_p2_06",
+  "rationale": "산문 [3,3,3,3] + 조각 30개 → 산문 단락 4 < 5 → 판정 불가(null). 0 이나 1 로 채우면 '확인 못 했다' 가 '짧은 단락이 없다' 로 둔갑한다 — 미측정 ≠ 0점.",
+  "spec_refs": [
+    "plane-b-readiness.md §7.6",
+    "pillars.yaml P2-06 levels"
+  ],
+  "input": {
+    "pages": [
+      [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        3,
+        3,
+        3,
+        3
+      ]
+    ]
+  },
+  "expected": {
+    "level": null
+  },
+  "tolerance": {
+    "absolute": 0
+  },
+  "reference_implementation": {
+    "status": "conformant",
+    "note": "app/audit/collectors/structure.py _p2_06"
+  }
+}

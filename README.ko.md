@@ -3,7 +3,7 @@
 AEO(Answer Engine Optimization) 진단 프레임워크의 **명세 정본**.
 백엔드 스코어러·리포트 렌더러는 이 디렉토리의 파일을 파싱해 동작한다.
 
-정본 버전: rubric **1.9.0** · scoring **1.1.0** · channels **1.2.0** · schema **1.5.0**
+정본 버전: rubric **1.10.0** · scoring **1.1.0** · channels **1.2.0** · schema **1.5.0**
 상태: 명세 확정 · 참조 구현 가동 중 · 파일럿 3회차 완료
 라이선스: **[CC BY 4.0](LICENSE)** · English: **[README.md](README.md)** — 자유롭게 쓰고 고치고 상업적으로 이용할 수 있습니다. 출처만 밝혀 주십시오.
 

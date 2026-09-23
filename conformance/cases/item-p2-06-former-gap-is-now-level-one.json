@@ -1,0 +1,32 @@
+{
+  "id": "item-p2-06-former-gap-is-now-level-one",
+  "title": "긴 단락은 없지만 2~4문장도 70% 미만 → 1 (옛 정의의 빈칸)",
+  "level": 2,
+  "operation": "item_p2_06",
+  "rationale": "산문 [5,5,5,3,3] → long = 0 < 10%, good = 2/5 = 40% < 70% → level 2 조건 불만족, 0 조건(long>30%)도 불만족 → level 1. v1.9.0 의 등급 정의에는 이 경우가 0/1/2 어디에도 없었다. 망라적 정의의 '그 밖 → 1' 이 이 칸을 채운다.",
+  "spec_refs": [
+    "plane-b-readiness.md §7.6",
+    "pillars.yaml P2-06 levels"
+  ],
+  "input": {
+    "pages": [
+      [
+        5,
+        5,
+        5,
+        3,
+        3
+      ]
+    ]
+  },
+  "expected": {
+    "level": 1
+  },
+  "tolerance": {
+    "absolute": 0
+  },
+  "reference_implementation": {
+    "status": "conformant",
+    "note": "app/audit/collectors/structure.py _p2_06"
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "id": "item-p2-06-level-one-is-representable-at-five",
+  "title": "산문 단락 5개에서 긴 단락 1개(20%)는 level 1",
+  "level": 2,
+  "operation": "item_p2_06",
+  "rationale": "산문 [7,3,3,3,3] → long = 1/5 = 20% ∈ [10%, 30%] → level 1. 하한을 5 로 둔 근거다 — 3개였다면 긴 단락 1개가 33% 라 level 1 구간에 아무 값도 못 들어가고 곧장 0 이 된다(§7.4-2 가 P1-05·P1-07 에서 고친 같은 결함).",
+  "spec_refs": [
+    "plane-b-readiness.md §7.6",
+    "pillars.yaml P2-06 levels"
+  ],
+  "input": {
+    "pages": [
+      [
+        7,
+        3,
+        3,
+        3,
+        3
+      ]
+    ]
+  },
+  "expected": {
+    "level": 1
+  },
+  "tolerance": {
+    "absolute": 0
+  },
+  "reference_implementation": {
+    "status": "conformant",
+    "note": "app/audit/collectors/structure.py _p2_06"
+  }
+}
