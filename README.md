@@ -223,7 +223,7 @@ rubric/
 schema/
   report.schema.json  1.5.0  the report output contract
 conformance/
-  cases/  108 golden cases
+  cases/  113 golden cases
 ```
 
 ### What is **not** here

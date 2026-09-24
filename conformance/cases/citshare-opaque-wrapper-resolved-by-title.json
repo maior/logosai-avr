@@ -1,0 +1,55 @@
+{
+  "id": "citshare-opaque-wrapper-resolved-by-title",
+  "title": "불투명 리디렉션 래퍼는 도메인 모양의 title 로 출처를 푼다",
+  "level": 1,
+  "operation": "compute_citshare",
+  "rationale": "Gemini 의 인용 URL 은 목적지가 없는 불투명 토큰이다. 래퍼 도메인을 그대로 자사와 대조하면 자사 인용이 구조적으로 0 이 된다 — 참조 구현이 2026-09-24 까지 그랬다(검색 ON 164건 중 0). 규칙 3단계대로 title 을 쓰면 첫 응답은 cited, 둘째는 not_cited 라 1/2.",
+  "spec_refs": [
+    "plane-a-visibility.md §1.4"
+  ],
+  "input": {
+    "own_domains": [
+      "brand.example"
+    ],
+    "responses": [
+      {
+        "status": "ok",
+        "citations": [
+          {
+            "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZ1",
+            "title": "brand.example"
+          },
+          {
+            "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZ2",
+            "title": "rival-a.example"
+          }
+        ],
+        "text": "답변"
+      },
+      {
+        "status": "ok",
+        "citations": [
+          {
+            "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZ3",
+            "title": "rival-b.example"
+          }
+        ],
+        "text": "답변"
+      }
+    ]
+  },
+  "expected": {
+    "cit_share": 0.5,
+    "cited": 1,
+    "not_cited": 1,
+    "unresolved": 0,
+    "none": 0
+  },
+  "tolerance": {
+    "absolute": 1e-09
+  },
+  "reference_implementation": {
+    "status": "implemented"
+  },
+  "notes": "대조값: 래퍼 도메인으로 대조하는 옛 판정은 0.0."
+}

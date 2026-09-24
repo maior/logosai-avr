@@ -525,7 +525,7 @@
         },
         "cit_share": {
           "$ref": "#/$defs/unit_interval",
-          "description": "자사 도메인 인용 / 전체 인용 도메인"
+          "description": "응답 단위: cited / (cited + not_cited). 출처 미해석·인용 없는 응답은 분모 밖 (plane-a-visibility.md §1.4)"
         },
         "sentiment_sov": {
           "$ref": "#/$defs/unit_interval",

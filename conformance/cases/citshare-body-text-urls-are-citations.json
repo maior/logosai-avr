@@ -1,0 +1,45 @@
+{
+  "id": "citshare-body-text-urls-are-citations",
+  "title": "본문의 URL 도 인용이다 — 쿼리에 목적지를 담은 래퍼는 목적지로 푼다",
+  "level": 1,
+  "operation": "compute_citshare",
+  "rationale": "인용 집합은 응답 구조의 출처 ∪ 본문 URL 이다. 구조에 인용이 없어도 본문에 자사 URL 이 있으면 cited. google.com/url?q= 처럼 목적지를 쿼리에 담은 래퍼는 해석 순서 2단계로 푼다. 2/2 = 1.0.",
+  "spec_refs": [
+    "plane-a-visibility.md §1.4"
+  ],
+  "input": {
+    "own_domains": [
+      "example.com"
+    ],
+    "responses": [
+      {
+        "status": "ok",
+        "citations": [],
+        "text": "자세한 내용은 https://www.example.com/guide 를 참고하세요."
+      },
+      {
+        "status": "ok",
+        "citations": [],
+        "text": "출처: https://www.google.com/url?q=https://example.com/x"
+      },
+      {
+        "status": "ok",
+        "citations": [],
+        "text": "URL 없는 답변"
+      }
+    ]
+  },
+  "expected": {
+    "cit_share": 1.0,
+    "cited": 2,
+    "not_cited": 0,
+    "unresolved": 0,
+    "none": 1
+  },
+  "tolerance": {
+    "absolute": 1e-09
+  },
+  "reference_implementation": {
+    "status": "implemented"
+  }
+}

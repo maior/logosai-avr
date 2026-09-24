@@ -1,0 +1,75 @@
+{
+  "id": "citshare-unresolved-is-excluded-not-zero",
+  "title": "해석 못 한 인용만 있는 응답은 분모에서 빼고 건수를 공시한다",
+  "level": 1,
+  "operation": "compute_citshare",
+  "rationale": "출처를 모르는 인용을 '자사 아님' 으로 세면 확인 못 한 것이 인용 안 된 것으로 둔갑한다 (미측정 ≠ 0). 도메인 모양이 아닌 제목('검색 결과 페이지')·제목 없음은 미해석이다. 단 같은 응답에 자사가 해석되면 cited 가 이긴다. cited 1, not_cited 1, unresolved 2 → 1/2.",
+  "spec_refs": [
+    "plane-a-visibility.md §1.4"
+  ],
+  "input": {
+    "own_domains": [
+      "example.com"
+    ],
+    "responses": [
+      {
+        "status": "ok",
+        "citations": [
+          {
+            "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZ1",
+            "title": "검색 결과 페이지"
+          }
+        ],
+        "text": "답변"
+      },
+      {
+        "status": "ok",
+        "citations": [
+          {
+            "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZ2",
+            "title": null
+          }
+        ],
+        "text": "답변"
+      },
+      {
+        "status": "ok",
+        "citations": [
+          {
+            "url": "https://other.org/",
+            "title": null
+          }
+        ],
+        "text": "답변"
+      },
+      {
+        "status": "ok",
+        "citations": [
+          {
+            "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZ3",
+            "title": "example.com"
+          },
+          {
+            "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZ4",
+            "title": null
+          }
+        ],
+        "text": "답변"
+      }
+    ]
+  },
+  "expected": {
+    "cit_share": 0.5,
+    "cited": 1,
+    "not_cited": 1,
+    "unresolved": 2,
+    "none": 0
+  },
+  "tolerance": {
+    "absolute": 1e-09
+  },
+  "reference_implementation": {
+    "status": "implemented"
+  },
+  "notes": "대조값: 미해석을 not_cited 로 세면 1/4 = 0.25."
+}

@@ -1,0 +1,71 @@
+{
+  "id": "citshare-denominator-is-responses-with-citations",
+  "title": "분모는 인용을 포함한 응답뿐이다 — 인용 없는 응답·분모 밖 응답은 세지 않는다",
+  "level": 1,
+  "operation": "compute_citshare",
+  "rationale": "인용 없는 응답(검색 OFF 등)을 분모에 넣으면 CitShare 가 구조적으로 깎인다. 참조 구현은 1.2.0 까지 분모를 '분모에 드는 전체 응답' 으로 계산해 여기서 0.25 를 냈다. FAILED 응답은 인용이 있어도 판정하지 않는다. 서브도메인은 자사다. 1 cited / (1 cited + 1 not_cited) = 0.5.",
+  "spec_refs": [
+    "plane-a-visibility.md §1.4"
+  ],
+  "input": {
+    "own_domains": [
+      "example.com"
+    ],
+    "responses": [
+      {
+        "status": "ok",
+        "citations": [
+          {
+            "url": "https://blog.example.com/a",
+            "title": null
+          }
+        ],
+        "text": "답변"
+      },
+      {
+        "status": "ok",
+        "citations": [],
+        "text": "답변"
+      },
+      {
+        "status": "ok",
+        "citations": [],
+        "text": "답변"
+      },
+      {
+        "status": "ok",
+        "citations": [
+          {
+            "url": "https://other.org/x",
+            "title": null
+          }
+        ],
+        "text": "답변"
+      },
+      {
+        "status": "failed",
+        "citations": [
+          {
+            "url": "https://example.com/",
+            "title": null
+          }
+        ],
+        "text": ""
+      }
+    ]
+  },
+  "expected": {
+    "cit_share": 0.5,
+    "cited": 1,
+    "not_cited": 1,
+    "unresolved": 0,
+    "none": 2
+  },
+  "tolerance": {
+    "absolute": 1e-09
+  },
+  "reference_implementation": {
+    "status": "implemented"
+  },
+  "notes": "대조값: 분모를 전체 응답(4)으로 두면 0.25."
+}

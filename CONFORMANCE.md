@@ -286,7 +286,7 @@ cd backend && .venv/bin/python -m pytest tests/test_conformance_suite.py -q
 > 생성해 **글자 단위로** 대조한다. 손으로 고치면 시험이 빨개진다 — 사람이
 > 세는 표는 반드시 낡기 때문이다. 케이스를 더하면 시험이 새 표를 출력한다.
 
-108건. 수준별 L1 42 / L2 52 / L3 14.
+113건. 수준별 L1 47 / L2 52 / L3 14.
 
 | operation | 건수 | 수준 |
 |---|---|---|
@@ -295,6 +295,7 @@ cd backend && .venv/bin/python -m pytest tests/test_conformance_suite.py -q
 | `remedy_demonstrates` | 14 | L2×14 |
 | `gap_quadrant` | 8 | L1×8 |
 | `item_p2_06` | 6 | L2×6 |
+| `compute_citshare` | 5 | L1×5 |
 | `item_p1_07` | 5 | L2×5 |
 | `item_p5_04` | 5 | L2×5 |
 | `compute_avi` | 4 | L1×4 |

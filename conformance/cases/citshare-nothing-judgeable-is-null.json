@@ -1,0 +1,45 @@
+{
+  "id": "citshare-nothing-judgeable-is-null",
+  "title": "판정 가능한 인용 응답이 없으면 0 이 아니라 null 이다",
+  "level": 1,
+  "operation": "compute_citshare",
+  "rationale": "null 이어야 AVI 가 그 채널에서 α'·β' 로 재정규화한다 (§2.2). 0 으로 내면 인용을 못 잰 채널이 AVI 에서 γ 만큼 깎인다.",
+  "spec_refs": [
+    "plane-a-visibility.md §1.4"
+  ],
+  "input": {
+    "own_domains": [
+      "example.com"
+    ],
+    "responses": [
+      {
+        "status": "ok",
+        "citations": [],
+        "text": "답변"
+      },
+      {
+        "status": "ok",
+        "citations": [
+          {
+            "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZ1",
+            "title": null
+          }
+        ],
+        "text": "답변"
+      }
+    ]
+  },
+  "expected": {
+    "cit_share": null,
+    "cited": 0,
+    "not_cited": 0,
+    "unresolved": 1,
+    "none": 1
+  },
+  "tolerance": {
+    "absolute": 1e-09
+  },
+  "reference_implementation": {
+    "status": "implemented"
+  }
+}
