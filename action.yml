@@ -1,0 +1,39 @@
+name: AVR audit
+description: 배포한 사이트를 AVR 공개 API 로 진단하고, AI 크롤러 접근 같은 필수 항목이 깨졌으면 실패한다.
+inputs:
+  url:
+    description: 진단할 주소
+    required: true
+  api-key:
+    description: AVR API 키 (aeo_…). 저장소 secret 으로 넘긴다
+    required: true
+  api-base:
+    description: AVR API 주소
+    required: true
+  min-score:
+    description: 선택. 이 ARS 미만이면 실패. 비우면 필수 항목만 본다
+    required: false
+    default: ""
+  timeout-seconds:
+    description: 결과를 기다릴 최대 시간
+    required: false
+    default: "600"
+outputs:
+  score:
+    description: ARS (측정 불가면 None)
+    value: ${{ steps.audit.outputs.score }}
+  job_id:
+    description: 작업 id — GET /v1/audits/{id} 로 전체 결과
+    value: ${{ steps.audit.outputs.job_id }}
+runs:
+  using: composite
+  steps:
+    - id: audit
+      shell: bash
+      run: python3 "${{ github.action_path }}/avr_audit.py"
+      env:
+        AVR_URL: ${{ inputs.url }}
+        AVR_API_KEY: ${{ inputs.api-key }}
+        AVR_API_BASE: ${{ inputs.api-base }}
+        AVR_MIN_SCORE: ${{ inputs.min-score }}
+        AVR_TIMEOUT_SECONDS: ${{ inputs.timeout-seconds }}
