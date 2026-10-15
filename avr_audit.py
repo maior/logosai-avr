@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""AVR 진단을 CI 에서 — 공개 API(docs/API.md)를 부르고, 필수 항목이 깨졌을 때만 실패한다.
+"""AVR 진단을 CI 에서 — 공개 진단 API(POST /v1/audits)를 부르고, 필수 항목이 깨졌을 때만 실패한다.
 
 표준 라이브러리만 쓴다 (러너에 설치할 것이 없다).
 판정은 하지 않는다 — 서버가 낸 gated·blocking_failures 를 읽기만 한다. 사본을 만들지 않는다.
