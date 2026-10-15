@@ -1,0 +1,25 @@
+{
+  "id": "item-p1-03-over-eighty-with-h1-and-paragraph-is-two",
+  "title": "비율 ≥80% + H1 + 첫 문단 → level 2",
+  "level": 2,
+  "operation": "item_p1_03",
+  "rationale": "렌더링 후 '추가' 두 글자만 늘어 비율 ≈97% ≥ 80%, H1·60자 문단 존재 → level 2. level 2 기준은 1.11.0 에서 바뀌지 않았다.",
+  "spec_refs": [
+    "plane-b-readiness.md §7.7",
+    "pillars.yaml P1-03 levels"
+  ],
+  "input": {
+    "raw_html": "<html><body><h1>브랜드란 무엇인가</h1><p>가나다라마바사아자차카타파하 가나다라마바사아자차카타파하 가나다라마바사아자차카타파하 가나다라마바사아자차카타파하 </p></body></html>",
+    "rendered_html": "<html><body><h1>브랜드란 무엇인가</h1><p>가나다라마바사아자차카타파하 가나다라마바사아자차카타파하 가나다라마바사아자차카타파하 가나다라마바사아자차카타파하 </p><p>추가</p></body></html>"
+  },
+  "expected": {
+    "level": 2
+  },
+  "tolerance": {
+    "absolute": 0
+  },
+  "reference_implementation": {
+    "status": "conformant",
+    "note": "app/audit/collectors/render.py _with_renderer"
+  }
+}
