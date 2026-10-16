@@ -16,6 +16,56 @@ brand appears in AI-generated answers, and — separately — *why it doesn't*.
 
 ---
 
+## Quick start
+
+Pick the path that matches what you want to do.
+
+| I want to… | Start here |
+|---|---|
+| **Understand the model** | [The model](#the-model) below, then `spec/avr-model.md` |
+| **Score sites with my own tool** | The 5-minute tour below, then [Implementing AVR](#implementing-avr) and `CONFORMANCE.md` |
+| **Fail CI when AI crawlers get blocked** | The [GitHub Action](https://github.com/maior/logosai-avr/tree/action): `uses: maior/logosai-avr@action` |
+| **Check our own numbers** | `DECLARATION.md` — what we claim, and what we explicitly do not |
+
+### 5-minute tour of the canon
+
+Everything an implementation consumes is machine-readable. This reads the rubric and the
+golden cases with nothing but PyYAML:
+
+```python
+# pip install pyyaml — run from the repository root
+import json, pathlib, yaml
+from collections import Counter
+
+pillars = yaml.safe_load(open("rubric/pillars.yaml"))
+print("rubric", pillars["version"])
+for p in pillars["pillars"]:
+    print(f'{p["id"]}  weight {p["weight"]:>2}  items {len(p["items"])}')
+blocking = [i["id"] for p in pillars["pillars"] for i in p["items"] if i.get("blocking")]
+print("blocking:", blocking)
+
+cases = [json.load(open(f)) for f in sorted(pathlib.Path("conformance/cases").glob("*.json"))]
+print(len(cases), "cases by operation:", Counter(c["operation"] for c in cases).most_common(5))
+```
+
+Output:
+
+```
+rubric 1.11.0
+P1  weight 25  items 10
+P2  weight 25  items 10
+P3  weight 20  items 9
+P4  weight 20  items 9
+P5  weight 10  items 7
+blocking: ['P1-01', 'P1-03']
+117 cases by operation: [('compute_ars', 23), ('remedy_applies', 15), ...]
+```
+
+Next: feed each case's `input` to your implementation, compare with `expected` within
+`tolerance`, and see `CONFORMANCE.md` §3 for the per-operation adapter contract.
+
+---
+
 ## Why this exists
 
 Most AI-visibility products report a single bare percentage: *"your brand appears in 33% of

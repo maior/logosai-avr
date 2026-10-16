@@ -13,6 +13,55 @@ AEO(Answer Engine Optimization) 진단 프레임워크의 **명세 정본**.
 
 ---
 
+## 0. 빠른 시작
+
+하려는 일에 맞는 길을 고르세요.
+
+| 하고 싶은 것 | 시작점 |
+|---|---|
+| **모델을 이해하고 싶다** | 아래 §1, 그다음 `spec/avr-model.md` |
+| **내 도구로 사이트를 채점하고 싶다** | 아래 5분 둘러보기 → `ADOPTION.md` → `CONFORMANCE.md` |
+| **AI 크롤러가 막히면 CI 를 실패시키고 싶다** | [GitHub Action](https://github.com/maior/logosai-avr/tree/action): `uses: maior/logosai-avr@action` |
+| **우리 숫자를 검증하고 싶다** | `DECLARATION.md` — 주장하는 것과, 주장하지 **않는** 것 |
+
+### 정본 5분 둘러보기
+
+구현이 읽는 것은 전부 기계가 읽을 수 있는 파일입니다. PyYAML 하나로 rubric 과 골든 케이스를 읽습니다:
+
+```python
+# pip install pyyaml — 저장소 최상위에서 실행
+import json, pathlib, yaml
+from collections import Counter
+
+pillars = yaml.safe_load(open("rubric/pillars.yaml"))
+print("rubric", pillars["version"])
+for p in pillars["pillars"]:
+    print(f'{p["id"]}  weight {p["weight"]:>2}  items {len(p["items"])}')
+blocking = [i["id"] for p in pillars["pillars"] for i in p["items"] if i.get("blocking")]
+print("blocking:", blocking)
+
+cases = [json.load(open(f)) for f in sorted(pathlib.Path("conformance/cases").glob("*.json"))]
+print(len(cases), "cases by operation:", Counter(c["operation"] for c in cases).most_common(5))
+```
+
+출력:
+
+```
+rubric 1.11.0
+P1  weight 25  items 10
+P2  weight 25  items 10
+P3  weight 20  items 9
+P4  weight 20  items 9
+P5  weight 10  items 7
+blocking: ['P1-01', 'P1-03']
+117 cases by operation: [('compute_ars', 23), ('remedy_applies', 15), ...]
+```
+
+다음: 각 케이스의 `input` 을 내 구현에 넣고 `expected` 와 `tolerance` 안에서 대조합니다.
+operation 별 어댑터 계약은 `CONFORMANCE.md` §3 에 있습니다.
+
+---
+
 ## 1. 한 줄 요약
 
 브랜드의 AI 답변 노출을 **결과(Visibility, Plane A)** 와 **원인(Readiness, Plane B)** 두 평면으로
