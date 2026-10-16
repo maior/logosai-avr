@@ -1,29 +1,29 @@
 name: AVR audit
-description: 배포한 사이트를 AVR 공개 API 로 진단하고, AI 크롤러 접근 같은 필수 항목이 깨졌으면 실패한다.
+description: Audit a deployed site with the AVR public API; fail only when a blocking item (e.g. AI-crawler access) breaks.
 inputs:
   url:
-    description: 진단할 주소
+    description: URL to audit
     required: true
   api-key:
-    description: AVR API 키 (aeo_…). 저장소 secret 으로 넘긴다
+    description: AVR API key (aeo_…). Pass it as a repository secret
     required: true
   api-base:
-    description: AVR API 주소
+    description: AVR API base URL
     required: true
   min-score:
-    description: 선택. 이 ARS 미만이면 실패. 비우면 필수 항목만 본다
+    description: Optional. Fail if ARS is below this. Empty = blocking items only
     required: false
     default: ""
   timeout-seconds:
-    description: 결과를 기다릴 최대 시간
+    description: Maximum seconds to wait for the result
     required: false
     default: "600"
 outputs:
   score:
-    description: ARS (측정 불가면 None)
+    description: ARS (None when the site could not be scored)
     value: ${{ steps.audit.outputs.score }}
   job_id:
-    description: 작업 id — GET /v1/audits/{id} 로 전체 결과
+    description: Job id — full result at GET /v1/audits/{id}
     value: ${{ steps.audit.outputs.job_id }}
 runs:
   using: composite
