@@ -4,7 +4,7 @@
 AVR Level 2 conformant · rubric 1.12.0 · channels 1.2.0 · scoring 1.2.0 · schema 1.5.0
   (auto coverage 32/32, known gaps: 0, manual tier: 13 items)
   reliability disclosed: spec/reliability.md §8
-  Level 3: NOT claimed — Plane A 프로빙 재현성 미측정
+  Level 3: NOT claimed — Plane A 회차 간 재현성 미측정 · claude 반복 변동 정의 불가
 ```
 
 선언 주체: **LogosAI / MKII** · 선언일 **2026-09-21** · 구현: AVR 참조 구현 (비공개)
@@ -29,8 +29,10 @@ AVR Level 2 conformant · rubric 1.12.0 · channels 1.2.0 · scoring 1.2.0 · sc
 | **Level 3** Measurement | + Plane A 프로빙과 통계, **그리고 프로빙 재현성 공시** (`reliability.md` §7) | ❌ **선언하지 않는다** |
 
 Level 3 을 선언하지 않는 이유는 구현이 없어서가 아니다. Plane A 프로빙·통계·클러스터
-보정은 구현돼 있고 `level:3` 골든 케이스 18건도 통과한다. **프로빙의 재현성을 아직 재지
-않았다.** 같은 질문을 같은 채널에 반복했을 때 결과가 얼마나 흔들리는지 모르는 상태에서
+보정은 구현돼 있고 `level:3` 골든 케이스 18건도 통과한다. **프로빙의 재현성을 절반만 쟀다.**
+한 회차 **안**의 반복은 2026-10-16 에 저장 응답으로 쟀다 — chatgpt G(5)=0.94, gemini 0.92
+(`reliability.md` §8.1). 그러나 claude 는 언급이 0건이라 변동을 정의할 수 없고, 같은 사이트를
+**다른 회차**에 다시 잰 쌍은 하나뿐이었다(같은 날 3.6% 와 16.4%). 회차 간 재현성 미측정인 채로
 "측정 적합" 을 주장할 수 없다 — 그 요건은 우리가 `reliability.md` 에 직접 써 넣은 것이다.
 
 ## 담당 범위
