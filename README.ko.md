@@ -17,8 +17,8 @@
 
 ## 빠른 시작 (3단계)
 
-**1. API 키 받기.** AVR 계정에 로그인한 뒤 키를 만듭니다 (로그인 상태에서
-`POST /api-keys`, 본문 `{"name": "ci"}`). 키는 `aeo_` 로 시작하고 **한 번만 보입니다** — 바로 복사하세요.
+**1. API 키 받기.** AVR 에 로그인해 **대시보드** 아래 **API 키** 칸에서 **새 키 발급** 을 누릅니다.
+키는 `aeo_` 로 시작하고 **한 번만 보입니다** — 바로 복사하세요. 같은 목록에서 폐기할 수 있습니다.
 
 **2. secret 으로 저장.** 저장소 *Settings → Secrets and variables → Actions →
 New repository secret* 에서 이름 `AVR_API_KEY` 로 저장합니다. AVR API 주소는 변수

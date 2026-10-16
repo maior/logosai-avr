@@ -18,9 +18,9 @@ Everything else is reported in the log but never blocks your deploy unless you o
 
 ## Quick start (3 steps)
 
-**1. Get an API key.** Sign in to your AVR account and create a key (`POST /api-keys`
-with `{"name": "ci"}` while signed in). The key starts with `aeo_` and is **shown once** —
-copy it immediately.
+**1. Get an API key.** Sign in to AVR, open the **dashboard**, scroll to **API 키** (API keys)
+and press **새 키 발급** (issue new key). The key starts with `aeo_` and is **shown once** —
+copy it immediately. You can revoke keys from the same list.
 
 **2. Store it as a secret.** In your repository: *Settings → Secrets and variables →
 Actions → New repository secret*, name `AVR_API_KEY`. Optionally add a variable
