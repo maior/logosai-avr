@@ -1,0 +1,12 @@
+{
+  "id": "stat-rho-floor-high-estimate-is-kept",
+  "title": "ρ̂ 가 하한보다 크면 ρ̂ 를 쓴다 — 하한은 추정치가 아니다",
+  "level": 3,
+  "operation": "cluster_rho",
+  "rationale": "대조군. [[1,1],[0,0]] 은 클러스터 안이 완전히 같다: MSW = 0, MSB = 2·(0.25+0.25)/1 = 1, ρ̂ = 1/1 = 1. max(1, 0.6) = 1. 하한이 ρ̂ 를 덮어쓰는 구현은 이 케이스에서 0.6 을 내고 실패한다.",
+  "spec_refs": ["plane-a-visibility.md §3.4-1"],
+  "input": {"clusters": [[1,1],[0,0]], "rho_floor": 0.6},
+  "expected": {"rho": 1.0},
+  "tolerance": {"absolute": 1e-09},
+  "reference_implementation": {"status": "implemented"}
+}

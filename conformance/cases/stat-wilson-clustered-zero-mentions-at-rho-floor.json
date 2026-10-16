@@ -1,0 +1,12 @@
+{
+  "id": "stat-wilson-clustered-zero-mentions-at-rho-floor",
+  "title": "MR 0/60 (12×5) — ρ_floor 0.6 에서 상한 17.9%, ρ=0 이면 6.0%",
+  "level": 3,
+  "operation": "wilson_interval_clustered",
+  "rationale": "v1.3.0 이 언급 0건 회차에 낸 상한(ρ=0, n_eff=60)은 z²/(60+z²) = 0.060172 였다. ρ_floor=0.6 이면 DEFF = 1 + 4·0.6 = 3.4, n_eff = 60/3.4 = 17.647059, p̂=0 의 Wilson 상한 = z²/(n_eff+z²) = 0.178768. 하한은 0. uncorrected 는 v1.3.0 이 실제로 내보낸 값이다.",
+  "spec_refs": ["plane-a-visibility.md §3.2", "plane-a-visibility.md §3.4-1"],
+  "input": {"k": 0, "n": 60, "cluster_size": 5, "rho": 0.6, "z": 1.959964},
+  "expected": {"lower": 0.0, "upper": 0.178767979, "uncorrected_lower": 0.0, "uncorrected_upper": 0.060171853},
+  "tolerance": {"absolute": 1e-09},
+  "reference_implementation": {"status": "implemented"}
+}

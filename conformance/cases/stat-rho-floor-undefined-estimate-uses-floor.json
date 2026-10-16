@@ -1,0 +1,15 @@
+{
+  "id": "stat-rho-floor-undefined-estimate-uses-floor",
+  "title": "언급 0건 — ρ̂ 정의 불가면 0 이 아니라 ρ_floor",
+  "level": 3,
+  "operation": "cluster_rho",
+  "rationale": "질문 12 × 반복 5 가 전부 0 이면 MSB = MSW = 0 이라 ρ̂ 의 분모가 0 이다. v1.3.0 은 이것을 ρ=0 으로 처리해 DEFF=1, 즉 클러스터 보정을 통째로 없앴다 — 정보가 가장 적은 회차가 가장 좁은 구간을 받았다. 정의 불가는 '독립' 이 아니다 → ρ_used = ρ_floor = 0.6.",
+  "spec_refs": ["plane-a-visibility.md §3.4-1"],
+  "input": {
+    "clusters": [[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0]],
+    "rho_floor": 0.6
+  },
+  "expected": {"rho": 0.6},
+  "tolerance": {"absolute": 1e-09},
+  "reference_implementation": {"status": "implemented"}
+}

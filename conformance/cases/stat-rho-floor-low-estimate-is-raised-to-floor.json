@@ -1,0 +1,15 @@
+{
+  "id": "stat-rho-floor-low-estimate-is-raised-to-floor",
+  "title": "ρ̂ 가 하한보다 작으면 하한을 쓴다 (음수 ρ̂ 포함)",
+  "level": 3,
+  "operation": "cluster_rho",
+  "rationale": "12 × 5 에서 서로 다른 두 질문에 언급이 1건씩. ȳ = 1/30, MSB = 5·[2·(0.2−1/30)² + 10·(1/30)²]/11 = 1/33 ≈ 0.030303, MSW = 2·[(1−0.2)² + 4·0.2²]/(12·4) = 1.6/48 = 1/30 ≈ 0.033333, ρ̂ = (MSB − MSW)/(MSB + 4·MSW) ≈ −0.0185 → clamp 0 → max(0, 0.6) = 0.6. 질문 12개로 낸 ρ̂ 는 실측에서 [0.36, 1.00] 로 흔들린다(spec §3.4-1).",
+  "spec_refs": ["plane-a-visibility.md §3.4-1"],
+  "input": {
+    "clusters": [[1,0,0,0,0],[1,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0]],
+    "rho_floor": 0.6
+  },
+  "expected": {"rho": 0.6},
+  "tolerance": {"absolute": 1e-09},
+  "reference_implementation": {"status": "implemented"}
+}

@@ -3,7 +3,7 @@
 A diagnostic specification for **AEO** (Answer Engine Optimization): measuring whether a
 brand appears in AI-generated answers, and — separately — *why it doesn't*.
 
-**Canon versions:** rubric `1.12.0` · scoring `1.1.0` · channels `1.2.0` · schema `1.5.0`
+**Canon versions:** rubric `1.12.0` · scoring `1.2.0` · channels `1.2.0` · schema `1.5.0`
 **Status:** specification frozen · reference implementation running · 3 pilot rounds completed
 **License:** [CC BY 4.0](LICENSE) — use, modify, and sell derivatives freely; just credit the source.
 
@@ -58,7 +58,7 @@ P3  weight 20  items 9
 P4  weight 20  items 9
 P5  weight 10  items 7
 blocking: ['P1-01', 'P1-03']
-120 cases by operation: [('compute_ars', 23), ('remedy_applies', 15), ...]
+124 cases by operation: [('compute_ars', 23), ('remedy_applies', 15), ...]
 ```
 
 Next: feed each case's `input` to your implementation, compare with `expected` within
@@ -269,11 +269,11 @@ spec/
 rubric/
   pillars.yaml     1.12.0  scoring canon — 5 pillars, 45 items, gating
   channels.yaml    1.2.0  6 channels, weights summing to 1.0
-  scoring.yaml     1.1.0  thresholds and coefficients
+  scoring.yaml     1.2.0  thresholds and coefficients
 schema/
   report.schema.json  1.5.0  the report output contract
 conformance/
-  cases/  120 golden cases
+  cases/  124 golden cases
 ```
 
 ### Branches

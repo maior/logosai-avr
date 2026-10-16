@@ -12,9 +12,14 @@
 #
 # 주의: 임계값 변경은 과거 리포트의 사분면 판정을 바꾼다. 기본은 소급하지 않음이며
 #       (scoring.md §6-3) 리포트에는 이 파일의 version 을 scoring_version 으로 남긴다.
-version: "1.1.0"
+version: "1.2.0"
 
 changelog:
+  - version: "1.2.0"
+    date: "2026-10-16"
+    breaking: false
+    summary: "statistics.rho_floor 신설(0.6) — 클러스터 보정의 ρ 는 max(회차 ρ̂, rho_floor), ρ̂ 정의 불가(언급 0건·전부)면 rho_floor (plane-a-visibility.md §3.4-1). 회차당 질문 ~12개의 ρ̂ 는 같은 모집단에서도 [0.36, 1.00] 로 흔들렸고, 언급 0건 회차는 ρ=0 → DEFF=1 로 보정이 사라졌다(저장 live 응답 1,638건, 21칸 중 5칸). 합동 ρ̂ chatgpt 0.76[0.66,0.86] · gemini 0.70[0.61,0.79] 의 부트스트랩 하한 중 작은 쪽을 내림해 0.6."
+    comparability: "MR·AVI 점추정과 사분면 판정은 그대로다. 신뢰구간·n_eff·유의성 검정 p 값은 1.1.0 과 비교 불가하고 방향은 한쪽이다 — 구간이 넓어지기만 하므로 1.1.0 에서 유의했던 차이가 유의하지 않게 될 수 있다. 예: MR 0/60(12×5) 상한 6.0% → 17.9%."
   - version: "1.1.0"
     date: "2026-09-05"
     breaking: false
@@ -98,3 +103,6 @@ item_levels:
 # 적합성의 정의는 "같은 입력에 같은 출력"이므로 명세 값을 그대로 쓴다.
 statistics:
   default_z: 1.959964
+  # 클러스터 보정 ρ 의 하한 (spec plane-a-visibility.md §3.4-1). ρ_used = max(ρ̂, rho_floor),
+  # ρ̂ 정의 불가(언급 0건·전부)면 rho_floor. 추정치가 아니라 "이보다 독립적이라 주장하지 않는다" 는 선.
+  rho_floor: 0.6
