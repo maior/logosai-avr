@@ -51,21 +51,37 @@ Plane B → ARS (0~100) + 항목별 근거   5 Pillar · 45항목 rubric
 
 ```
 framework/
-├── README.md                     ← 지금 이 파일. 진입점
+├── README.md · README.ko.md       진입점 (영어 · 한국어)
+├── ARCHITECTURE.md                계층 · 의존 방향 · 알려진 공백
+├── CONFORMANCE.md                 어댑터 계약 · 허용오차 · 자기 선언 방법
+├── DECLARATION.md                 참조 구현의 적합성 자기 선언 (Level 2)
+├── GOVERNANCE.md · ADOPTION.md · STANDARDS.md
 ├── rubric/
 │   ├── pillars.yaml              ★ Plane B 채점 정본 (5 Pillar · 45항목)
-│   └── channels.yaml             ★ Plane A 채널 가중치 정본 (6채널)
+│   ├── channels.yaml             ★ Plane A 채널 가중치 정본 (6채널)
+│   └── scoring.yaml              ★ 임계값 · 계수 정본
 ├── schema/
 │   └── report.schema.json        ★ 리포트 산출물 JSON Schema (draft 2020-12)
+├── conformance/cases/            골든 케이스 117건
 └── spec/
     ├── avr-model.md              모델 총론 · 두 평면 분리 근거 · Gap Matrix 처방
     ├── plane-a-visibility.md     Visibility 지표 정의 · 수식 · 통계 규칙
     ├── plane-b-readiness.md      Readiness 채점 규칙 · ARS 산식 · 게이팅
-    └── scoring.md                사분면 판정 임계값과 근거
+    ├── scoring.md                사분면 판정 임계값과 근거
+    └── reliability.md            재현성 측정 · 공시 방법
 ```
 
 ★ 표시 = 코드가 직접 파싱하는 **정본(Single Source of Truth)**.
-정본 3개는 서로 id가 일치해야 하며, 변경 시 **같은 커밋에서 함께** 갱신한다.
+정본 4개는 서로 id가 일치해야 하며, 변경 시 **같은 커밋에서 함께** 갱신한다.
+
+### 브랜치
+
+| 브랜치 | 내용 | 라이선스 |
+|---|---|---|
+| `main` | 이 명세 | CC BY 4.0 |
+| [`action`](https://github.com/maior/logosai-avr/tree/action) | 배포한 사이트를 진단해 필수 항목이 깨졌을 때만 CI 를 실패시키는 GitHub Action — `uses: maior/logosai-avr@action` | MIT |
+
+두 브랜치는 따로 내보낸 것이며 서로 병합하지 않습니다.
 
 ---
 

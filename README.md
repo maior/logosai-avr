@@ -226,6 +226,15 @@ conformance/
   cases/  117 golden cases
 ```
 
+### Branches
+
+| Branch | Contents | License |
+|---|---|---|
+| `main` | this specification | CC BY 4.0 |
+| [`action`](https://github.com/maior/logosai-avr/tree/action) | GitHub Action that audits a deployed site and fails CI only when a blocking item breaks — `uses: maior/logosai-avr@action` | MIT |
+
+The branches are independent exports and are never merged into each other.
+
 ### What is **not** here
 
 The reference implementation (collectors, scoring engine, probing pipeline), the
