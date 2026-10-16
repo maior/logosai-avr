@@ -18,21 +18,21 @@ import urllib.request
 def verdict(job: dict, min_score: float | None) -> tuple[int, list[str]]:
     """(종료 코드, GitHub 워크플로 명령 줄들)."""
     if job.get("status") != "done":
-        return 1, [f"::error::진단 실패 — {job.get('error') or job.get('status')}"]
+        return 1, [f"::error::Audit failed — {job.get('error') or job.get('status')} (re-run the job to retry)"]
     r = job["result"]
     msgs: list[str] = []
     if not r.get("measurable", True) or r.get("score") is None:
-        return 0, ["::warning::점수를 내지 못했습니다(측정 불가) — 실패로 보지 않습니다. "
+        return 0, ["::warning::No score could be produced (not measurable) — not treated as a failure. "
                    f"{r.get('unmeasurable_reason') or ''}".rstrip()]
-    msgs.append(f"ARS {r['score']:.1f} / 100 (권장 관행 이행도 — 인용 예측이 아님)")
+    msgs.append(f"ARS {r['score']:.1f} / 100 (adherence to recommended practices — not a prediction of AI citation)")
     code = 0
     if r.get("gated") or r.get("blocking_failures"):
-        msgs.append("::error::필수 항목 실패: " + ", ".join(r.get("blocking_failures") or ["(gated)"]))
+        msgs.append("::error::Blocking item failed: " + ", ".join(r.get("blocking_failures") or ["(gated)"]))
         code = 1
     if r.get("gating_undetermined"):
-        msgs.append("::warning::필수 항목을 판정하지 못했습니다: " + ", ".join(r.get("blocking_unscored") or []))
+        msgs.append("::warning::Blocking item could not be judged: " + ", ".join(r.get("blocking_unscored") or []))
     if min_score is not None and r["score"] < min_score:
-        msgs.append(f"::error::ARS {r['score']:.1f} < 지정한 문턱 {min_score:g}")
+        msgs.append(f"::error::ARS {r['score']:.1f} is below min-score {min_score:g}")
         code = 1
     return code, msgs
 
@@ -44,7 +44,7 @@ def _call(method: str, url: str, key: str, body: dict | None = None) -> dict:
         with urllib.request.urlopen(req, timeout=30) as r:
             return json.loads(r.read())
     except urllib.error.HTTPError as e:
-        raise SystemExit(f"::error::API {e.code} — {e.read().decode(errors='replace')[:300]}")
+        raise SystemExit(f"::error::AVR API returned {e.code} — {e.read().decode(errors='replace')[:300]}")
 
 
 def main() -> int:
@@ -56,7 +56,7 @@ def main() -> int:
     job = _call("POST", f"{base}/v1/audits", key, {"url": target})
     while job["status"] in ("queued", "running"):
         if time.time() > deadline:
-            print(f"::error::시간 초과 — 작업 {job['id']} 이 끝나지 않았습니다")
+            print(f"::error::Timed out — job {job['id']} did not finish (raise timeout-seconds or retry)")
             return 1
         time.sleep(5)
         job = _call("GET", f"{base}/v1/audits/{job['id']}", key)
