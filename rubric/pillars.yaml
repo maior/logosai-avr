@@ -1,9 +1,14 @@
 # AVR 모델 — Plane B (Readiness) 채점 정본
 # Single Source of Truth. 백엔드 스코어러는 이 파일만 파싱한다.
 # 항목 수정 시 framework/schema/report.schema.json 의 id enum 과 함께 갱신할 것.
-version: "1.11.0"
+version: "1.12.0"
 
 changelog:
+  - version: "1.12.0"
+    date: "2026-10-16"
+    breaking: false
+    summary: "P1-04(llms.txt) 소프트 404 오탐 수정 — 200 이어도 본문이 HTML 문서로 시작하면 '파일 없음'(level 0)이다. v1.11.0 은 200 이면 최소 1 을 줘서, 없는 경로에도 index.html 을 200 으로 돌려주는 사이트(SPA 폴백)가 llms.txt 없이 1 을 받았다. 파일럿 2026-09-17 회차에서 P1-04 판정 21곳 중 level 1 이 10곳이었고, 그중 5곳이 'H1 없음·링크 0·문단 1개(<!DOCTYPE html> 줄)' 라는 같은 모양이었다. 2026-05 상위 1만 사이트 크롤 연구도 'any 200' 계수가 보유율을 2.74배 부풀린다고 보고한다. 판정은 본문으로만 한다(BOM·공백·HTML 주석 뒤 첫 태그가 doctype html·html·head·body) — Content-Type 은 보지 않는다. .txt 를 text/html 로 내보내는 서버가 있어 헤더로 판정하면 반대 방향 오탐이 생긴다. weight·blocking·gating·check·remediation·evidence 불변. 출처: pilot/20260917-01, arXiv 문헌 검토(2026-10-16)."
+    comparability: "**P1-04 한 항목만 비교 불가**하고 나머지 44개와 배점·게이팅은 그대로다. 방향은 한쪽이다 — 1 이던 일부가 0 이 될 뿐 올라가는 경우는 없다. 그런 사이트는 P1 점수가 항목 한 칸(level 1)만큼 내려가 **총점이 소폭 낮아진다** (P1 판정 항목 수에 따라 다르나 대략 1~2점). 게이팅에는 영향이 없다 — P1-04 는 blocking 이 아니다. 2026-09-17 회차 기준 판정 21곳 중 5곳이 해당하는 것으로 보인다(저장 근거의 모양으로 판단한 추정 — 본문 원문은 저장되지 않았다). v1.11.0 이하 리포트의 P1-04=1 은 실제 llms.txt 인지 HTML 폴백인지 구분할 수 없으므로 재측정해야 동일 자 비교가 된다."
   - version: "1.11.0"
     date: "2026-10-15"
     breaking: false
@@ -222,7 +227,7 @@ pillars:
         blocking: false
         remediation: config
         levels:
-          "0": "/llms.txt 가 200으로 응답하지 않음"
+          "0": "/llms.txt 가 200으로 응답하지 않음, 또는 200이어도 본문이 HTML 문서임(없는 경로에 페이지를 돌려주는 소프트 404)"
           "1": "/llms.txt 는 존재하나 링크 5개 미만이거나 각 링크에 한 줄 설명이 없음"
           "2": "/llms.txt 가 200으로 응답하고, H1 사이트명 + 요약 문단 + 링크 5개 이상 각각 한 줄 설명을 포함"
 

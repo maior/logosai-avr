@@ -1,0 +1,25 @@
+{
+  "id": "item-p1-04-sparse-markdown-is-one",
+  "title": "마크다운 llms.txt 이지만 링크 5개 미만 → level 1",
+  "level": 2,
+  "operation": "item_p1_04",
+  "rationale": "파일은 있다(HTML 이 아닌 마크다운, H1 과 요약 문단 있음) 그러나 링크가 2개뿐이라 level 2 의 '링크 5개 이상' 을 채우지 못한다 → level 1. 1.12.0 이후 level 1 은 '진짜 llms.txt 인데 덜 갖춘 것' 만 뜻한다는 대조군이다.",
+  "spec_refs": [
+    "plane-b-readiness.md §7.8",
+    "pillars.yaml P1-04 levels"
+  ],
+  "input": {
+    "status": 200,
+    "body": "# 브랜드컴퍼니\n\n브랜드컴퍼니는 중소기업 AEO 진단을 제공하는 회사다.\n\n- [소개](https://x.example/about): 회사 소개\n- [가격](https://x.example/pricing): 요금제\n"
+  },
+  "expected": {
+    "level": 1
+  },
+  "tolerance": {
+    "absolute": 0
+  },
+  "reference_implementation": {
+    "status": "conformant",
+    "note": "app/audit/collectors/llmstxt.py"
+  }
+}

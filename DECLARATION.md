@@ -1,7 +1,7 @@
 # 적합성 자기 선언 — 참조 구현
 
 ```
-AVR Level 2 conformant · rubric 1.11.0 · channels 1.2.0 · scoring 1.1.0 · schema 1.5.0
+AVR Level 2 conformant · rubric 1.12.0 · channels 1.2.0 · scoring 1.1.0 · schema 1.5.0
   (auto coverage 32/32, known gaps: 0, manual tier: 13 items)
   reliability disclosed: spec/reliability.md §8
   Level 3: NOT claimed — Plane A 프로빙 재현성 미측정
@@ -25,7 +25,7 @@ AVR Level 2 conformant · rubric 1.11.0 · channels 1.2.0 · scoring 1.1.0 · sc
 | 수준 | 요건 | 상태 |
 |---|---|---|
 | **Level 1** Scoring | 정본 YAML 파싱, ARS·AVI 산식, blocking 입력 검증, Gap Matrix, 스키마 통과 | ✅ 골든 케이스 `level:1` **47건 전부 통과** |
-| **Level 2** Assessment | + `check: auto` 항목 기계 판정, 근거 첨부, 미측정 사유 분류 | ✅ `level:2` **56건 전부 통과** |
+| **Level 2** Assessment | + `check: auto` 항목 기계 판정, 근거 첨부, 미측정 사유 분류 | ✅ `level:2` **59건 전부 통과** |
 | **Level 3** Measurement | + Plane A 프로빙과 통계, **그리고 프로빙 재현성 공시** (`reliability.md` §7) | ❌ **선언하지 않는다** |
 
 Level 3 을 선언하지 않는 이유는 구현이 없어서가 아니다. Plane A 프로빙·통계·클러스터
@@ -38,7 +38,7 @@ Level 3 을 선언하지 않는 이유는 구현이 없어서가 아니다. Plan
 ```
 check: auto     32개 → 참조 구현이 32개 전부 담당 (미담당 0)
 check: manual   13개 → 기계 판정하지 않는다. 심화 진단(사람)에서 해소
-골든 케이스      117건 (L1 47 · L2 56 · L3 14) · known_gap 0
+골든 케이스      120건 (L1 47 · L2 59 · L3 14) · known_gap 0
 ```
 
 **`auto` 를 전부 담당한다고 해서 전부 점수가 나온다는 뜻이 아니다.** 예를 들어 `P1-08`
@@ -92,7 +92,7 @@ check: manual   13개 → 기계 판정하지 않는다. 심화 진단(사람)�
    **δ 가 채널 상수가 아니라 질문 세트에 따라 달라진다**는 것이고, 그래서 우리는
    δ 를 사이트 단위로만 쓴다 — 남의 δ 를 끌어다 쓰지 않는다. 지금 값으로 절대
    수준을 보정하지 않는다
-5. **제3자 재현.** 골든 케이스 117건을 우리 외에 아무도 돌린 적이 없다. 이 선언의 값은
+5. **제3자 재현.** 골든 케이스 120건을 우리 외에 아무도 돌린 적이 없다. 이 선언의 값은
    누군가 대조해 줄 때 비로소 생긴다
 
 ## 제3자가 이 선언을 검증하는 방법
@@ -125,6 +125,7 @@ git clone https://github.com/maior/logosai-avr
 
 | declaration | 날짜 | 변경 |
 |---|---|---|
-| **1.2.0** | 2026-10-15 | rubric 1.11.0(`P1-03` 0점을 CSR 셸에만) 반영, `P1-03` 항목 판정 케이스 4건 추가 — Level 2, rubric 1.11.0, auto 32/32, 골든 117건, 신뢰도 공시 포함 |
+| **1.3.0** | 2026-10-16 | rubric 1.12.0(`P1-04` 200 이어도 HTML 이면 0 — 소프트 404) 반영, `P1-04` 항목 판정 케이스 3건 추가 — Level 2, rubric 1.12.0, auto 32/32, 골든 120건, 신뢰도 공시 포함 |
+| 1.2.0 | 2026-10-15 | rubric 1.11.0(`P1-03` 0점을 CSR 셸에만) 반영, `P1-03` 항목 판정 케이스 4건 추가 — Level 2, rubric 1.11.0, auto 32/32, 당시 케이스 117건, 신뢰도 공시 포함 |
 | 1.1.0 | 2026-09-24 | CitShare 응답 단위 판정 케이스 5건 추가(plane-a 1.3.0) — Level 2, rubric 1.10.0, auto 32/32, 당시 케이스 113건, 신뢰도 공시 포함 |
 | 1.0.0 | 2026-09-21 | 최초 선언 — Level 2, rubric 1.10.0, auto 32/32, 신뢰도 공시 포함 |

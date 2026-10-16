@@ -3,7 +3,7 @@
 A diagnostic specification for **AEO** (Answer Engine Optimization): measuring whether a
 brand appears in AI-generated answers, and — separately — *why it doesn't*.
 
-**Canon versions:** rubric `1.11.0` · scoring `1.1.0` · channels `1.2.0` · schema `1.5.0`
+**Canon versions:** rubric `1.12.0` · scoring `1.1.0` · channels `1.2.0` · schema `1.5.0`
 **Status:** specification frozen · reference implementation running · 3 pilot rounds completed
 **License:** [CC BY 4.0](LICENSE) — use, modify, and sell derivatives freely; just credit the source.
 
@@ -51,14 +51,14 @@ print(len(cases), "cases by operation:", Counter(c["operation"] for c in cases).
 Output:
 
 ```
-rubric 1.11.0
+rubric 1.12.0
 P1  weight 25  items 10
 P2  weight 25  items 10
 P3  weight 20  items 9
 P4  weight 20  items 9
 P5  weight 10  items 7
 blocking: ['P1-01', 'P1-03']
-117 cases by operation: [('compute_ars', 23), ('remedy_applies', 15), ...]
+120 cases by operation: [('compute_ars', 23), ('remedy_applies', 15), ...]
 ```
 
 Next: feed each case's `input` to your implementation, compare with `expected` within
@@ -267,13 +267,13 @@ spec/
                           reproducibility — determinism, time sensitivity, test-retest,
                           and inter-rater agreement for human-judged items (§3.4)
 rubric/
-  pillars.yaml     1.11.0  scoring canon — 5 pillars, 45 items, gating
+  pillars.yaml     1.12.0  scoring canon — 5 pillars, 45 items, gating
   channels.yaml    1.2.0  6 channels, weights summing to 1.0
   scoring.yaml     1.1.0  thresholds and coefficients
 schema/
   report.schema.json  1.5.0  the report output contract
 conformance/
-  cases/  117 golden cases
+  cases/  120 golden cases
 ```
 
 ### Branches

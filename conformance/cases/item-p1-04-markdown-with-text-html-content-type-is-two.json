@@ -1,0 +1,26 @@
+{
+  "id": "item-p1-04-markdown-with-text-html-content-type-is-two",
+  "title": "본문이 규약대로인 마크다운이면 Content-Type 이 text/html 이어도 level 2",
+  "level": 2,
+  "operation": "item_p1_04",
+  "rationale": "HTML 판정은 본문으로 한다, 헤더로 하지 않는다. .txt 를 text/html 로 내보내는 잘못 설정된 서버가 있고, 그 경우에도 크롤러가 받는 내용은 정상 llms.txt 다. 헤더만 보고 0 을 주면 1.12.0 이 고치려는 오탐을 반대 방향으로 만든다. H1·요약 문단·링크 5개 각각 설명 → level 2. 1.12.0 이 바꾸지 않은 쪽의 대조군이다.",
+  "spec_refs": [
+    "plane-b-readiness.md §7.8",
+    "pillars.yaml P1-04 levels"
+  ],
+  "input": {
+    "status": 200,
+    "content_type": "text/html; charset=utf-8",
+    "body": "# 브랜드컴퍼니\n\n브랜드컴퍼니는 중소기업 AEO 진단을 제공하는 회사다.\n\n## 문서\n- [소개](https://x.example/about): 회사 소개와 연혁\n- [서비스](https://x.example/service): 제공 서비스 목록\n- [가격](https://x.example/pricing): 요금제와 견적 기준\n- [FAQ](https://x.example/faq): 자주 묻는 질문\n- [블로그](https://x.example/blog): 최신 아티클\n"
+  },
+  "expected": {
+    "level": 2
+  },
+  "tolerance": {
+    "absolute": 0
+  },
+  "reference_implementation": {
+    "status": "conformant",
+    "note": "app/audit/collectors/llmstxt.py"
+  }
+}

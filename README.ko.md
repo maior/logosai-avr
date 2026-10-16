@@ -3,7 +3,7 @@
 AEO(Answer Engine Optimization) 진단 프레임워크의 **명세 정본**.
 백엔드 스코어러·리포트 렌더러는 이 디렉토리의 파일을 파싱해 동작한다.
 
-정본 버전: rubric **1.11.0** · scoring **1.1.0** · channels **1.2.0** · schema **1.5.0**
+정본 버전: rubric **1.12.0** · scoring **1.1.0** · channels **1.2.0** · schema **1.5.0**
 상태: 명세 확정 · 참조 구현 가동 중 · 파일럿 3회차 완료
 라이선스: **[CC BY 4.0](LICENSE)** · English: **[README.md](README.md)** — 자유롭게 쓰고 고치고 상업적으로 이용할 수 있습니다. 출처만 밝혀 주십시오.
 
@@ -47,14 +47,14 @@ print(len(cases), "cases by operation:", Counter(c["operation"] for c in cases).
 출력:
 
 ```
-rubric 1.11.0
+rubric 1.12.0
 P1  weight 25  items 10
 P2  weight 25  items 10
 P3  weight 20  items 9
 P4  weight 20  items 9
 P5  weight 10  items 7
 blocking: ['P1-01', 'P1-03']
-117 cases by operation: [('compute_ars', 23), ('remedy_applies', 15), ...]
+120 cases by operation: [('compute_ars', 23), ('remedy_applies', 15), ...]
 ```
 
 다음: 각 케이스의 `input` 을 내 구현에 넣고 `expected` 와 `tolerance` 안에서 대조합니다.
@@ -111,7 +111,7 @@ framework/
 │   └── scoring.yaml              ★ 임계값 · 계수 정본
 ├── schema/
 │   └── report.schema.json        ★ 리포트 산출물 JSON Schema (draft 2020-12)
-├── conformance/cases/            골든 케이스 117건
+├── conformance/cases/            골든 케이스 120건
 └── spec/
     ├── avr-model.md              모델 총론 · 두 평면 분리 근거 · Gap Matrix 처방
     ├── plane-a-visibility.md     Visibility 지표 정의 · 수식 · 통계 규칙

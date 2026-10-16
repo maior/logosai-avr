@@ -1,0 +1,25 @@
+{
+  "id": "item-p1-04-html-page-with-200-is-zero",
+  "title": "/llms.txt 가 200 이지만 본문이 HTML 문서 → level 0 (소프트 404)",
+  "level": 2,
+  "operation": "item_p1_04",
+  "rationale": "없는 경로에도 index.html 을 200 으로 돌려주는 사이트(SPA 폴백·소프트 404)는 llms.txt 가 없다. v1.11.0 은 '200 이면 최소 1' 이라 이 사이트에 1을 줬다 — 파일럿 2026-09-17 회차 P1-04 level 1 10곳 중 5곳이 H1 없음·링크 0·'문단' 1개(= <!DOCTYPE html> 줄)라는 같은 모양이었다. 2026-05 상위 1만 사이트 크롤 연구는 'any 200' 계수가 보유율을 2.74배 부풀린다고 보고한다. 1.12.0: 본문이 HTML 문서로 시작하면 파일 없음 → level 0.",
+  "spec_refs": [
+    "plane-b-readiness.md §7.8",
+    "pillars.yaml P1-04 levels"
+  ],
+  "input": {
+    "status": 200,
+    "body": "<!DOCTYPE html>\n<html lang=\"ko\"><head><meta charset=\"utf-8\"><title>브랜드</title></head>\n<body><div id=\"root\"></div><script src=\"/app.js\"></script></body></html>\n"
+  },
+  "expected": {
+    "level": 0
+  },
+  "tolerance": {
+    "absolute": 0
+  },
+  "reference_implementation": {
+    "status": "conformant",
+    "note": "app/audit/collectors/llmstxt.py _is_html_document"
+  }
+}
