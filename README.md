@@ -5,7 +5,7 @@
 
 ```yaml
 # .github/workflows/avr.yml — 배포 뒤 단계
-- uses: maior/avr-audit-action@main
+- uses: maior/aeo/integrations/github-action@main
   with:
     url: https://example.com
     api-key: ${{ secrets.AVR_API_KEY }}
